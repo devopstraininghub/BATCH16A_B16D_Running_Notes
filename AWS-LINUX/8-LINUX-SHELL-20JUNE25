@@ -1,0 +1,103 @@
+WHAT IS SHELL SCRIPT & WHY SHELL SCRIPT ?
+
+A shell script is a file with a set of shell commands , for Automation of Repetetive tasks .
+
+What is a variable ?
+
+a variable is a charecter string to which we assign a value. The value assigned could be a number , text , filename , device or any other type of Data .  Simply its a pointer / reference to actual data .
+
+
+SHELL SCRIPTING  FOR   AUTOMATION & TO MINIMIZE REPETETIVE TASKS 
+
+===================================
+HASH-BANG  OR SHEBANG
+
+#!/bin/bash
+#!/bin/sh
+#!/bin/dash
+
+
+The shebang line, 
+starts with #! followed by the path to the interpreter that should be used to execute the script. 
+
+==================================
+
+SHELL :
+
+mkdir kiran
+cd kiran
+touch jenkins
+touch ansible
+touch docker
+touch k8s
+mkdir aws
+cd aws
+touch ec2
+touch rds
+touch efs
+
+============
+
+#!/bin/bash
+##########################
+###  Author : Madhukiran
+#### Date: 23 june 2025
+#### Version : V1
+#### Purpose: To create Devops Enineer Folder structure
+
+echo "Enter the name of the Devops Engineer"
+read name 
+
+mkdir $name
+cd $name
+touch jenkins
+touch ansible
+touch docker
+touch k8s
+mkdir aws
+cd aws
+touch ec2
+touch rds
+touch efs
+
+---------
+===========================
+
+vim jenkinssetup.sh
+
+#!/bin/bash
+
+##################
+###  Author : Madhukiran
+#### Date: 23 june 2025
+#### Version : V1
+#### Purpose: To setup Jenkins
+
+sudo yum update –y
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum upgrade
+sudo yum install java-17-amazon-corretto -y
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+==========================================================
+
+vim tomcatsetup.sh
+
+#!/bin/bash
+
+##################
+###  Author : Madhukiran
+#### Date: 23 june 2025
+#### Version : V1
+#### Purpose: To setup Jenkins
+
+cd /opt/tomcat
+yum install java -y 
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.106/bin/apache-tomcat-9.0.106.tar.gz
+tar -xvf apache-tomcat-9.0.106.tar.gz
+/opt/tomcat/apache-tomcat-9.0.106/bin/startup.sh
+
+
+==========================================================
