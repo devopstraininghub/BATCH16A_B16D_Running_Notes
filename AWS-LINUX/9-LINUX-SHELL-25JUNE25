@@ -1,0 +1,99 @@
+cat devops_profile.sh
+
+#!/bin/bash
+
+#######################
+# Name: Madhu
+# Date: 25 june25
+##
+# ##################
+set -x
+set -e
+echo "Enter the name of the Devops engineer"
+
+read name
+
+mkdir $name
+
+cd $name
+
+touch ansible jenkins docker k8s
+
+mkdir aws
+
+cd aws
+
+touch ec2 rds efs
+================================================================================================== 
+
+
+cat 2-devops_profile.sh
+#!/bin/bash
+#########################
+# Name: Madhu
+# Date: 25 june25
+#
+#
+# ##################
+
+set -x
+set -e
+#echo "Enter the name of the Devops engineer"
+
+#read name
+
+mkdir $1
+
+cd $1
+
+touch ansible jenkins docker k8s
+
+mkdir $2
+
+cd $2
+
+touch ec2 rds efs
+==================================================================================================
+
+
+ cat tomcatsetup.sh
+#!/bin/bash
+
+##################
+###  Author : Madhukiran
+#### Date: 23 june 2025
+#### Version : V1
+#### Purpose: To setup Jenkins
+
+cd /opt/
+yum install java -y
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.106/bin/apache-tomcat-9.0.106.tar.gz
+tar -xvf apache-tomcat-9.0.106.tar.gz
+/opt/apache-tomcat-9.0.106/bin/startup.sh
+
+echo " TOMCAT PROCESS ID IS :"
+ps -ef | grep tomcat | head -1 | awk -F" " '{ print $2 }'
+================================================================================================== 
+
+
+[root@ip-172-31-83-141 opt]# cat sum.sh
+
+#!/bin/bash
+echo "ENTER THE FIRST NUMBER"
+read num1
+echo "ENTER THE SECOND NUMBER"
+read num2
+
+sum=$(( num1 + num2 ))
+echo "THE SUM OF 2 NUMEBRS = $sum"
+================================================================================================== 
+
+
+cat 3-sum.sh
+
+#!/bin/bash
+num1=$1
+num2=$2
+sum=$(( num1 + num2 ))
+echo "THE SUM OF 2 NUMEBRS = $sum"
+================================================================================================== 
