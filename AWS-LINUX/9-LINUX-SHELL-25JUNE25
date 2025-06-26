@@ -97,3 +97,24 @@ num2=$2
 sum=$(( num1 + num2 ))
 echo "THE SUM OF 2 NUMEBRS = $sum"
 ================================================================================================== 
+==================================================
+
+Debugging / Troubleshooting :
+ 
+
+set -x  
+    Turn on debugging.prints each command before it is executed.
+
+set +x  
+    Turn off debugging
+	
+--------
+set -e  
+    Exit on error , Useful for error handling; exits the script immediately if any command fails.
+
+   Causes the script to exit immediately if any command exits with a non-zero status (indicating an error).
+   
+   
+  ======================= 
+
+
