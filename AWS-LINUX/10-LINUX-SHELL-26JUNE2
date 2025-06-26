@@ -1,0 +1,157 @@
+[root@srv1 scripts]# cat 3-sum.sh
+#!/bin/bash
+num1=$1
+num2=$2
+
+sum=$(( num1 + num2 ))
+echo "THE SUM OF 2 NUMEBRS = $sum"
+
+echo "the 3rd argument is $3"
+echo "Number of arguments passed: $#"
+echo "All the arguments passed - as SINGLE word: $*"
+echo "All the arguments passed - as individual  words: $@"
+echo "the schell script name is- $0"
+echo "Exit status is: $?"
+==================================================================================================
+Debugging / Troubleshooting : 
+
+set -x  
+    Turn on debugging.prints each command before it is executed.
+
+set +x  
+    Turn off debugging
+	
+--------
+set -e  
+    Exit on error , Useful for error handling; exits the script immediately if any command fails.
+
+   Causes the script to exit immediately if any command exits with a non-zero status (indicating an error).
+   
+   
+==================================================================================================================
+COMMANDLINE ARGUMENTS / POSTITIONAL ARGUMENTS / COMMANDLINE VARIABLES/SPECIAL VARIABLES 
+
+[root@serv1 opt]# cat positionalargs.sh
+
+#!/bin/bash
+
+echo "The name of this script is: $0"
+echo "The first argument is: $1"
+echo "The second argument is: $2"
+echo "Number of arguments passed: $#"
+echo "All the arguments passed - as SINGLE word: $*"
+echo "All the arguments passed - as individual words: $@"
+echo "Exit status is: $?"
+================================================================================
+Variables:
+
+LOCAL VARIABLES 
+ENVIRONMENT var
+SHELL VAR
+
+
+LOCAL VARIABLES: Defined within a specific function or script. They are temporary and only accessible within their scope.
+
+ENVIRONMENT VARIABLEs: Set using export, available system-wide, and accessible by any child process.
+
+SHELL VARIABLES: Defined in the current shell session. If not exported, they are not accessible to child processes.
+
+-------------------------
+
+How to read a  variable :
+
+read name 
+--------------------------------------
+How to unset a variabl e
+
+unset name  
+-------------------------------------------
+vim unsetex.sh
+
+#!/bin/bash
+
+name="Madhu kiran"
+
+echo $name        
+                    
+unset name        
+
+echo $name  # Output: (nothing, the variable is unset)
+
+
+
+===================================================
+ENVIRONMENT VARIABLES :
+
+These varibales are dynamic 
+environment variables provide a way to customize the behavior of software and the operating system itself.
+
+User specific environemnt variables 
+
+   env
+   echo USER
+   echo $USER
+   printenv USER
+   
+   export VAR=testmadhu
+   printenv VAR
+   echo $VAR
+
+   env | grep USER
+   env | grep VAR
+   unset VAR
+-------------
+   vim .bash_profile
+    ---- export VAR2="Madhu kiran"
+  
+   source .bash_profile
+   
+   printenv VAR2
+   echo $VAR2
+
+-----------------
+Global/system specific environemnt variables 
+
+       cd /etc/
+   ls
+   ll environment
+   vim environment
+        export GLOBALVAR="kiran madhu" 
+   source environment
+   echo $GLOBALVAR
+   printenv GLOBALVAR
+
+
+---------------------
+PATH
+
+The PATH variable is a specific type of environment variable that determines the directories where executable files are searched for when you type a command in the shell without specifying its full path.
+
+  If PATH is set to /usr/local/bin:/usr/bin:/bin, and you type ls, the system will look for ls in /usr/local/bin, then /usr/bin, and finally /bin.
+
+ls 
+
+
+PATH=/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+
+PATH=/home/ec2-user/.local/bin:/home/ec2-user/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin
+
+
+======================
+
+=====================================================   
+
+Diffrence between $@ vs $*  ??
+-----------------
+for i in "$*";
+do 
+  echo $var
+  
+done 
+
+----------------------------
+for i in "$@";
+do 
+  echo $var
+  
+done 
