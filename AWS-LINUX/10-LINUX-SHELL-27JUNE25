@@ -1,0 +1,377 @@
+=====================================================   
+
+Diffrence between $@ vs $*  ??
+-----------------
+for i in "$*";
+do 
+  echo $var
+  
+done 
+
+----------------------------
+for i in "$@";
+do 
+  echo $var
+  
+done 
+
+
+
+================================================================
+
+CONDITIONAL EXPRESSION : 
+
+
+if [ condition1 ]; then
+                    # Code to execute if condition is true
+    echo "Condition is true"
+	 
+elif [condition2 ]; then	
+	echo "Condition is true"
+	
+elif [condition3 ]; then	
+	echo "Condition is true"	
+	
+else
+                    # Code to execute if condition is false
+    echo "Condition is false"
+	
+	
+	
+fi
+==========================
+
+#!/bin/bash
+
+echo "enter number"
+read num1
+
+if [ "$num1" -gt 10 ]; then
+        echo "$num1 is greater than 10"
+		
+elif [ "$num1" -lt 10 ]; then
+        echo "$num1 is less than 10"
+
+else
+        echo "$num1 is 10"
+
+fi
+
+=========================
+
+x = 1 -gt -lt -ge -le -eq 
+y = "madhu" = "madhu"
+2
+3
+4
+
+
+
+
+
+#!/bin/bash
+
+number=7
+
+if [ "$number" -gt 10 ]; then
+    echo "The number is greater than 10."
+	
+elif [ "$number" -eq 10 ]; then
+    echo "The number is exactly 10."
+	
+else
+    echo "The number is less than 10."
+fi
+
+=========================================
+
+#!/bin/bash
+
+age=20
+
+if [ "$age" -ge 18 ]; then
+    echo "You are a Major."
+else
+    echo "You are a minor."
+fi
+
+===================
+BASIC OPERATORS :
+
+ ARITHMETIC   (  + , - , * , / , % ) 
+ RELATIONAL 
+ BOOLEAN 
+ STRING 
+ FILE TEST 
+======================
+
+Basic Arithmetic Operators: 
+
+Addition (+):
+
+echo "enter 1st numer"
+read a 
+
+echo "enter 2nd  numer"
+read b
+
+sum=$((a + b))
+echo $sum  # Output: 15
+
+
+--------------
+Subtraction (-):
+
+a=10
+b=5
+difference=$((a - b))
+echo $difference  # Output: 5
+
+------------------
+Multiplication :
+
+a=10
+b=5
+product=$((a * b))
+echo $product  # Output: 50
+
+----------
+Division: 
+
+a=10
+b=5
+quotient=$((a / b))
+echo $quotient  # Output: 2
+
+--------------------------------  
+Modulus (%):
+
+a=10
+b=3
+remainder=$((a % b))
+echo $remainder  # Output: 1
+----------------
+================================================================================
+RELATION / COMPARISION OPERATORS:
+
+
+a=10
+b=10
+if [ $a -eq $b ]; then
+  echo "a is equal to b"
+fi
+
+------
+a=10
+b=5
+if [ $a -ne $b ]; then
+  echo "a is not equal to b"
+fi
+
+------------
+a=10
+b=5
+if [ $a -gt $b ]; then
+  echo "a is greater than b"
+fi
+
+------------
+
+a=10
+b=10
+if [ $a -ge $b ]; then
+  echo "a is greater than or equal to b"
+fi
+-----------
+
+if [] ; then 
+  --- stmet -- 
+elif [] ; then 
+  --- stmt --
+  
+elif [] ; then 
+  --- stmt --
+  
+else 
+   --- stmet-- 
+fi  
+  
+-------------
+a=5
+b=10
+if [ $a -lt $b ]; then
+  echo "a is less than b"
+fi
+
+----------
+a=5
+b=5
+if [ $a -le $b ]; then
+  echo "a is less than or equal to b"
+fi
+
+--------------
+SRTRING  COMPARISON OPERATORS
+
+
+str1="hello"
+str2="hello"
+if [ "$str1" = "$str2" ]; then
+  echo "str1 is equal to str2"
+  
+else 
+  echo "str1 is NOT equal to str2"
+    
+fi
+-------
+
+str1="hello"
+str2="world"
+if [ "$str1" != "$str2" ]; then
+  echo "str1 is not equal to str2"
+fi
+
+
+------
+------
+Empty String (-z): 
+
+str=""
+if [ -z "$str" ]; then
+  echo "str is empty"
+fi
+
+
+-------------
+not Empty String
+
+str="hello"
+if [ -n "$str" ]; then
+  echo "str is not empty"
+fi
+------------------------
+
+FILE COMPARISON OPERATORS: 
+
+FILE EXISTS
+
+if [ -e "file.txt" ]; then
+  echo "file.txt exists"
+fi
+
+----------
+
+if [ -f "file.txt" ]; then
+  echo "file.txt is a regular file"
+fi
+
+---------------
+if [ -d "directory" ]; then
+  echo "directory is a directory"
+fi
+
+-----------
+if [ -r "file.txt" ]; then
+  echo "file.txt is readable"
+fi
+
+===============================================================================================================
+
+BOOLEAN OPERATORS :
+
+#!/bin/bash
+
+a=10
+b=20
+c=30
+
+if [ $a -lt $b ] && [ $b -lt $c ] || [ $a -eq 10 ]; then
+  echo "a is less than b and b is less than c, or a is equal to 10"
+fi
+
+
+==============
+#!/bin/bash
+
+num1=10
+num2=20
+
+if [ $num1 -lt $num2 ]; then
+    echo "$num1 is less than $num2"
+else
+    echo "$num1 is not less than $num2"
+fi
+
+=====================================================================================================
+=====================================================================================================
+
+LOOPS IN SHELL : 
+
+
+ cat forloop.sh
+#!/bin/bash
+
+#for i in 1 2 3 4 5 6 7 8 9 10
+
+
+for i in {100..1}
+do
+   echo "THE NUMBER IS $i"
+
+done
+==============================================================================================
+cat whileloop.sh
+
+#!/bin/bash
+i=100
+
+while [ "$i" -ge  1 ];
+
+do
+    echo " THE NUMBER IS $i"
+    i=$((i - 1))
+done
+
+
+echo "WHILE LOOP COMPLETED , now i value is $i"
+
+================================================================================================================
+
+[root@srv1 loops]# cat until.sh
+
+#!/bin/bash
+i=1
+
+until [ "$i" -gt 100  ];
+
+do
+   echo "the number is : $i"
+   i=$((i + 1))
+done
+
+================================================================================================================
+cat infiniteloop.sh
+
+#!/bin/bash
+i=1
+
+while [ "$i" -gt 0  ];
+
+do
+   echo "the number is : $i"
+   i=$((i + 1))
+done
+
+================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
