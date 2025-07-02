@@ -1,0 +1,101 @@
+Break & continue :
+
+#!/bin/bash
+#for i in 1 2 3 4 5 6 7 8 9 10
+for i in {1..10}
+do
+
+  if [ $i -eq 6 ]; then
+          # break
+          continue
+
+  fi
+   echo "THE NUMBER IS $i"
+
+done
+
+===============================================================
+
+FUNCTIONS : 
+ A shell function is a way to group commands to perform a specific task, which can be reused in a shell script or terminal session. It is similar to functions in programming languages.
+  
+  
+  function_name () {
+    command1
+    command2
+    ...
+  }
+
+  function function_name {
+    command1
+    command2
+    ...
+  }
+=============================================================
+greet.sh: 
+
+#!/bin/bash
+
+
+greet()
+{
+echo "Hello $1 , Welcome to AWS DevOps Training , Bright future is assured provided you workhard"
+
+}
+
+
+
+greet Madhu kiran narayana
+greet Ramni
+greet Dileep
+greet Surendra
+
+======================================================
+sum.sh
+
+#!/bin/bash
+add_numbers()
+{
+num1=$1
+num2=$2
+
+sum=$(( num1 + num2 ))
+echo "THE SUM OF TWO $1 & $2  NUMEBRS = $sum"
+
+}
+
+add_numbers 5 10
+add_numbers 10 15
+add_numbers 30 40
+
+============================================
+sum2.sh:
+
+#!/bin/bash
+add_numbers()
+{
+
+sum=$(( $1 + $2 ))
+echo "THE SUM OF TWO $1 & $2  NUMEBRS = $sum"
+
+}
+
+add_numbers 5 10
+add_numbers 10 15
+
+========================================
+function with return value:
+multiply.sh
+
+multiply() {
+
+
+        result=$(($1 * $2))
+        return $result
+}
+
+
+multiply 5 6
+==========================
+
+few realtime scenarios: 
