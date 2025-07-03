@@ -1,0 +1,46 @@
+BASIC LINUX COMMANDS:
+
+ls 
+ll
+ls -lrth 
+ls -la 
+---------------------------
+touch  chiru
+mkdir dirname 
+--------------------
+sudo su - 
+hostnamectl set-hostname <ser.name> 
+clear 
+
+ctrl + c 
+=================================
+
+
+AWS ACCOUNT 
+
+REGION 
+AVAILABILITY ZONE 
+SERVER. CREATION
+SSH - GIT BASH 
+
+SERVER CONNECT USING GIT BASH 
+
+EBS (Elastic Block Store)  
+
+lsblk 
+df -Th
+Block volume  
+snapshot 
+
+========================
+Server1:
+mkfs.ext4 /dev/xvdf
+mkdir /madhu
+mount -t ext4 /dev/xvdf /madhu
+
+
+server2:
+mkdir /kiran
+mount -t ext4 /dev/xvdf /kiran
+
+===============================
