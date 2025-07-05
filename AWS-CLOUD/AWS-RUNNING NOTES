@@ -1,3 +1,7 @@
+
+AWS-3JULY25:
+=====================
+
 BASIC LINUX COMMANDS:
 
 ls 
@@ -44,3 +48,50 @@ mkdir /kiran
 mount -t ext4 /dev/xvdf /kiran
 
 ===============================
+
+4 JULY 2025:
+
+================================================
+
+BASIC LINUX COMMANDS:
+
+ls 
+ll
+ls -lrth 
+ls -la 
+---------------------------
+touch  chiru
+mkdir dirname 
+rm -rf <fnmae/dirname>
+cd <dirname>
+
+
+pwd
+widnows -- notepad ++ 
+linux --> vi/vim editor 
+=================================
+vim fname 
+
+esc - i   (insertmode) 
+
+----
+data
+----
+
+esc :wq!
+=================================
+cat fname
+
+yum install pkg.Name
+
+
+CUSTOM AMI : 
+---------
+DATA 
+PACKAGES 
+SERVICES 
+
+=========================================
+LAUNCH TEMPLATE 
+
+
