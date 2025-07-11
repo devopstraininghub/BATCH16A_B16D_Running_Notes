@@ -183,8 +183,46 @@ SECURITY GROUPS
    -- INBOUND 
    -- OUTBOUND 
 
+====================================================================
+
+=====================================================
+date: 11 july 25
 
 
+USERDATA: 
+
+#!/bin/bash
+yum install httpd -y
+systemctl start httpd
+systemctl enable httpd
+echo "WELCOME TO AWS DEVOPS traininghub from $(hostname) SERVER" > /var/www/html/index.html
+
+====================================================
+
+SG  at Instance level 
+
+INBOUND VS OUTBOUND 
+
+================================
+NACL at subnet level 
+
+
+
+====================================
+NIC : 
+
+
+===================================
+EIP : STATIC IP 
+
+3.84.252.151
+
+
+44.203.173.137  -serv2
+
+3.91.239.80
+
+===========================================
 
 
 
