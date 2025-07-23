@@ -1,0 +1,461 @@
+
+AWS FREE TIER ACCOUNT 
+
+
+2 SERVERS - CONSOLE 
+
+
+GIT BASH DOWNLOAD 
+
+SERVER CONNECT 
+
+---------------
+
+EBS : 
+SNAPSHOT 
+BV 
+FILESYSTEM - MOUNT 
+
+sudo su - 
+
+
+lsblk 
+
+
+mkfs.ext4 /dev/xvdf
+
+mkdir /madhu 
+
+mount -t ext4 /dev/xvdf  /madhu
+
+
+
+============
+Server1:
+mkfs.ext4 /dev/xvdf
+mkdir /madhu
+mount -t ext4 /dev/xvdf /madhu
+
+
+server2:
+mkdir /kiran
+mount -t ext4 /dev/xvdf /kiran
+===========================================================================
+
+
+DATE:
+9 JAN 2024 :
+----------------------
+touch file 
+mkdir dir
+cd 
+cd ..
+----------------
+
+vim 
+
+esc --> I 
+  
+  instet 
+  
+esc: wq 
+------------------------------
+  yum install <pkg>
+
+
+systemctl status <service>
+
+systemctl start <service>
+
+systemctl stop <service>
+
+systemctl enable <service>
+
+
+
+
+
+--------------------------------------------
+
+AMI :
+
+its a machine image that contains all the information needed to launch a new instance in the cloud.
+Operating System
+
+CUSTOM AMI 
+
+
+SERVER :
+
+DATA 
+PKGS  --- GIT , HTTPD 
+
+SERVICE : 
+
+systemctl status <service> 
+systemctl start <service> 
+systemctl stop <service> 
+systemctl enable <service> 
+
+
+cd /var/www/html
+
+vim index.html 
+
+<!DOCTYPE html>
+<html>
+<body style="background-color:ORANGE;">
+
+<h1>This is BATCH14 FACEBOOK PAGE </h1>
+
+
+</body>
+</html>
+
+
+
+==========================================
+
+ELB:
+
+
+
+
+https://www.facebook.com/: 443
+
+
+
+
+http://ec2-3-90-87-215.compute-1.amazonaws.com/:80
+
+http://ec2-3-90-87-215.compute-1.amazonaws.com/
+
+=======================================
+
+AUTO SCALING:
+
+ASG 
+
+SNS 
+
+==========
+
+VPC ISOLATED NETWORK:
+
+IGW
+SUBNET 
+ROUTETABLE 
+
+------------
+
+20 JAN 2025
+
+VPC PEERING 
+SECURITY GROUPS 
+
+--------------
+21 JAN 2025
+
+NIC 
+EIP 
+USER DATA
+NACL 
+EFS 
+CLOULD COMPUTING MODELS 
+
+
+#!/bin/bash
+
+yum install httpd -y
+systemctl start httpd
+systemctl enable httpd
+echo "WELCOME TO B15 FACEBOOK from $(hostname) server" > /var/www/html/index.html
+
+--------------------------------------------------
+{
+  "Id": "Policy1725546839284",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1725546838078",
+      "Action": "s3:*",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::cf-s3-fb/*",
+      "Principal": "*"
+    }
+  ]
+}
+================
+
+SECURITY GROUP :
+
+INBOUND & OUT BOUND RULES 
+
+----------------
+
+EIP ( Elastic IP) 
+
+ 
+eip -- 100.27.123.152 -- fb 
+=================
+22 AUG 24:
+
+
+EFS /
+ NACL / 
+ KEYPAIR / 
+CLOUD COMPUTING MODELS 
+
+
+
+efs:
+
+yum install amazon-efs-utils -y  
+mkdir /madhu
+sudo mount -t efs -o tls fs-058c8d83d806f2991:/ /madhu
+
+==========================
+
+
+1 . VPC SETUP 
+2 . TARGET GROUP ( WILL NOT REGISTER INSTANCES) 
+3 . ELB 
+4 . LT 
+5.  ASG ( ATTACH TO EXISTING LOAD BALANCER CREATED IN STEP 3) 
+---------
+
+BASTION HOST / JUMP SERVER 
+
+==============================================
+
+1.  HEAVY WORKLOAD
+    - PREPARATION -- RAMANI 
+	      - CLOUD WITH SHIVA - JOB PORTAL 25K / JOB PROTAL 
+	
+	- PAYMENT FOLLOWUPS 
+	      - HEMA 
+		  - 
+	- JOBS FOLLOWUPS  @10 PM - 10:30 PM 
+	
+	- OFFICE FOLLOWUPS 
+	       - FAYAZ 
+		   - KISHORE 
+		   - SANJAY 
+		   - SETUP 
+		           -- Pamplet / boards
+				   -- office 
+				   -- Devops promotion
+				   
+	- SPOKEN ENGLISH / EMAIL COMMUNICATION 
+    - GENERAL DEVOPS / CLOUD / QA DISCUSSIONS 
+
+-------------
+   1. TAJUDDIN 
+   2. CHARAN 
+   3. RANJIT 
+   4. SRIKANTH KARRE
+   -------------
+   
+RAJ KUMAR - WORKSHOP FOR ENGI COLLEGES 
+	
+		   
+================
+
+
+
+
+
+
+=============================
+
+IAM USER 
+IAM POLICIES 
+IAM GROUP 
+
+ROLES 
+
+===========
+
+S3 -- SSS  - SIMPLE STORAGE SERVICE - BACKUP 
+
+====
+
+aws cli 
+
+aws configure
+
+xxxxxxxPPYORPFIAODR
+xxxxxxxxxxxDCdIQecnKPZOfumqQXK
+
+======
+
+aws ec2 run-instances --image-id ami-066784287e358dad1 --count 2 --instance-type t2.micro --key-name awskey
+
+========
+
+IAM ROLES :
+
+
+RDS :
+
+DATABASE SERVICES IN AWS :
+
+
+------
+Structured databases, also known as relational databases, store data in predefined schemas, usually in tables with rows and columns. 
+
+These databases are characterized by their structured approach to storing and querying data, which involves predefined schemas and the use of SQL (Structured Query Language) to manage and manipulate the data.
+
+
+Here are some examples:
+
+MySQL:
+    A widely-used open-source relational database management system (RDBMS) known for its speed, reliability, and ease of use. It's often used for web applications and supports SQL for querying data.
+
+PostgreSQL:
+    An advanced open-source RDBMS known for its robustness, extensibility, and compliance with SQL standards. It supports complex queries, foreign keys, triggers, and transactions.
+
+Microsoft SQL Server: 
+    A relational database management system developed by Microsoft. It's widely used in enterprise environments and integrates well with other Microsoft products like Azure, .NET, and Power BI.
+
+Oracle Database: 
+    A multi-model database management system produced by Oracle Corporation. It's known for its strong performance, scalability, and advanced features, making it popular in enterprise environments.
+
+IBM Db2: 
+    An RDBMS developed by IBM that is optimized for handling large volumes of data and complex queries. It supports a wide range of data types and is used in various industries, including finance and healthcare.
+
+SQLite: 
+    A lightweight, self-contained RDBMS that is embedded within applications. It's widely used in mobile applications, small desktop apps, and even some larger-scale web applications.
+
+----------------------
+
+Semi-structured databases store data that doesn't conform to a rigid schema like relational databases but still contains some organizational properties (such as tags or metadata) that make it easier to analyze. 
+
+These databases are designed to handle data that doesn't fit neatly into the tables and columns of traditional relational databases, offering flexibility in how data is stored and queried.
+
+Here are some examples of semi-structured databases:
+
+
+MongoDB: 
+   A NoSQL database that stores data in flexible, JSON-like documents. MongoDB allows for dynamic schema design, meaning fields can vary from document to document, which is ideal for applications with changing data requirements.
+
+Apache Cassandra:
+    A distributed NoSQL database designed to handle large amounts of data across many commodity servers. It uses a table-based structure but allows for varying column counts and types across rows, providing a level of flexibility not found in traditional relational databases.
+
+Amazon DynamoDB: 
+   A fully managed NoSQL database service provided by AWS. It stores data in a key-value format and is designed to scale horizontally with automatic partitioning and replication.
+
+Google Cloud Datastore: 
+    A NoSQL document database built for automatic scaling, high performance, and ease of application development. It is designed to support semi-structured data with nested fields and arrays.
+
+OrientDB: 
+    A multi-model database that supports graph, document, object, and key-value models. It can store semi-structured data with varying schema structures and relationships between data entities.
+
+----------------------
+
+Unstructured databases, often referred to as NoSQL databases, are designed to handle data that doesn't fit into a predefined schema or structure. This type of data includes text, images, videos, and other forms of content that don't conform to the traditional tabular format. 
+
+
+Here are some examples:
+
+Elasticsearch:
+    A distributed search and analytics engine that excels at indexing and searching large volumes of unstructured data, such as logs, documents, and textual content. It's commonly used for full-text search, log analysis, and real-time data exploration.
+
+Apache Hadoop: 
+     A framework that allows for the distributed processing of large data sets across clusters of computers. It’s often used for storing and processing unstructured data, like large text files, images, and videos, using its Hadoop Distributed File System (HDFS).
+
+Apache Solr:
+     A search platform built on Apache Lucene, designed for searching large volumes of unstructured text data. Solr is often used in applications that require full-text search, faceted search, and real-time indexing.
+
+Amazon S3 (Simple Storage Service): 
+     While not a database in the traditional sense, S3 is a scalable object storage service that allows you to store and retrieve any amount of data, including unstructured data like images, videos, and backups.
+
+Microsoft Azure Blob Storage: 
+       Similar to Amazon S3, Azure Blob Storage is designed to store large amounts of unstructured data, such as text or binary data. It's commonly used for serving images, documents, and media files to users.
+
+Cassandra with Blob Data: 
+      Apache Cassandra is primarily a semi-structured database, but it can also store unstructured data in the form of blobs (binary large objects), making it possible to store and retrieve files like images, videos, and audio directly from the database.
+
+These tools and platforms are optimized for handling and processing data that doesn't have a clear structure or predefined schema, making them ideal for applications involving large, varied, and unstructured data sets.
+
+admin 
+Y7SfDpkPq3mQ3fOKYa5y
+database-1.c9i46yucm5yb.us-east-1.rds.amazonaws.com
+
+=======
+
+mysql -h your-rds-endpoint.amazonaws.com -u yourusername -p
+
+
+SHOW DATABASES;  - to view all available databases:
+
+USE database_name;
+SELECT DATABASE();
+
+
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,  -- Employee ID, auto-incremented
+    first_name VARCHAR(50),                      -- First Name
+    last_name VARCHAR(50)                        -- Last Name
+);
+
+
+SELECT * FROM employees;
+
+SELECT first_name, last_name FROM employees;
+
+INSERT INTO employees (first_name, last_name, department)
+VALUES ('John', 'Doe', 'Engineering');
+
+To remove a table completely from the database:
+DROP TABLE departments;
+
+
+=======
+
+SHOW DATABASES;
+USE facebook;
+SELECT DATABASE();
+
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,  -- Employee ID, auto-incremented
+    first_name VARCHAR(50),                      -- First Name
+    last_name VARCHAR(50)                        -- Last Name
+);
+
+INSERT INTO employees (first_name, last_name)
+VALUES ('MADHU', 'KIRAN');
+
+INSERT INTO employees (first_name, last_name)
+VALUES ('x', 'y');
+
+INSERT INTO employees (first_name, last_name)
+VALUES ('a', 'b');
+
+===========
+
+SELECT * FROM employees;
+
+SELECT first_name, last_name FROM employees;
+
+UPDATE employees
+SET last_name = 'Gorekar'
+WHERE employee_id = 2;
+
+
+DELETE FROM employees
+WHERE employee_id = 3;
+
+
+==============
+Create: INSERT INTO employees
+
+Read: SELECT * FROM employees
+
+Update: UPDATE employees SET column_name = value WHERE condition
+
+Delete: DELETE FROM employees WHERE condition
+
+======================================================================================================================
+
+ CLOUD SERVICE MODELS
