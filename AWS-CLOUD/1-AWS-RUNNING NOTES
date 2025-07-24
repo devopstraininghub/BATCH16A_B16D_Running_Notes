@@ -111,26 +111,36 @@ AWS USER DATA
 
 AWS SNS SERVICE 
 
-=========================
+==========================================================================================
 
 AWS AUTOSCALING 
 
-============================
+MIN CAPACITY 
+MAX CAPCITY 
+DESIRED CAPACITY 
+
+& TARGET TRACKING POLICY ON AVG CPU UTILIZATION 
+
+
+==========================================================================================
 DATE: 9 JULY 
 
 
 PUBLIC CLOUD VS PVT CLD
 
-VPC 
+VPC ( VIRUTAL PRIVATE CLOUD ) 
 
 ===============================================================
-ccna: VPC 
+ VPC 
+
+CIDR BLOCK & HOW IT WORKS 
 
 10 .81. 0. 0 / 16
 
-4 bytes 
+IPV4 -- > 4 bytes 
 
 1 byte - 8 bits  
+4 bytes --> 8 * 4 --> 32 bits 
 
 10 .81. 0. 0  ---> 32 bits  (ipv4) 
 
@@ -203,29 +213,30 @@ SG  at Instance level
 
 INBOUND VS OUTBOUND 
 
-================================
+SG ---> Stateful 
+       - only Allow 
+       - 
+====================================================
 NACL at subnet level 
 
+           - Stateless 
+           - Both Allow & Deny 
+           - Numers ( least number will get high priority ) 
 
-
-====================================
+====================================================
 NIC : 
 
 
-===================================
-EIP : STATIC IP 
+====================================================
+EIP : STATIC IP & fixed IP 
 
 3.84.252.151
-
 
 44.203.173.137  -serv2
 
 3.91.239.80
 
-===========================================
-
-
-
+====================================================
 MINI PROJECT : 
 
 
@@ -235,27 +246,32 @@ efs: (SHARED FILE SYSTEM)
 
 Creating efs and mounting on to servers . 
 
+SERVER 1: 
 
 yum install amazon-efs-utils -y  
 mkdir /efs
 sudo mount -t efs -o tls fs-058c8d83d806f2991:/ /efs
+
+-----------------
+SERVER2: 
+yum install amazon-efs-utils -y  
+mkdir /madhu
+sudo mount -t efs -o tls fs-058c8d83d806f2991:/ /madhu
 ====================================================
-
-
-MINI PROJECT : 
-
-
-================================================
 
 IAM USER 
 
-IAM POLICIES 
+IAM POLICIES : 
+
+   -- effect : Alow / deny
+      action:  
+      resource : 
+
+
    
 IAM :
 
 https://141559732042.signin.aws.amazon.com/console
-
-
 
 ramani :
 
@@ -269,8 +285,8 @@ admin acces
     "Statement": [
         {
 		    "Action": "*",
-			"Resource": "*"
-            "Effect": "Allow",
+	            "Resource": "*"
+                    "Effect": "Allow",
             
             
         }
@@ -279,8 +295,6 @@ admin acces
 
 =====================
 IAM GROUP 
-
-ROLES 
 
 =========================================
 
@@ -298,10 +312,11 @@ price: size (how much data you store)  , duration , storage class , which region
 
 S3 BUCKET 
 OBJECT 
-ACCESS - ACL 
+giving ACCESS TO S3 object using- ACL 
 S3 --> HOSTING STATIC WEBSITE 
 
-STORAGE CLASSES 
+STORAGE CLASSES  
+S3 LIFE CYCLE MANAGEMENT 
 
 ==============================================================
 
@@ -318,14 +333,13 @@ aws s3 cp /path/to/local/logs/ s3://your-log-bucket/logs/ --recursive
 
 aws s3 cp s3://your-data-bucket/images/ /path/to/local/images/ --recursive
 
-
 aws s3 sync /path/to/local/website/ s3://your-website-bucket/
 
-aws s3 rb 
+aws s3 rb s3://your-website-bucket/
 
 aws s3 rm 
 
-====================
+==============================================================
 aws ec2 run-instances \
   --image-id ami-0150ccaf51ab55a51 \
   --count 1 \
@@ -334,12 +348,15 @@ aws ec2 run-instances \
 
 
 
-==============
-========
+==============================================================
+
 
 IAM ROLES :
 
+- Temporary identity that can be assumed by users, services, or accounts
+- Needs to be assumed by a trusted entity
 
+ Scenario: EC2 Instance accessing S3 bucket
 
 ====================================================================
 
