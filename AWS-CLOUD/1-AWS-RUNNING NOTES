@@ -444,8 +444,102 @@ Cassandra with Blob Data:
 These tools and platforms are optimized for handling and processing data that doesn't have a clear structure or predefined schema, making them ideal for applications involving large, varied, and unstructured data sets.
 
 
+=========================================
+DATE: 24 JULY 25 
+
+---------------
+mc-prod-mysql-instance.cela4qmqgtmv.us-east-1.rds.amazonaws.com
+
+admin 
+Fii3cPuW<LEMm6-o!CLo|MO3_8E?                                  >
 
 
+
+ mysql work bench 
+ 
+ sqlectron 
+ 
+
+=============================
+
+mysql -h your-rds-endpoint.amazonaws.com -u yourusername -p
+
+=================================
+
+SHOW DATABASES;  - to view all available databases:
+
+USE database_name;
+SELECT DATABASE();
+
+
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,  -- Employee ID, auto-incremented
+    first_name VARCHAR(50),                      -- First Name
+    last_name VARCHAR(50)                        -- Last Name
+);
+
+
+
+
+
+=======
+
+SHOW DATABASES;
+USE facebook;
+SELECT DATABASE();
+
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,  -- Employee ID, auto-incremented
+    first_name VARCHAR(50),                      -- First Name
+    last_name VARCHAR(50)                        -- Last Name
+);
+
+INSERT INTO employees (first_name, last_name)
+VALUES ('MADHU', 'KIRAN');
+
+INSERT INTO employees (first_name, last_name)
+VALUES ('x', 'y');
+
+INSERT INTO employees (first_name, last_name)
+VALUES ('a', 'b');
+
+===========
+
+SELECT * FROM employees;
+
+SELECT first_name, last_name FROM employees;
+
+UPDATE employees
+SET last_name = 'Gorekar'
+WHERE employee_id = 2;
+
+
+DELETE FROM employees
+WHERE employee_id = 3;
+
+
+==============
+Create: INSERT INTO employees
+
+Read: SELECT * FROM employees
+
+Update: UPDATE employees SET column_name = value WHERE condition
+
+Delete: DELETE FROM employees WHERE condition
+
+
+====================================
+
+CLOUD MODEL CLASSIFICATION 
+
+
+IAAS 
+
+PAAS 
+
+SAAS 
+
+========================
 
 
 
