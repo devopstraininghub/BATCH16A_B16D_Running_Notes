@@ -592,6 +592,19 @@ If cached → Delivers content immediately.
 
 If not cached → Fetches content from the origin, caches it, and delivers it.
 
+---
+
+CREATE CF DISTRIBUTION 
+- TRY TO ACCESS IT WITH Distribution domain name
+
+
+UPDATE RECORD IN ROUTE 53 ACCORDINGLY 
+
+
+
+
+
+
 
 
 
