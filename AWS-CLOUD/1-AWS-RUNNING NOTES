@@ -541,8 +541,56 @@ SAAS
 
 ========================
 
+DATE : 29 JULY 25 
+
+ROUTE 53 -- DNS AS A SERVICE BY AWS 
+
+GODADDY --> PURCHASE DOMAIN ------> b16facebook.xyz 
+
+HOST IN AWS USING ROUTE53 SERVICE 
+
+UPDAATE NS RECORDS IN IN GODADDY , LET IT PROPEGATE ( TAKES TIME --- CHECK DNS CHECKER) 
+
+THEN LAUNCH LOAD BALANCER 
+
+THEN CREATE RECORDS IN ROTUE 53 ( A RECORD , CNAME RECORD ...etc ) 
+
+and access in web browser --> http://b16facebook.xyz/
+
+-------------------------------------------
+
+HOW TO MAKE IT SECURE ??
+
+CREATE A CERTIFICATE IN AWS ACM ( CERTIFICATE MANAGER ) 
+
+UPDATE AWS LOADBALANCER LISTENER RULES ( HTTPS -- 443 ) 
+
+then try to access in web browser with https  ----------->  https://b16facebook.xyz/
+
+-----------------------------------------------
 
 
+CLOUD FRONT : 
+
+Amazon CloudFront is a content delivery network (CDN) service provided by AWS (Amazon Web Services). It securely delivers content (like web pages, images, videos, APIs, and software) to users around the world with low latency and high transfer speeds.
+
+- Global Network of Edge Locations:
+
+- Caching Static & Dynamic Content:
+
+- Origin Sources:
+
+   Elastic Load Balancers , S3 BUCKET , Custom HTTP servers (on-prem or in the cloud) , EC2 instances
+
+HOW IT WORKS ? 
+
+A user requests content from your website (e.g.,  https://b16facebook.xyz/  
+
+CloudFront checks if the content is cached at the nearest edge location.
+
+If cached → Delivers content immediately.
+
+If not cached → Fetches content from the origin, caches it, and delivers it.
 
 
 
@@ -558,9 +606,6 @@ SAAS
 ===========================================
 TO BE COVERED : 
 
-RDS-MYSQL 
-ROUTE53 
-CLOUD FRONT 
 AWS WAF 
 3 TIER PROJECT 
 
