@@ -600,14 +600,84 @@ CREATE CF DISTRIBUTION
 
 UPDATE RECORD IN ROUTE 53 ACCORDINGLY 
 
+==========================================================================
+
+30 JULY 2025
+
+
+AWS WAF is a security service that helps protect your web applications from common web exploits and bots that can affect availability, compromise security, or consume excessive resources
+
+
+Benefits: 
+
+Protects applications from common exploits and bots.
+
+Easily cover recommended security considerations with managed rules.
+
+Customize and fine-tune rules as your needs change.
 
 
 
+Key Features of AWS WAF:
+
+Filter and monitor HTTP/HTTPS requests to your Amazon CloudFront distributions, Application Load Balancers (ALBs), API Gateway APIs, or AWS App Runner services.
+
+Protect against common threats like:
+
+SQL injection (SQLi)
+
+Cross-site scripting (XSS)
+
+Bad bots and scrapers
+
+DDoS attacks 
 
 
+Customizable rules using:
+
+Managed rule groups (pre-configured by AWS or AWS Marketplace partners)
+
+Custom rule groups (built based on your needs)
+
+Geo-match conditions to block or allow based on the request origin
+
+IP reputation lists and IP whitelisting/blacklisting
 
 
+You can attach WAF to:
 
+Amazon CloudFront (for global content delivery)
+
+Application Load Balancer (ALB) (for EC2-hosted web apps)
+
+Amazon API Gateway (for REST and WebSocket APIs)
+
+AWS App Runner (for containerized web apps)
+
+Example Use Cases:
+
+Block requests from specific IPs or countries
+
+Allow only traffic from known good sources
+
+Protect login pages from brute-force attacks
+
+Enforce size limits on requests or headers
+
+
+PRACTILCE :
+
+CREATE IP SET --> CREATE IP SET TO BLOCK YOUR OWN IP 
+
+THEN Create - Web ACL --> configure , add rules , rules groups 
+
+=======================
+
+CLOUD WATCH : 
+
+CONFIGURE ALARM --> Per instance metric on Avg CPU Utilization , Configure SNS notification , configure ALARM action ...etc 
+
+Increase CPU load on Ec2 Instance , then you can observe Alarm getting triggered 
 
 
 
