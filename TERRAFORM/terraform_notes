@@ -1,0 +1,128 @@
+Terraform is an open-source Infrastructure as Code (IaC) tool developed by HashiCorp. 
+
+It allows you to define, provision, and manage infrastructure (like servers, databases, networks, etc.) using declarative configuration files, usually written in HashiCorp Configuration Language (HCL) or JSON.
+
+- setup and maintenance of infrastructure across many cloud providers 
+
+  - Automation: No need to manually configure infrastructure.
+
+  - Version Control: Code can be stored in Git like app code.
+
+  - Repeatable: Run the same config in different environments.
+
+  - Multi-Cloud: Works across different cloud providers.
+  
+  
+ =======================
+Core Architecture Components
+Terraform Core (CLI)
+
+      Written in Go.      
+      Parses HCL configuration files.      
+
+
+Providers:
+       Plugins that allow Terraform to interact with APIs (e.g. AWS, Azure, GCP, Kubernetes).
+       
+       Define the types of resources available for management.
+       
+State File (terraform.tfstate)
+       
+       JSON file that stores metadata of managed resources.       
+
+       Used to track current infrastructure state.       
+
+       Can be stored locally or remotely (e.g. S3, Azure Blob).      
+
+       Ensures consistency and supports collaboration (with locking).
+
+
+ ==========
+
+ Terraform Workflow
+ 
+Write:Create configuration in .tf files.
+
+
+terraform init: Run terraform init to initialize the working directory and download providers.
+
+terraform  Plan: Run terraform plan to preview changes.
+
+terraform  Apply: Run terraform apply to provision/update resources.
+
+terraform  Destroy : Run terraform destroy to tear down infrastructure.
+
+
+INSTALL:
+
+https://developer.hashicorp.com/terraform/install
+
+env :
+
+path : C:\Users\Madhu Kiran\Desktop\batch16\terraform\terraform_1.12.2_windows_amd64
+
+
+
+aws cli 
+
+aws configure 
+    accesskey 
+	secet accesskey 
+	
+	xxxxxAKIASB5M6C5FNMxxxxxx
+	xxxxxxxxxxudsyoyZ+jeTsPHxxxxxxxxxx
+	
+================================
+
+terraform install 
+vis studio code install 
+
+aws configure -- 
+
+=======
+
+code 
+
+terraform init 
+
+terraform plan 
+
+terraform apply 
+
+terraform show 
+
+terraform destroy 
+
+
+===================================================================
+
+
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "6.7.0"
+    }
+  }
+}
+
+provider "aws" {
+  
+  region = "us-east-1"
+}
+
+
+resource "aws_instance" "sbox" {
+
+   # ami = "ami-084a7d336e816906b"
+    ami  = "ami-020cba7c55df1f615"
+    instance_type = "t2.micro"
+    key_name = "ramanikey"
+
+    tags = {
+      Name = "pre-prod"
+    }
+  
+}
+
+=================================
