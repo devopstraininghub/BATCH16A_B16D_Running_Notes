@@ -126,3 +126,82 @@ resource "aws_instance" "sbox" {
 }
 
 =================================
+
+==============================================================
+terraform drift detection :
+
+
+
+=================================================
+
+
+TERRAFORM PROVIDES:
+
+
+================================
+
+TERRAFORM STATEFILE :
+
+====================
+
+TERRAFORM MULTI PROVIDER :
+
+========================================================
+
+TERRAFORM IN MULTI REGION : 
+
+provider "aws" {
+  
+  region = "us-east-1"
+  alias = "nv"
+}
+
+provider "aws" {
+  
+  region = "ap-south-1"
+  alias = "mumbai"
+
+}
+
+resource "aws_instance" "sbox_nv" {
+
+    ami = "ami-053a45fff0a704a47"
+    instance_type = "t2.micro"
+    key_name = "madhukey"  
+
+    provider = aws.nv
+
+     tags = {
+    Name = "sbox-nv"
+    }
+
+}
+
+
+resource "aws_instance" "sbox_mumbai" {
+
+    ami = "ami-0ddfba243cbee3768"
+    instance_type = "t2.micro"
+    key_name = "mumbaib15"  
+
+    provider = aws.mumbai
+
+     tags = {
+    Name = "sbox-mumbai"
+    }
+
+}
+
+========================================
+
+MINI PROJECT :
+  1. create a VPC  - 10.81.0.0/16
+  2. Create Internet Gateway 
+  3. Create Custom Route Table 
+  4. Create a Subnet  -- 10.81.3.0/24
+  5. Associate subnet with Route Table 
+  6. Create Security Group to allow port 22,80,443 or all ports , traffic  
+  7. Create a network interface with an ip in the subnet that was created in step 4  
+  8. Assign an elastic IP to the network interface created in step 7 
+  9. Create an ec2  server - LAUNCH APLICATION IN IT 
+
