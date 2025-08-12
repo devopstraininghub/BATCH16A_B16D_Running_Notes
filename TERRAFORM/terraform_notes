@@ -205,3 +205,24 @@ MINI PROJECT :
   8. Assign an elastic IP to the network interface created in step 7 
   9. Create an ec2  server - LAUNCH APLICATION IN IT 
 
+
+=================================================================================================
+
+
+11 aug 2025:
+
+
+TERRAFORM VARIABLES 
+
+provider.tf
+output.tf 
+variables.tf
+terraform.tfvars 
+
+dev.tfvars
+qa.tfvars
+
+================================================
+
+
+
