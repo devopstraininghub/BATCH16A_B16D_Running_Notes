@@ -152,8 +152,6 @@ https://www.linkedin.com/posts/madhukiran-gorekar_%F0%9D%90%86%F0%9D%90%A2%F0%9D
 
 ================
 
-
-
 git - git hub 
 
 Branch : 
@@ -223,9 +221,8 @@ git log --oneline -n
 git log --author kiran
 git log --since "06-03-2025"
 
- 
-           This option filters the commits to only show those that were made after the specified date
-           The date format used here is "MM-DD-YYYY"
+This option filters the commits to only show those that were made after the specified date
+The date format used here is "MM-DD-YYYY"
 
 ======================
 git config --global user.user mcuser
@@ -254,7 +251,6 @@ git lO
  
 ======
 git config --global --unset alias.s
-
 
 ==============================
 
@@ -304,10 +300,7 @@ git tag -d <tag.name>
 
 git push origin <tag.name>
 git push origin -d <tag.name> 
-
-
-
-
+==========================
 
 TAG :
 
