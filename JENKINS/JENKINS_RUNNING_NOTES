@@ -253,3 +253,63 @@ OUR PROJECT GIT ACCOUNT: https://github.com/devopstraininghub/
 REPO: https://github.com/devopstraininghub/mindcircuit16d.git
 
 --------------------------------
+
+DATE: 5 SEP 2025
+
+
+DATE:  5 SEP 25
+AGENDA:
+1. GIT HUB RUNNING NOTES LINK 
+2. APP ACCES
+3. JENKINS RESTARTS
+4. JENKINS UPGRADE  
+5. MASTER-SLAVE ARCH
+==================================
+
+LINUX COMMANDS : 
+
+ps -ef |grep jenkins 
+
+==============
+Jenkins upgrade :
+
+   ps -ef | grep jenkins
+   22  cd /usr/share/java
+   23  ll
+   26  systemctl stop jenkins
+   24  cp -rp jenkins.war jenkins.war_bkp_5sep2025
+   25  ll
+   27  rm -rf jenkins.war
+   28  ll
+   29  wget https://get.jenkins.io/war/2.526/jenkins.war
+   30  ll
+   31  systemctl start jenkins
+
+
+=======================
+
+-------
+wget https://get.jenkins.io/war/2.526/jenkins.war
+
+
+systemctl start Jenkins 
+
+
+===========================
+
+JENKINS MASTER SLAVE DISTRIBUTED ARCH: 
+
+
+SLAVE NODE 
+CONNECT ( FROM MANAGE JENKINS -ADD NODES ) 
+
+
+
+========================================================
+
+
+
+
+
+
+
