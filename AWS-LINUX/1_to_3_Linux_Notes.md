@@ -20,11 +20,15 @@ sudo su -
 hostname -I 
 
 uname 
+
 uname -a
+
 date 
+
 uptime 
 
 ====================
+
 touch file1 file2 file3 
 
 mkdir dir1 dir2 dir3 
@@ -34,8 +38,11 @@ pwd
 rm -rf fname/dirname 
 
 ls 
+
 ll
+
 ls -lrth
+
 ls -la 
 
 clear --> ctrl + L 
