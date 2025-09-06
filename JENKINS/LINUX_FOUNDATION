@@ -1,0 +1,262 @@
+
+
+BATCH16D - LINUX FOUNDATION
+
+whoami
+
+sudo su - 
+
+hostname
+
+hostnamectl set-hostname <server.name>
+
+sudo su - 
+
+hostname -I 
+
+
+====================
+# File & Directory Management
+
+touch file1 file2 file3 
+
+mkdir dir1 dir2 dir3 
+
+pwd
+
+rm -rf fname/dirname 
+
+ls 
+
+ll
+
+ls -lrth
+
+ls -la 
+
+clear --> ctrl + L 
+
+cd dir.name
+
+cd ..
+
+cd - 
+
+cd ~
+
+
+mkdir -p dir1/dir2/dir3/dir4 
+
+
+absolute path & relative path 
+==================================
+cat fname 
+
+vim fname
+--------------------
+esc -- i 
+
+ INSERT MODE ( data ) 
+ 
+esc: w 
+esc: q 
+esc: wq! 
+================================================
+cat 
+
+head 
+
+tail -4 fname 
+tail -4f fname 
+
+===================================================
+
+create a file using touch , vim , echo 
+
+echo "docker k8s terraform jenkins"  >  file2  ( overwrite) 
+echo " aws linux git github " >> file2  ( append) 
+
+
+=================================================
+# package management : 
+
+yum install <java>
+yum install <git >
+
+apt install <java>
+
+==============
+Filesystem Hierarchy Standard (FHS):
+
+In Linux, the concept of drive letters like C:, D:, and E: does not exist.
+
+ Instead, Linux uses a single hierarchical directory structure that begins at the root directory (/). All storage devices, partitions, and network filesystems are integrated into this hierarchy by mounting them at specific directories
+
+root --> /
+ll
+/bin – binary or executable programs.
+ /sbin – binary executable programs for an administrator.
+/etc – system configuration files.
+/var – log files.
+/opt – optional or third-party software.
+/home – home directory. It is the default current directory.
+/root - home directory of root user 
+/tmp – temporary space, typically cleared on reboot.
+/usr – User related programs.
+
+================================
+
+nested dir 
+
+mkdir -p a/b/c/d/e
+==================================
+
+cp -rp <src.path> <dest>
+
+absolute path 
+relative path 
+mv <src.path> <dest>
+
+=========================
+
+useradd madhu 
+ 
+passwd <uname> 
+
+su - uname
+
+sudo su - uname 
+
+cat /etc/passwd
+
+userstanga
+
+usermod -c "DevOpsUser" madhu
+
+userdel -r uname 
+
+       useradd  madhu
+   85  passwd madhu
+   86  useradd kiran
+   87  ll
+   88  cd /home
+   89  ll
+   90  useradd adarsh
+   91  ll
+   92  su - madhu
+   93  usermod  -c "devops-user" kiran
+   94  cat /etc/passwd
+
+===================================
+
+cat /etc/passwd
+
+tail -n /etc/passwd
+
+head -n <fname>
+
+
+===============================
+
+### Download & compress & Extract
+
+
+
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.106/bin/apache-tomcat-9.0.106.tar.gz
+
+
+tar.gz
+tar -xvf apache-tomcat-9.0.106.tar.gz
+
+tar -cvf name.tar.gz <folder> 
+
+
+=============================
+## Process & System Monitoring
+
+top 
+lscpu 
+free 
+free -m 
+free -g 
+
+
+ps -ef 
+ps -ef | grep jenkins
+
+
+=============================
+#Filtering
+
+
+find / -name <fname/dirname> 
+find / -name docker -type f
+find / -name docker -type d
+
+=
+grep -iR 'madhu'
+grep -i "madhu" jenkinsfile
+
+
+===========================================
+
+Services (systemd)
+
+systemctl status jenkins    # Check service status
+systemctl start jenkins    # Start service
+systemctl stop jenkins     # Stop service
+systemctl enable jenkins   # Enable at boot
+systemctl restart jenkins 
+
+============================================================================
+
+df ( disk filesystem)  -
+          It is used to report file system disk space usage, showing how much space is used and available on mounted file systems.
+df -h 
+df -m 
+
+In Windows, drives such as C:, D:, and E: are logical designations assigned to storage devices or partitions. Each drive letter represents a separate filesystem namespace, allowing users and applications to access files and directories on that specific storage unit. 
+
+
+In Linux, the concept of drive letters like C:, D:, and E: does not exist. Instead, Linux uses a single hierarchical directory structure that begins at the root directory (/). All storage devices, partitions, and network filesystems are integrated into this hierarchy by mounting them at specific directories
+
+
+df 
+df -h
+df -m 
+
+=====================================
+
+du -h <foldername/filename>
+
+du -sh 
+
+==================
+
+
+Networking :
+
+ifconfig             # Show network interfaces (or `ip a`)
+ping google.com      # Test connectivity
+curl http://example.com  # Fetch URL
+wget http://example.com  # Download file
+netstat -tulnp       # List listening ports
+
+ ========
+ 
+ 
+sed command --> sed 's/madhu/kiran/' test
+
+Replaces occurrences of a pattern with a specified replacement.
+Syntax: s/pattern/replacement/flags
+
+sed 's/madhu/kiran/' input.txt     # Replace first occurrence of 'madhu' with 'kiran' in each line
+sed 's/madhu/kiran/g' input.txt    # Replace all occurrences of 'madhu' with 'kiran' in each line
+sed 's/madhu/kiran/2' input.txt    # Replace the second occurrence of ''madhu' with 'kiran' in each line
+ 
+======================
+
+Permissions :
+
+chmod 
+chown 
