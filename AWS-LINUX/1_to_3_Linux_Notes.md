@@ -155,6 +155,7 @@ Root Directory (/)
 /usr: Secondary hierarchy for read-only user data; contains the majority of user utilities and applications.
 
 /var: Variable data files, such as logs, spool files, and temporary files that persist between reboots.
+
 ---------------------
 
 root --> /
