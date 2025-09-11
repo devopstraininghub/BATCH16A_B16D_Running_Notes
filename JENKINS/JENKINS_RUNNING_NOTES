@@ -307,7 +307,131 @@ CONNECT ( FROM MANAGE JENKINS -ADD NODES )
 
 ========================================================
 
+===================
+DATE: 10 SEP 25
 
+
+vim jenkins_setup.sh
+
+mount -o remount,size=4G /tmp
+sudo yum update –y
+sudo wget -O /etc/yum.repos.d/jenkins.repo  https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum upgrade
+sudo yum install java-21-amazon-corretto -y
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+
+======================================================================
+tomcat_setup.sh
+
+#SCRIPT FOR TOMCAT
+ 
+ 
+#!/bin/bash
+
+sudo yum install java -y
+cd /opt
+sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.109/bin/apache-tomcat-9.0.109.tar.gz
+sudo tar -xvf /opt/apache-tomcat-9.0.109.tar.gz
+
+cd /opt/apache-tomcat-9.0.109/webapps/manager/META-INF
+sudo sed -i 's/"127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1"/".*"/g' context.xml
+
+cd /opt/apache-tomcat-9.0.109/conf
+sudo mv tomcat-users.xml tomcat-users_bkup_11sep25.xml
+sudo touch tomcat-users.xml
+sudo echo '<?xml version="1.0" encoding="utf-8"?>
+        <tomcat-users>
+        <role rolename="manager-gui"/>
+        <user username="tomcat" password="tomcat" roles="manager-gui, manager-script, manager-status"/>
+        </tomcat-users>' > tomcat-users.xml
+
+cd /opt/apache-tomcat-9.0.109/conf/
+sudo sed -i 's/Connector port="8080"/Connector port="8081"/g' server.xml
+sudo /opt/apache-tomcat-9.0.109/bin/startup.sh
+
+
+
+===================================================================
+
+GIT BASICS:
+
+git clone <url> 
+
+
+
+
+======================================================================
+============
+JAVA  INSTALLATION widnows 
+
+JAVA_HOME:    C:\Program Files\Java\jdk-1.8
+
+PATH : C:\Program Files\Java\jdk-1.8\bin
+
+============
+MVN INSTALLATION ON WINDOWS 
+M2_HOME  
+C:\Users\Madhu Kiran\Desktop\BATCH16-D\apache-maven-3.9.11-bin\apache-maven-3.9.11
+
+PATH: 
+C:\Users\Madhu Kiran\Desktop\BATCH16-D\apache-maven-3.9.11-bin\apache-maven-3.9.11\bin
+
+
+MAVEN :
+
+APACHE MAVEN 
+
+JAVA 
+BUILD TOOL + PM TOOL 
+POM.XML 
+=======
+
+JAVA EVOLUTION: 
+
+
+
+===========================================================================
+
+DATE: 11 SEP 25: 
+
+
+
+winscp
+scp command 
+
+scp src dest 
+
+scp -i b16dkey.pem testfile.txt  ec2-user@ec2-54-235-24-21.compute-1.amazonaws.com:/tmp
+
+
+
+
+Classic problem in SDLC
+
+Custom java installation on linux os
+
+
+JAVA_HOME :  /opt/jdk1.8.0_461
+path : /opt/jdk1.8.0_461/bin
+
+vim /etc/profile.d/java.sh
+
+export JAVA_HOME=/opt/jdk1.8.0_461
+export PATH=${JAVA_HOME}/bin:${PATH}
+
+
+source etc/profile.d/java.sh
+
+=====================================================
+
+maven repositories
+maven java dependencies
+maven life cycle
+
+===========================
 
 
 
