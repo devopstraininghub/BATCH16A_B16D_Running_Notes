@@ -541,4 +541,34 @@ mvn clean install
 https://www.linkedin.com/posts/madhukiran-gorekar_maven-buildlifecycle-devops-activity-7247579291457093633-GBIP?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAAOaZKYBgHqqOuWNEMewLeHAlTGV2Ykkh5A
 
 
+============================
+
+
+DATE: 15 SEP 25
+
+JENKINS SLOWNESS 
+JENKINS VIEWS
+
+
+GITHUB ACCOUNT & FORK 
+JENKINS - GITHUB WEBHOOKS Integration
+
+
+
+
+
+
+'http://54.159.26.167:8090/github-webhook'
+cotent type: application/json
+
+
+triggers {
+        githubPush()
+    }
+	
+----------
+
+
+
+
 
