@@ -903,6 +903,102 @@ pipeline {
 
 
 
+==================================================================
+
+NEXUS ARTIFACTORY :
+
+
+
+DATE: 17 SEP 25
+
+
+LINUX COMMANDS :
+
+
+chown 
+chkconfig ---> systemctl enable 
+
+version id --> 8.2.0 -->>> going to be released
+version id --> 8.2.0-SNAPSHOT -->>> under development / on going implementation
+
+
+
+NEXUS :
+
+BY sonatye 
+opensource 
+java based software 
+
+blog to follow : https://devopscube.com/how-to-install-latest-sonatype-nexus-3-on-linux/
+
+
+============
+    1  sudo yum update -y
+    2  sudo yum install wget -y
+    3  sudo yum install java-17-openjdk -y
+    4  sudo yum install java-17 -y
+    5  mkdir /app
+    6  cd /app/
+    7  sudo wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz
+    8  wget https://download.sonatype.com/nexus/3/nexus-3.84.0-03-linux-x86_64.tar.gz
+    9  ll
+   10  tar -xvf nexus-3.84.0-03-linux-x86_64.tar.gz
+   11  ll
+   12  mv nexus-3.84.0-03 nexus
+   13  ll
+   14  adduser nexus
+   15  cat /etc/passwd
+   16  ll
+   17  chown -R nexus:nexus nexus
+   18  ll
+   19  chown -R nexus:nexus sonatype-work/
+   20  ll
+   21  ll nexus
+   22  ll sonatype-work/
+   23  ll
+   24  cd nexus/
+   25  ll
+   26  cd bin/
+   27  ll
+   28  sudo vi  /app/nexus/bin/nexus.rc
+   29  ll
+   30  cat nexus.vmoptions
+   31  ll
+   32  sudo vi /etc/systemd/system/nexus.service
+   33  sudo chkconfig nexus on
+   34  systemctl start nexus
+   35  systemctl status nexus
+   36  cat app/sonatype-work/nexus3/admin.password
+   37  cat /app/sonatype-work/nexus3/admin.password
+   38  history
+
+==============
+in POM.XML : 
+
+	<distributionManagement>
+		 <snapshotRepository>
+		    <id>NexusRepo</id>
+		    <url>http://34.201.119.102:8081/repository/batch16d-repo-snapshot/</url>
+		 </snapshotRepository>
+		
+		<repository>
+		    <id>NexusRepo</id>
+		    <url>http://34.201.119.102:8081/repository/batch16d-repo-release/</url>
+		</repository>
+  	</distributionManagement>
+
+
+
+========================================
+
+IN JENKINS/MAVEN SERVER --> /etc/maven/setting.xml
+ADD the content 
+
+    <server>
+      <id>NexusRepo</id>
+      <username>admin</username>
+      <password>batch16d@123</password>
+    </server>
 
 
 
