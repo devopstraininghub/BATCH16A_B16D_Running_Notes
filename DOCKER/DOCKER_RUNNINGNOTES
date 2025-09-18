@@ -1,0 +1,24 @@
+yum search tomcat
+yum install docker -y
+
+docker --version
+systemctl status docker
+systemctl start docker
+systemctl status docker
+docker info
+history
+docker images
+docker ps
+docker search amazonlinux
+docker pull amazonlinux
+docker images
+docker search ubuntu
+docker pull ubuntu
+docker iamges
+docker images
+docker run 1a9d780a8670
+docker ps
+docker ps -a
+docker run -itd ubutu
+docker run -itd ubuntu
+docker ps
