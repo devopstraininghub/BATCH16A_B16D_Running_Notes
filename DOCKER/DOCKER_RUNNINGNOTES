@@ -1,24 +1,104 @@
-yum search tomcat
-yum install docker -y
 
-docker --version
-systemctl status docker
-systemctl start docker
-systemctl status docker
-docker info
-history
-docker images
-docker ps
-docker search amazonlinux
-docker pull amazonlinux
-docker images
-docker search ubuntu
-docker pull ubuntu
-docker iamges
-docker images
-docker run 1a9d780a8670
-docker ps
-docker ps -a
-docker run -itd ubutu
-docker run -itd ubuntu
-docker ps
+date : 19 sep 2025
+
+Docker :
+Docker is a containerization tool that allows you to package an application along with all its dependencies (code, libraries, runtime, system tools) into a single unit.
+
+It helps create, deploy, and run applications consistently across different environments.
+
+Docker is lightweight, portable, and open-source.
+
+======================
+What is a Docker Image?
+
+A Docker image is a read-only template used to create containers.
+
+It includes: 
+   Application code   
+   Runtime (e.g., Java, Python)   
+   Libraries and dependencies   
+   Configuration files
+   
+Images are static and can be stored in registries (like Docker Hub / ECR / GCR ..) 
+======================
+What is a Docker Container?
+
+     A Docker container is a running instance of a Docker image.     
+     It is lightweight and isolated, but shares the host OS kernel.     
+     A container includes everything needed to run the application, providing consistency across environments.
+	 
+======================	 
+	 
+4. Docker Architecture
+
+Docker architecture consists of these key components:
+
+      Docker Client – Command-line interface to communicate with Docker.
+      
+      Docker Daemon – Background service that manages containers and images.
+      
+      Docker Images – Read-only templates to create containers.
+      
+      Docker Containers – Running instances of images.
+      
+      Docker Registry – Stores and distributes Docker images (e.g., Docker Hub).
+
+
+====================================
+
+
+docker -v  
+docker --version  
+docker info  
+docker images  
+docker pull <iname>  
+docker run amazonlinx -- container will be created and exited immediately
+  
+docker run -it <iid/imagename> --- enters into container  
+docker run -it --name <contname> <iid/imagename> 
+exit  --> container gets stoped 
+ctrl + p + q 
+============
+
+
+
+docker ps  -a 
+docker ps ( only running containers )  
+docker start cid/cname
+docker stop cid/cname
+docker pause cid/cname
+docker unpause cid/cname
+
+docker rm cid/cname
+
+docker rm -f cid/cname
+
+=============================================
+
+docker attach cid --> 
+This command attaches your terminal to the running container’s primary process (PID 1). 
+It connects you to the standard input (STDIN), output (STDOUT), and error (STDERR) 
+It doesn’t start a new process or give you a shell by default. 
+
+
+docker exec -it <cid/cname> /bin/bash  
+
+This command executes a new process (/bin/bash, a shell) inside the running container and 
+connects your terminal to it interactively 
+Starts a new shell session inside the container, independent of the main process. 
+
+
+====================================================
+docker rmi iid  
+docker rmi iid  --force  
+docker rmi -f iid   
+
+========================================
+docker run -itd <iid/imagename>  ----------------- 
+docker commit <cid> 
+docker tag iid <reponame>:<tag> 
+
+docekr rm $(docker ps -aq)  
+docker rmi $(docker images -q)  ------ 
+
+======================
