@@ -102,3 +102,152 @@ docekr rm $(docker ps -aq)
 docker rmi $(docker images -q)  ------ 
 
 ======================
+
+DATE : 22 SEP 25 (MONDAY) 
+
+
+docker hub account creation  
+ 
+creation of Image repo in your DH account  
+ 
+docker image push to  - Image repo in your DH account  
+
+
+docker push devopshubg333/batch16d:tagname
+
+
+docker pull devopshubg333/batch16d:gitjava
+
+
+   docker login  --> usernaem & password
+   26  docker images
+   27  docker push amazonlinux:gitjava
+   28  docker tag efc3ea850076 devopshubg333/batch16d:gitjava
+   29  docker images
+   30  docker push devopshubg333/batch16d:gitjava
+
+ 
+======================================= 
+A SMPLE HTTPD WEB APPLICATION SET UP :
+
+MANULLY :
+
+httpd : 80 
+yum install httpd -y 
+systemctl start httpd 
+cd /var/www/html  ----> index.html 
+IP:80 
+====================
+
+DOCKERIZING APPLICATION: 
+ 
+port maping /port forwards  
+ 
+docker run -it --name <contname> -p HP:CP amazonlinux  
+ 
+docker run -it --name fb_httpd_cont2 -p 8081:80 amazonlinux 
+ 
+yum install httpd -y  
+cd /usr/sbin/ 
+./httpd  
+cd /var/www/html/ 
+yum install vim -y  
+vim index.html  
+==============================================
+docker cp src dest  
+docker cp index.html fb_httpd_cont2:/var/www/html/index.html 
+Successfully copied 77.8kB to fb_httpd_cont2:/var/www/html/index.html 
+
+======================
+
+1  docker -v
+    2  docker --version
+    3  systemctl status docker
+    4  systemctl enable docker
+    5  docker images
+    6  docker ps -a
+    7  docker ps -qa
+    8  docker rm -f $(docker ps -qa)
+    9  docker rmi $(docker images -q)
+   10  docker images
+   11  docker run --name cont1 amazonlix
+   12  docker run --name cont1 amazonlinux
+   13  docker ps -a
+   14  docker run -it --name cont1 amazonlinux
+   15  docker run -it --name cont2 amazonlinux
+   16  docker ps -a
+   17  docker ps
+   18  docker exec -it cont2 /bin/bash
+   19  docker ps
+   20  docker commit cont2
+   21  docker images
+   22  docker tag efc3ea850076 amazonlinux:gitjava
+   23  docker images
+   24  docker push amazonlinux:gitjava
+   25  docker login
+   26  docker images
+   27  docker push amazonlinux:gitjava
+   28  docker tag efc3ea850076 devopshubg333/batch16d:gitjava
+   29  docker images
+   30  docker push devopshubg333/batch16d:gitjava
+   31  history
+   32  docker ps
+   33  docker run -itd --name cont3 amazonlinux
+   34  docker ps
+   35  docker run -itd --name cont4 amazonlinux sleep 15
+   36  docker ps -a
+   37  docker run -it --name cont5 amazonlinux sleep 15
+   38  docker ps -a
+   39  docker run -it --name cont5 amazonlinux ping www.google.com
+   40  docker run -it --name cont6 amazonlinux ping www.google.com
+   41  docker ps -a
+   42  yum install httpd -y
+   43  systemctl start httpd
+   44  cd /var/www/html/
+   45  ll
+   46  vim index.html
+   47  cat index.html
+   48  vim index.html
+   49  l
+   50  LL
+   51  ll
+   52  docker ps -a
+   53  docker rm -f (docker ps -aq)
+   54  docker rm -f $(docker ps -aq)
+   55  ll
+   56  cd /
+   57  cd /opt/
+   58  ll
+   59  docker run -it --name fb_cont amazonlinux
+   60  docker ps
+   61  docker run -it --name fb_cont2 -p 8082:80  amazonlinux
+   62  docker ps
+   63  ll
+   64  touch index.html
+   65  ll
+   66  vim index.html
+   67  ll
+   68  docker ps
+   69  docker cp index.html fb_cont2:/var/www/html/index.html
+   70  docker commit fb_cont2
+   71  docker images
+   72  docker tag 05c62ead1c6d devopshubg333/batch16d:httpd_fb
+   73  docker images
+   74  docker push devopshubg333/batch16d:httpd_fb
+   75  docker rm -f $(docker ps -qa)
+   76  docker rmi $(docker images)
+   77  docker images
+   78  docker rmi $(docker images -q)
+   79  docker rmi $(docker images -q) --force
+   80  docker images
+   81  docker ps -aq
+   82  ll
+   83  rm -rf *
+   84  ll
+   85  docker pull devopshubg333/batch16d:httpd_fb
+   86  docker images
+   87  docker run -itd --name fbcont_b16d -p 8090:80 devopshubg333/batch16d:httpd_fb
+   88  docker ps -a
+   89  docker exec fbcont_b16d /bin/bash
+   90  docker exec -it fbcont_b16d /bin/bash
+   91  history
