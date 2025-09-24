@@ -252,8 +252,10 @@ Successfully copied 77.8kB to fb_httpd_cont2:/var/www/html/index.html
    90  docker exec -it fbcont_b16d /bin/bash
    91  history
 ================================================================================================================================
-
+=================================
 23 SEP 25 :
+
+
 
 docker history imagename:tag
 
@@ -268,9 +270,225 @@ docker logs --since 10m cont-id
 docker home path --> /var/lib/docker 
 ---------
 
-docker volumes 
+Docker Container - ephemeral nature : 
 
-bind mounts 
+Docker containers are ephemeral by design, meaning they are temporary and stateless. Once a container stops or is deleted, any data or changes made inside it during its runtime are lost unless explicitly preserved 
 
-docker run -it --name fbcont -v <DOCKER.VOL>:/apps/logs  amazonlinux 
+DOCKER VOLUMES  
+docker volume create my_volume 
+docker run -d -v my_volume:/container/path   my_image 
+
+
+Usage:  docker volume COMMAND
+
+Manage volumes
+
+Commands:
+  create      Create a volume
+  inspect     Display detailed information on one or more volumes
+  ls          List volumes
+  prune       Remove unused local volumes
+  rm          Remove one or more volumes
+  update      Update a volume (cluster volumes only)
+
+--------------------------------- 
+BIND MOUNTS  
+docker run -v /host/path:/container/path my-image 
+docker run -it --name cont2 -v /opt:/opt/logs iname 
+
+============================================
+
+24 sep 25:
+
+
+=============================================== 
+Docker file :  
+how to build --? 
+docker build -t <devopshubg333/batch16d:tag> . ---------------------------------------- 
+
+
+FROM amazonlinux:latest
+RUN yum install httpd -y
+COPY index.html /var/www/html/index.html
+CMD ["/usr/sbin/httpd", "-DFOREGROUND"]
+EXPOSE 80
+
+
+
+----------------- 
+docker run -it -p 8090:80 --name cont1 iid  
+
+
+docker 
+========================================================================= 
+Dockerizing sample python web-application : 
+====== 
+Code : /opt/app.py 
+
+import os
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def main():
+    return "Welcome to Batch16d!"
+
+@app.route("/how are you")
+def hello():
+    return "I am good, how about you?"
+
+if __name__ == "__main__":
+    app.run()
+
+
+
+
+
+============== 
+Commands : 
+
+
+yum update -y 
+yum install python3 python3-pip pip -y 
+pip install flask 
+FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080 
+
+
+Dockerfile
+
+FROM amazonlinux:latest 
+LABEL maintainer="MADHU KIRAN <devopstraininghub@gmail.com>" 
+RUN yum update -y 
+RUN yum install python3 python3-pip pip -y 
+RUN pip install flask
+COPY app.py /opt/python_webapp/app.py
+CMD FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080
+EXPOSE 8080
+
+
+
+======================================= 
+docker system prune 
+docker container prune 
+docker image prune 
+docker volume prune  
+
+===============================
+ systemctl status docker
+   16  docker images
+   17  docker ps -a
+   18  cd /opt/
+   19  ll
+   20  mkdir httpd_fb_app
+   21  ll
+   22  cd httpd_fb_app/
+   23  ll
+   24  vim Dockerfile
+   25  cat Dockerfile
+   26  docker build -t testimg:v1 -f Dockerfile .
+   27  vim Dockerfile
+   28  docker build -t testimg:v1 -f Dockerfile .
+   29  ll
+   30  vim index.html
+   31  docker build -t testimg:v1 -f Dockerfile .
+   32  docker images
+   33  ll
+   34  docker run -it --name fb_ct1 -p 8081:80 testimg:v1
+   35  docekr ps -a
+   36  docker ps -a
+   37  top
+   38  ll
+   39  vim Dockerfile
+   40  docker build -t testimg:v1 -f Dockerfile .
+   41  docker images
+   42  docker run -it --name fb_ct2 -p 8081:80 testimg:v1
+   43  ll
+   44  vim index.html
+   45  docker build -t devopshubg333/batch16d:fb_httpd -f Dockerfile .
+   46  docker images
+   47  docker run -itd --name fbcont -p 8083:80 devopshubg333/batch16d:fb_httpd
+   48  docker login
+   49  docker push devopshubg333/batch16d:fb_http
+   50  docker push devopshubg333/batch16d:fb_httpd
+   51  ll
+   52  cat Dockerfile
+   53  rm -rf *
+   54  ll
+   55  docker images
+   56  docker rm -f $(docker ps -aq)
+   57  docker rmi -f $(docker images -q)
+   58  docker images
+   59  ll
+   60  docker run -itd -p 8089:80 --name fb devopshubg333/batch16d:fb_httpd
+   61  docker images
+   62  docker histroy
+   63  docker histroy devopshubg333/batch16d:fb_httpd
+   64  docker history devopshubg333/batch16d:fb_httpd
+   65  ll
+   66  cd ../
+   67  ll
+   68  mkdir python_webapp
+   69  ll
+   70  cd python_webapp/
+   71  ll
+   72  vim app.py
+   73  yum update -y
+   74  yum install python3 python3-pip pip -y
+   75  pip install flask
+   76  pwd
+   77  FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080
+   78  vim app.py
+   79  FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080
+   80  ll
+   81  vim app.py
+   82  FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080
+   83  vim app.py
+   84  FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080
+   85  ll
+   86  rm -rf __pycache__/
+   87  ll
+   88  vim Dockerfile
+   89  docker build -t pythonimg:v1 -f Dockerfile .
+   90  docker images
+   91  docker run -itd --name pycont1 -p 8090:8080 pythonimg:v1
+   92  docker run -it --name pycont1 -p 8091:8080 pythonimg:v1
+   93  docker run -it --name pycon2 -p 8091:8080 pythonimg:v1
+   94  ll
+   95  vim Dockerfile
+   96  docker build -t pythonimg:v1 -f Dockerfile .
+   97  docker images
+   98  docker run -it --name pycon3 -p 8091:8080 pythonimg:v1
+   99  docker images
+  100  ll
+  101  docker tag 45bd840bcad3  devopshubg333/batch16d:pythonimg
+  102  docker images
+  103  docker push devopshubg333/batch16d:pythonimg
+  104  docker images
+  105  docker hisotry 45bd840bcad3
+  106  docker history 45bd840bcad3
+  107  docker images
+  108  docker ps -a
+  109  docker images
+  110  docker volume ls
+  111  docker prune system
+  112  docker system prune
+  113  docker image prune
+  114  docker container prune
+  115  docker system prune
+  116  docker ps
+  117  docker ps -a
+  118  docker images
+  119  docker volume help
+  120  docker volume test
+  121  docker volume create test
+  122  docker volume create prod
+  123  docker volume prune
+  124  docker volume ls
+  125  history
+  126  docker volume help
+  127  history
+
+
+
 
