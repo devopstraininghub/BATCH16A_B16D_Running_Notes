@@ -1,0 +1,367 @@
+Docker :   Docker is containerisation tool ,provides packaging the application  and bundles all dependencies.
+using docker we can create containers , 
+
+     what is container in docker??? 
+
+A Docker container image is a lightweight, and executable package. It includes everything needed to run an application like code, runtime (java) , system tools, system libraries and settings.
+
+
+Docker is a tool designed to make it easier to create, deploy, and run applications by using containers. Containers allow a developer to package up an application with all of the parts it needs, such as libraries and other dependencies, and ship it all out as one package. ... And importantly, Docker is open source.
+
+DOCKER ARCHITECTURE
+
+virtualization vs containerization
+
+docker -v 
+docker --version 
+docker info 
+docker images 
+docker pull <iname> 
+docker run -it <iid/imagename>
+   ---enter into container 
+ 
+ docker run -it --name <contname> <iid/imagename>
+exit  --> container gets stoped
+docker ps  -a
+
+
+ctrl + p + q
+
+docker run -itd <iid/imagename> 
+dokcker ps 
+  cid 
+docker exec -it cid /bin/bash 
+docker start cid 
+docker stop cid 
+docker pause cid
+docker unpause cid 
+
+docker info 
+docker home or root directory 
+docker rm cid 
+docker rm -f cid 
+docker rmi iid 
+docker rmi iid  --force 
+docker rmi -f iid 
+docker rm -f * 
+docekr rm $(docker ps -aq) 
+docker rmi $(docker images -q) 
+
+docker pause/unpause cid 
+docker pause cid 
+docker attach cid
+docker run -itd --name <name> <imagename> 
+docker exec -it cid /bin/bash 
+docekr unpause cid 
+docker ps -al 
+docker rename <pre.name/cid> <new name> 
+docker rename CONTAINER NEW_NAME
+
+docker run -itd -h <hostname> i.name 
+docker exec -it -u kiran CID /bin/bash 
+
+docker run -it -h <hostname> <imagename> 
+
+adduser kiran in container --> useradd kiran 
+
+docker exec -it -u kiran cid /bin/bash 
+
+docker prune system -a 
+
+=============
+docker commit <cid>
+
+docker tag IID name:tag
+
+docker push devopshubg333/batch9:tagname
+docker pull devopshubg333/batch9
+
+docker pull devopshubg333/batch9:gitjava
+
+
+=========================================
+HOW TO PUSH IMAGE TO DOCKER HUB :
+
+docker login
+uname :
+password:
+
+docker push devopshubg333/batch6:git
+
+TO CHECK IMAGE HISTORY :
+
+docker history <i.name>:tag
+==========================
+
+PORT MAPING & VOLUME MAPING :
+
+-p HOSTPORT:CONT PORT 
+-v HostVolumePATH:ContVolumePATH 
+
+docker run -it --name cont1 -p 8081:8080 iname
+docker run -it --name cont2 -v /opt:/opt/logs iname
+
+=====================================================================
+
+Docker file : 
+
+how to build --?
+docker build -t <devopshubg333/batch11:tag> .
+
+----------------------------------------
+httpd dockerfile:
+
+FROM amazonlinux
+MAINTAINER Madhu <devopstraininghub@gmail.com>
+RUN yum install httpd -y
+COPY index.html /var/www/html/index.html
+CMD ["/usr/sbin/httpd","-D","FOREGROUND"]
+EXPOSE 80
+
+--------------------
+
+docker run -it -p 8090:80 --name cont1 iid 
+
+
+
+=========================================================================
+Dockerizing sample python web-application :
+
+======
+Code : /opt/app.py
+
+import os
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def main():
+    return "Welcome to Batch11!"
+
+@app.route('/how are you')
+def hello():
+    return 'I am good, how about you?'
+
+if __name__ == "__main__":
+    app.run()
+
+
+
+==============
+steps :
+
+yum update -y
+yum install python3 python3-pip pip -y
+pip install flask
+FLASK_APP=/opt/app.py flask run --host=0.0.0.0 --port=8080
+
+
+
+Docker file :
+
+FROM amazonlinux
+MAINTAINER KIRAN <devopstraininghub@gmail.com>
+RUN yum update -y
+RUN yum install python3 python3-pip pip -y
+RUN pip install flask
+COPY app.py /opt/app.py
+ENTRYPOINT FLASK_APP=/opt/app.py flask run --host=0.0.0.0 --port=8080
+================================================
+if OS is Ubuntu :
+
+FROM ubuntu:20.04
+RUN apt-get update && apt-get install -y python3 python3-pip pip
+RUN pip install flask 
+COPY app.py /opt/
+ENTRYPOINT FLASK_APP=/opt/app.py flask run --host=0.0.0.0 --port=8080
+
+===========================================
+DOCKERFILE INSTUCTIONS 
+
+FROM 
+ADD 
+COPY 
+CMD 
+ENTRYPOINT
+WORKDIR
+MAINTAINER
+EXPOSE
+ARG 
+
+ 
+ 
+RUN VS CMD VS ENTRY POINT 
+------------
+cat Dockerfile 
+FROM amazonlinux 
+RUN  yum install iputils -y
+ENTRYPOINT ["ping"]
+CMD ["www.google.com"]
+-------------------
+
+
+
+
+RUN executes command(s) in a new layer and creates a new image. E.g., it is often used for installing software packages
+
+CMD sets default command and/or parameters, which can be overwritten from command line when docker container runs
+
+RUN - DURING IMAGE BUILDING 
+----------
+CMD - DURING CONTAINER CREATIING  - default instruction and we can override it 
+
+
+ENTRYPOINT configures a container that will run as an executable – can not be overridden but APPENDED & GIVEN HIGH PRIORITY 
+------------------------------
+
+COPY - COPY  SRC TO DEST ( LOCALLY ) 
+ADD -  REMOTE URL CAN ALSO BE COPIED 
+
+
+
+
+==============================================================
+
+Tomcat Docker file :
+
+========================================
+
+
+FROM amazonlinux
+FROM amazonlinux
+RUN yum install java -y \
+   && yum install wget  -y \
+   &&  yum install tar  -y  
+WORKDIR /opt/  
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.tar.gz .
+RUN tar -xvf apache-tomcat-9.0.80.tar.gz
+CMD ["/opt/apache-tomcat-9.0.80/bin/catalina.sh", "run"]
+EXPOSE 8080 
+==============================================
+FROM amazonlinux
+MAINTAINER KIRAN <devopstraininghub@gmail.com>
+RUN yum install java -y
+RUN yum install wget -y
+RUN yum install tar -y
+RUN mkdir /opt/tomcat
+RUN cd /opt/tomcat && wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.63/bin/apache-tomcat-9.0.63.tar.gz 
+RUN cd /opt/tomcat && tar -xvf apache-tomcat-9.0.63.tar.gz
+EXPOSE 8080
+CMD ["/opt/tomcat/apache-tomcat-9.0.69/bin/catalina.sh", "run"]
+=====================================================================
+
+
+FROM centos
+
+MAINTAINER hello@gritfy.com
+
+RUN mkdir /opt/tomcat/
+
+WORKDIR /opt/tomcat
+RUN curl -O https://www-eu.apache.org/dist/tomcat/tomcat-8/v8.5.40/bin/apache-tomcat-8.5.40.tar.gz
+RUN tar xvfz apache*.tar.gz
+RUN mv apache-tomcat-8.5.40/* /opt/tomcat/.
+RUN yum -y install java
+RUN java -version
+
+WORKDIR /opt/tomcat/webapps
+RUN curl -O -L https://github.com/AKSarav/SampleWebApp/raw/master/dist/SampleWebApp.war
+
+EXPOSE 8080
+
+CMD ["/opt/tomcat/bin/catalina.sh", "run"]
+
+================================================================
+
+docker network list /ls
+
+docker network inspect bridge
+
+docker network create --subnet 10.81.0.0/16 --gateway 10.81.0.1 --ip-range 10.81.5.0/24 --driver bridge  batch11nw
+
+
+docker run -itd --net batch11nw --ip 10.81.0.20 <iname>
+
+docker network rm batch11nw
+
+===================================================================
+
+
+MULTI STAGE DOCKER FILES:
+
+code is in my GIT HUB - clone it 
+
+git clone https://github.com/devopstraininghub/multi-stage-dockerfileex.git
+
+
+Ref URLS :
+
+https://docs.docker.com/build/building/multi-stage/
+https://devopscube.com/reduce-docker-image-size/
+
+
+===============================================================================
+
+DOCKER COMPOSE :
+
+
+docker pull wordpress 
+docker run -itd -p 8091:80 wordpress
+
+Installation :
+
+https://acloudxpert.com/how-to-install-docker-compose-on-amazon-linux-ami/
+
+==================================
+docker-compose.yml 
+
+version: "3.3"
+    
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+volumes:
+  db_data: {}
+  wordpress_data: {}
+  
+=========
+  docker-compose up -d
+  docker-compose down --volumes
+
+
+=======
+
+jenkins 
+docker pull jenkins/jenkins
+
+======
+
+docker stats cid ---- returns a live data stream for running containers
+docker top cid ----- Display the running processes of a container
+docker logs cid -- Fetch the logs of a container
+
+
+
