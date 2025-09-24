@@ -251,3 +251,26 @@ Successfully copied 77.8kB to fb_httpd_cont2:/var/www/html/index.html
    89  docker exec fbcont_b16d /bin/bash
    90  docker exec -it fbcont_b16d /bin/bash
    91  history
+================================================================================================================================
+
+23 SEP 25 :
+
+docker history imagename:tag
+
+
+docker logs cid 
+docker logs -f cont-id
+docker logs --tail 100 cont-id
+docker logs --since 10m cont-id
+
+------------------
+
+docker home path --> /var/lib/docker 
+---------
+
+docker volumes 
+
+bind mounts 
+
+docker run -it --name fbcont -v <DOCKER.VOL>:/apps/logs  amazonlinux 
+
