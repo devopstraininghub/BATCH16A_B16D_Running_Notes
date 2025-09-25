@@ -488,6 +488,121 @@ docker volume prune
   125  history
   126  docker volume help
   127  history
+============================================================================
+25 SEP 25 
+
+
+
+-----------------------------------------------
+
+All these days amazonlinux 
+
+use other images as well like ubuntu, centos ...etc 
+
+export PS1='\u@\h# '
+
+
+docker run -it -h <hostname>  iname 
+
+-----------------------------------------------
+FROM ubuntu:20.04
+LABEL maintainer="MADHU KIRAN <devopstraininghub@gmail.com>" 
+RUN apt-get update -y 
+RUN apt-get install python3 python3-pip pip -y 
+RUN pip install flask
+COPY app.py /opt/python_webapp/app.py
+CMD FLASK_APP=/opt/python_webapp/app.py flask run --host=0.0.0.0 --port=8080
+EXPOSE 8080
+
+----------------------------------------------
+# Use an official lightweight Python image
+FROM python:3.11-slim
+LABEL maintainer="MADHU KIRAN <devopstraininghub@gmail.com>"
+
+# Set working directory
+WORKDIR /opt/python_webapp
+
+# Copy the application code
+COPY app.py .
+
+# Install Flask
+RUN pip install --no-cache-dir flask
+
+# Expose the port your app runs on
+EXPOSE 8080
+
+# Run the application
+CMD ["flask", "run", "--host=0.0.0.0", "--port=8080"]
+
+----------------------------------------------
+
+DOCKERFILE DEEP DIVE
+
+FROM
+RUN
+COPY
+CMD
+EXPOSE 
+
+ADD 
+
+-----------
+WORKDIR 
+ADD 
+COPY VS ADD 
+----------
+ENTRYPOINT 
+CMD VS ENTRYPOINT 
+
+===========
+Dockerfile Instructions Simplified
+
+RUN
+
+    Executes commands while building the image.    
+    Creates a new image layer.    
+    Commonly used to install software packages
+	it is basically during Image Building
+
+CMD
+    DURING CONTAINER CREATIING  -
+    Sets the default command when the container starts.    
+    Can be overridden by arguments passed to docker run.    
+
+
+ENTRYPOINT
+      
+      Configures the container to run as an executable.      
+      Cannot be fully overridden, but command-line arguments are appended.
+	  GIven High priority 
+
+
+
+==================================
+TOMCAT SETUP 
+
+
+FROM amazonlinux
+LABEL maintainer="MADHU KIRAN <devopstraininghub@gmail.com>" 
+RUN yum install java -y && yum install gzip tar -y 
+WORKDIR /opt/tomcat
+ADD https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.109/bin/apache-tomcat-9.0.109.tar.gz .
+RUN tar -xvf apache-tomcat-9.0.109.tar.gz && rm -rf apache-tomcat-9.0.109.tar.gz
+
+RUN sed -i 's/"127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1"/".*"/g' /opt/tomcat/apache-tomcat-9.0.109/webapps/manager/META-INF/context.xml
+
+WORKDIR /opt/tomcat/apache-tomcat-9.0.109/conf
+
+RUN rm -rf tomcat-users.xml
+
+RUN echo '<?xml version="1.0" encoding="utf-8"?> \
+        <tomcat-users>  \
+        <role rolename="manager-gui"/> \
+        <user username="tomcat" password="tomcat" roles="manager-gui, manager-script, manager-status"/> \
+        </tomcat-users>' > tomcat-users.xml
+
+CMD ["/opt/tomcat/apache-tomcat-9.0.109/bin/catalina.sh" , "run"]
+EXPOSE 8080
 
 
 
