@@ -604,6 +604,76 @@ RUN echo '<?xml version="1.0" encoding="utf-8"?> \
 CMD ["/opt/tomcat/apache-tomcat-9.0.109/bin/catalina.sh" , "run"]
 EXPOSE 8080
 
+====================================
 
+
+===============================================================================================================================================================================
+
+26 SEP 2025 
+
+
+jenkins:
+
+httpd 
+tomcat 
+maven 
+jenkins 
+
+
+==============
+
+pipeline {
+
+    agent any
+	
+	tools { 	
+	maven 'Maven_3.9.11'
+		
+	}
+	
+    stages {
+	
+        stage('CLONE SCM') {
+            steps {
+                echo 'This stage clones SC from GIT repo'				
+				git branch: 'main', url: 'https://github.com/devopstraininghub/mindcircuit16d.git'
+            }
+        }
+		
+        stage('Build Artifact') {
+            steps {
+                echo 'This stage builds the code using maven'
+				sh 'mvn clean install'			
+				
+            }
+        }
+		
+        stage('Deploy to Tomcat') {
+            steps {
+                echo 'This stage deploys .war to tomcat webserver'
+                deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://3.89.99.201:8082/')], contextPath: 'mindcircuit16d', war: '**/*.war'
+            }
+        }		
+		
+    }
+}
+
+======================================
+
+
+FROM maven AS buildstage 
+RUN mkdir /opt/mindcircuit16d
+WORKDIR /opt/mindcircuit16d
+COPY . .
+mvn clean install 
+
+
+FROM tomcat 
+WORKDIR webapps
+COPY --from=buildstage /opt/mindcircuit16d/target/*.war .
+RUN rm -rf ROOT && mv *.war ROOT.war
+EXPOSE 8080
+
+=========================
 
 
