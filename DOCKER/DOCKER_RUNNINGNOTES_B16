@@ -677,3 +677,221 @@ EXPOSE 8080
 =========================
 
 
+
+DATE: 30 SEP 25 
+
+udo usermod -aG docker ec2-user 
+sudo usermod -aG docker ubuntu 
+
+
+
+calculator.go  
+========= 
+
+ 
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func main() {
+	fmt.Println("HELLO BATCH16d AWS DEVOPS CHAMPS, I am a calculator app ....")
+
+	for {
+		// Read input from the user
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Enter any calculation (Example: 1 + 2 OR 2 * 5) \n(Type 'exit' to quit): ")
+		text, _ := reader.ReadString('\n')
+
+		// Trim the newline character from the input
+		text = strings.TrimSpace(text)
+
+		// Check if the user entered "exit" to quit the program
+		if text == "exit" {
+			fmt.Println("Exiting... Goodbye! 👋")
+			break
+		}
+
+		// Split the input into three parts: left operand, operator, right operand
+		parts := strings.Split(text, " ")
+		if len(parts) != 3 {
+			fmt.Println("Invalid input. Try again. (Example: 3 + 4)")
+			continue
+		}
+
+		// Convert the operands to integers
+		left, err := strconv.Atoi(parts[0])
+		if err != nil {
+			fmt.Println("Invalid number:", parts[0])
+			continue
+		}
+		right, err := strconv.Atoi(parts[2])
+		if err != nil {
+			fmt.Println("Invalid number:", parts[2])
+			continue
+		}
+
+		// Perform the calculation based on the operator
+		var result int
+		switch parts[1] {
+		case "+":
+			result = left + right
+		case "-":
+			result = left - right
+		case "*":
+			result = left * right
+		case "/":
+			if right == 0 {
+				fmt.Println("Error: Division by zero is not allowed.")
+				continue
+			}
+			result = left / right
+		default:
+			fmt.Println("Invalid operator. Use +, -, *, or /")
+			continue
+		}
+
+		// Print the result
+		fmt.Printf("Result: %d\n", result)
+	}
+}
+
+ 
+ 
+ 
+===================== 
+STEPS: 
+ 
+yum update  
+yum install -y go 
+GO111MODULE=off 
+go build calculator.go 
+====================================== 
+[root@ip-172-31-40-108 opt]# cat Dockerfile.calculator 
+ 
+FROM amazonlinux
+RUN yum update  && \
+    yum install -y go
+ENV GO111MODULE=off
+WORKDIR /opt
+COPY . .
+RUN go build calculator.go
+CMD ["/opt/calculator"]
+
+********************************************************************** 
+[root@ip-172-31-40-108 opt]# cat Dockerfile.ubuntu 
+
+FROM ubuntu 
+RUN apt-get update && apt-get install -y golang-go 
+ENV GO111MODULE=off 
+WORKDIR /opt/calculatorapp 
+COPY . . 
+RUN go build calculator.go 
+ENTRYPOINT ["/opt/calculatorapp/calculator"] 
+================================================== 
+[root@ip-172-31-40-108 opt]# cat Dockerfile-multistage 
+
+
+FROM amazonlinux AS buildstage
+RUN yum update  && \
+    yum install -y go
+ENV GO111MODULE=off
+WORKDIR /opt
+COPY . .
+RUN go build calculator.go
+
+
+
+FROM scratch
+COPY --from=buildstage  /opt/calculator /opt/calculator
+ENTRYPOINT ["/opt/calculator"]
+
+
+
+------------------------------------------------------------------------------
+
+------------------------------------------- 
+Ref URLS : 
+https://docs.docker.com/build/building/multi-stage/ 
+https://devopscube.com/reduce-docker-image-size/ 
+======================================================================= 
+
+
+
+DOCKER NETWORKING :
+
+IP address
+NIC / ethernet
+NETWORK - (VPC IN AWS TERMINOLOGY )  
+SUBNET
+
+======================================
+
+bridge
+host 
+none 
+overlay 
+
+docker network list /ls 
+docker network inspect bridge 
+
+docker network create --subnet 10.81.0.0/16 batch16nw
+
+docker run -it --name ct33 --network batch16nw --ip 10.81.3.33 ubuntu
+
+docker run -it --name hostnwtct --network host ubuntu
+
+docker run -itd --net batch16nw --ip 10.81.0.20 <iname> 
+
+
+docker network rm batch16nw 
+
+  docker network ls
+   45  docker network inspect bridge
+   46  docker network create ---subnet 10.81.0.0/16 batch16nw
+   47  docker network create --subnet 10.81.0.0/16 batch15nw
+   48  docke network ls
+   49  docker network ls
+   50  docker run -it --name ct33 --network batch15nw --ip 10.81.3.33 ubuntu
+   51  docker ps -a
+   52  docker rm -f $(docker ps -qa)
+   53  docker network ls
+   54  docker network rm batch15nw
+   55  docker network rm bridge
+   56  cd /opt/
+   57  ll
+   58  cd calculatorapp/
+   59  ll
+   60  docker ps -a
+   61  docker network ls
+   62  docker network inspect bridge
+   63  docker network ls
+   64  docker network create test
+   65  docker network ls
+   66  docker network inspect test
+   67  docker network ls
+   68  docker run -itd --name tct1 --network test ubuntu
+   69  docker run -it --name tct2 --network test ubuntu
+   70  docker network create --subnet 10.81.0.0/16  prod
+   71  docker network ls
+   72  docker network inspect prod
+   73  docker network ls
+   74  docker run -it --name pct1 --network prod  ubuntu
+   75  docker run -it --name pct3 --network prod --ip 10.82.3.33  ubuntu
+   76  docker run -it --name pct3 --network prod --ip 10.81.3.33 ubuntu
+   77  docker netowork ls
+   78  docker network ls
+   79  docker inspect network prod
+   80  docker network ls
+   81  docker network rm prod
+   82  docker rm -f $(docker ps -qa)
+   83  docker network rm prod
+   84  docker network rm test
+   85  docker network ls
+   86  docker network rm bridge
+   87  docker run -it --name hct1 --network host ubuntu
