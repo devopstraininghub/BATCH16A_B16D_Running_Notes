@@ -895,3 +895,165 @@ docker network rm batch16nw
    85  docker network ls
    86  docker network rm bridge
    87  docker run -it --name hct1 --network host ubuntu
+
+
+==========================================================
+=======================================================================
+
+1 OCT 25:
+
+SonarQube is a popular open-source platform used for continuous inspection of code quality. It helps developers detect bugs, code smells, and security vulnerabilities in their code before it goes to production.
+
+Purpose of SonarQube
+
+     Code Quality Management: Ensures code follows best practices.
+     
+     Bug Detection: Finds potential runtime errors early.
+     
+     Maintainability: Detects “code smells,” which are parts of the code that are poorly written or hard to maintain.
+     
+     Security: Identifies vulnerabilities to prevent security issues.
+     
+     Technical Debt Tracking: Shows how much “debt” your code has (i.e., areas that need refactoring).
+	 
+	 
+Key Features
+
+       Multi-language Support: Works with Java, C#, JavaScript, Python, PHP, and many more.
+       
+       Static Code Analysis: Examines code without running it.
+       
+       Automated Reports: Generates dashboards and reports to visualize code quality.
+       
+       Integration: Works with CI/CD tools like Jenkins, GitHub Actions, GitLab CI, etc.
+       
+       Custom Rules: Allows you to define coding rules specific to your project or organization.
+	   
+	   Analyze for Issues: It checks for:
+
+         Bugs, Vulnerabilities, Code smells, Duplicated code, Complexity
+		 
+		 
+SONARQUBE  - SCA  - 9000 
+ 
+ 
+
+ IMAGE
+ 
+
+ 
+ 
+ 
+ ========================================================================================
+Ubuntu:  
+ 
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+ 
+=========== 
+ docker pull sonarqube
+ 
+ docker run -itd --name soanr_ct -p 9000:9000 sonar
+ ===========================
+
+to build code :
+mvn clean install 
+
+
+to scan code: 
+mvn sonar:sonar 
+     http://3.80.201.136:9000/
+
+     token:  squ_ec23fffbc704f6a3530e15c00412e8d4ddc39d8b
+
+----------------
+
+mvn sonar:sonar -Dsonar.host.url=http://3.80.201.136:9000/ sonar.login=squ_ec23fffbc704f6a3530e15c00412e8d4ddc39d8b
+
+===============
+
+=============================== 
+jenkins on ubuntu:
+
+
+sudo apt update 
+sudo apt install -y openjdk-17-jdk 
+java -version 
+
+
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update
+sudo apt install jenkins -y
+
+
+sudo systemctl start jenkins 
+sudo systemctl enable jenkins 
+
+
+=====================
+
+pipeline with sonar:
+
+pipeline {
+
+    agent any
+	
+	tools {
+	maven 'Maven_3.9.11'
+	}
+	
+    stages {
+	
+        stage('CLONE SCM') {
+            steps {
+                echo 'This stage clones SC from GIT repo'				
+				git branch: 'main', url: 'https://github.com/devopstraininghub/mindcircuit16d.git'
+            }
+        }
+		
+		
+		stage('sonarqube scan') {
+            steps {
+                echo 'This stage scans the code using sonarqube'
+                sh 'ls -ltrh'
+                
+                sh ''' mvn sonar:sonar \\
+                      -Dsonar.host.url=http://3.80.201.136:9000 \\
+                      -Dsonar.login=squ_ec23fffbc704f6a3530e15c00412e8d4ddc39d8b'''
+            }
+    	}		
+		
+        stage('Build Artifact') {
+            steps {
+                echo 'This stage builds the code using maven'
+				sh 'mvn clean install'			
+				
+            }
+        }
+		
+        stage('Deploy to Tomcat') {
+            steps {
+                echo 'This stage deploys .war to tomcat webserver'
+         //       deploy adapters: [tomcat9(alternativeDeploymentContext: '', credentialsId: 'tomcat', path: '', url: 'http://44.223.26.72:8090/')], contextPath: 'MC-APP', war: '**/*.war'
+            }
+        }		
+		
+    }
+}
+
+
