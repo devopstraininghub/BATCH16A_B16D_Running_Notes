@@ -1056,4 +1056,114 @@ pipeline {
     }
 }
 
+==================================================================================
+
+6 OCT 25  
+
+TRIVY :
+https://github.com/aquasecurity/trivy/
+
+rpm -ivh https://github.com/aquasecurity/trivy/releases/download/v0.67.0/trivy_0.67.0_Linux-64bit.rpm
+
+IMAGE SCANNING using TRIVY 
+
+Trivy is an open-source vulnerability and security scanner created by Aqua Security.
+
+CVE = Common Vulnerabilities and Exposures
+ - Scans for vulnerabilities (CVEs) in   
+  
+            Container images (Docker, OCI)          
+            File systems and directories          
+            Git repositories          
+            Infrastructure as Code (IaC) (Terraform, Kubernetes manifests, Helm charts)                
+            Cloud environments
+  
+ - Detects misconfigurations and sensitive information (secrets, tokens, passwords) in code.
+  
+ - Supports CVE databases (like NVD, GitHub Security Advisories) and can be updated frequently.
+ 
+ 
+ 
+ WGET --> download --> bin / start 
+ 
+ sonarqube --> docker 
+ 
+ RPM : 
+
+  rpm -ivh 
+
+  rpm - Uvh 
+-------------------------------
+ PIPELINE INTEGRATING TRIVY :
+ 
+ pipeline {
+
+    agent any
+	
+	tools {
+	maven 'Maven_3.9.11'
+	}
+	
+    stages {
+	
+        stage('CLONE SCM') {
+            steps {
+                echo 'This stage clones SC from GIT repo'				
+				git branch: 'main', url: 'https://github.com/devopstraininghub/mindcircuit16d.git'
+            }
+        }
+		
+		
+		stage('sonarqube scan') {
+            steps {
+                echo 'This stage scans the code using sonarqube'
+                sh 'ls -ltrh'
+                
+                sh ''' mvn sonar:sonar \\
+                      -Dsonar.host.url=http://3.80.201.136:9000 \\
+                      -Dsonar.login=squ_ec23fffbc704f6a3530e15c00412e8d4ddc39d8b'''
+            }
+    	}		
+		
+        stage('Build Artifact') {
+            steps {
+                echo 'This stage builds the code using maven'
+				sh 'mvn clean install'			
+				
+            }
+        }
+		
+        stage('DOCKER IMAGE BUILD') {
+            steps {
+                echo 'This stage deploys .war to tomcat webserver'
+                 //  docker build -t <imgname:tag> -f Dockerfile .
+            }
+        }		
+		
+		
+	  stage('trivy Scan') {
+            steps {
+                echo 'This stage deploys .war to tomcat webserver'
+                 // trivy image <imgname:tag>
+            }
+        }	
+		
+	   stage('push to Dockerhub') {
+            steps {
+                echo 'This stage deploys .war to tomcat webserver'
+                 // docker login
+				  //  docker push 
+            }
+        }	
+		
+		
+    }
+}
+
+
+
+
+
+
+
 
