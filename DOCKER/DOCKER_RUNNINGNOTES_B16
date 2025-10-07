@@ -1161,6 +1161,67 @@ CVE = Common Vulnerabilities and Exposures
 }
 
 
+============================================================================================================================
+
+
+7 OCT 2025:
+
+ 
+Docker compose Installation :
+
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+
+sudo chmod +x /usr/local/bin/docker-compose 
+
+docker-compose version 
+ 
+================== 
+docker-compose.yml 
+
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: wordpress_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_data:/var/www/html
+
+volumes:
+  db_data:
+  wordpress_data:
+
+
+==========================================
+
+  docker-compose up -d 
+  docker-compose down --volumes 
+
+
+=====================
+sudo usermod -a -G docker $USER
 
 
 
