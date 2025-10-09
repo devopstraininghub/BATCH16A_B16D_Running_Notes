@@ -1,0 +1,211 @@
+1. What Docker & Docker Compose Do Well ???
+
+Docker helps you:
+
+      Package your app and dependencies into portable containers.      
+      Run the same container anywhere (dev, test, prod).      
+      Isolate processes and environments.
+      
+Docker Compose adds:
+
+    Multi-container setup — e.g., running a web app + DB + Redis + xyz ..etc  together.    
+    Simple configuration — define everything in docker-compose.yml.    
+    Great for local development and small deployments.
+    
+So far, so good , we can 
+
+    Package apps consistently (Dockerfile) 
+    Define multiple containers easily (docker-compose.yml)
+    Run them locally with one command
+    Even auto-restart containers with restart: always
+
+
+
+CHALLENGES WITH DOCKER &  DOCKER COMPOSE 
+========================
+
+1 Scaling and High Availability
+
+     Docker Compose doesn’t automatically scale containers across multiple machines.     
+     If one container/node fails, you need to manually restart or handle failover.     
+     No built-in load balancing or auto-recovery.
+
+2 Multi-host / Cluster Management
+      Docker Compose works mostly on a single host (machine)
+      Real production systems need to run across multiple servers or clouds — Compose doesn’t handle that.
+
+3. Self-healing & Monitoring
+      If a container crashes, Compose won’t automatically reschedule or replace it.   
+      You need to handle health checks and restarts manually.
+
+4. Rolling Updates / Zero-downtime Deployments
+
+      Docker Compose lacks advanced deployment strategies (rolling updates, blue-green, canary, etc.).
+
+5. Networking & Service Discovery
+
+      Compose’s network works fine locally, but in a distributed environment you need dynamic service discovery, DNS, and load balancing — which Compose doesn’t provide natively.
+	  
+6. Resource Management
+
+     You can set limits, but no cluster-level scheduling based on CPU/RAM usage	 
+	 
+7.  Monitoring and logging need extra tools	 
+	 
+
+
+- DOCKER CAN NOT ORCHESTRATE
+
+==============================================
+DOCKER 
+
+CONT.ORC CONCEPTS ---> DOCKER SWARM / K8S 
+
+
+-------------------------------------------------------
+WHY KUBERNETES (K8S):
+=========================
+- Production-grade scaling
+- High Availability 
+- Self-healing: 
+- Automated rollouts , rollback & zero downtime
+- Automates container orchestration & Automated Scheduling (hpa) 
+- Scales containers up or down easily
+- Handles networking across clusters
+- Built-in load balancing
+- Simplifies deployment and updates
+
+
+
+========================================================================
+What is Kubernetes?
+•	Kubernetes is an orchestration engine and open-source platform for managing containerized applications.
+•	Born in Google ,written in Go/Golang. Donated to CNCF(Cloud native computing foundation) in 2014.
+•	Kubernetes v1.0 was released on July 21, 2015.
+
+
+FEATURES:
+
+•	Automated Scheduling: 
+Kubernetes provides advanced scheduler to launch container on cluster nodes based on their resource
+requirements and other constraints, while not sacrificing availability.
+
+•	Self Healing Capabilities:
+ Kubernetes allows to replaces and reschedules containers when nodes die. It also kills containers that don’t
+respond to user-defined health check and doesn’t advertise them to clients until they are ready to serve.
+
+•	Automated rollouts & rollback: 
+Kubernetes rolls out changes to the application or its configuration while monitoring application health
+to ensure it doesn’t kill all your instances at the same time. If something goes wrong, with Kubernetes you can rollback the change.
+
+•	Horizontal Scaling & Load Balancing:
+ Kubernetes can scale up and scale down the application as per the requirements with a simple
+command, using a UI, or automatically based on CPU usage.
+
+=================================================================================
+
+WHY K8S 
+
+High availability , Zero downtime , 
+
+K8S ARCHITECTURE:
+================
+
+Kubernetes Architecture is based on a master-worker model, where the Master manages and controls the cluster, and the Workers run the containerized applications. Let's break down the architecture and its core components.
+
+KUBERNETES ARCHITECTURE :
+
+Master Node:    The control plane responsible for managing the Kubernetes cluster.
+Worker Nodes:   The nodes that run the containerized applications (pods).
+Cluster:        A set of worker nodes managed by the master node.
+
+
+---------------------------------------
+
+1. MASTER NODE (CONTROL PLANE): 
+============================
+The Master Node is the brain of the Kubernetes cluster. It manages the cluster, maintains the desired state, schedules workloads, and monitors the overall health of the cluster. It consists of several critical components:
+
+     KUBE-APISERVER:     
+     The API server is the central point of contact for all Kubernetes components. It handles requests from clients, whether that’s the kubectl CLI, the Kubernetes UI, or other components in the system.     
+     The API server exposes the REST API, which is used by external clients to interact with Kubernetes. It ensures the system’s state is updated.
+     
+	 
+     ETCD:     
+     etcd is the key-value store used to store the configuration and state of the cluster. It is highly available and persistent, ensuring that Kubernetes can recover the cluster's state even after a failure. All cluster data, including the desired state, nodes, and secrets, are stored here.     
+     etcd ensures consistency across the entire cluster.
+     
+	 
+     KUBE-SCHEDULER:     
+     The scheduler watches for newly created pods that have no assigned node and assigns them to a node based on resource availability, constraints, and policies.     
+     It ensures that workloads are distributed across nodes in an efficient and optimal manner.
+     
+     
+	 KUBE-CONTROLLER-MANAGER:     
+     The controller manager is responsible for ensuring that the cluster's desired state is maintained. It runs various controllers (e.g., replication controllers, deployment controllers) that monitor the state of the system and take action if the current state does not match the desired state.     
+     Example controllers include replica set controllers, deployment controllers, and node controllers.
+     
+     CLOUD-CONTROLLER-MANAGER (OPTIONAL):     
+     This component is used when running Kubernetes in a cloud environment. It interacts with the underlying cloud provider (e.g., AWS, AZURE , Google Cloud) to manage resources like load balancers, volumes, and instances.
+     
+     It helps in maintaining cloud-specific services in coordination with Kubernetes.
+     
+	 
+2. WORKER NODE COMPONENTS:
+===========================
+
+     A Worker Node (also called a Minion) runs the applications and workloads in the form of Pods. Each worker node contains the following components:
+     
+     KUBELET:     
+     The kubelet is an agent running on each worker node that ensures the containers within the pods are running and healthy.     
+     It communicates with the API server to report the status of the node and its pods.     
+     The kubelet ensures that containers are running as specified in the pod's configuration and takes action to rectify any issues (e.g., restarting a failed container).
+     
+	 
+     KUBE-PROXY:     
+     The kube-proxy manages networking for the Kubernetes cluster, providing networking services such as load balancing, service discovery, and routing traffic to the right pod.     
+     It helps route requests to the correct pod and maintains network rules to manage incoming and outgoing traffic.
+     
+     CONTAINER RUNTIME (DOCKER/ cri-o / containerd)      
+     The container runtime is responsible for running the containers inside a pod. Kubernetes supports various runtimes, but Docker was the default (although Kubernetes is moving toward containerd and other runtimes).
+     
+     It pulls container images, starts containers, and manages the lifecycle of containers within the pods.
+	 
+     
+     PODS:     
+     Pods are the smallest deployable units in Kubernetes and can contain one or more containers.     
+     A pod represents a single application instance, and all containers within the pod share the same network namespace, storage volumes, and lifecycle.     
+     Pods can be scaled up or down by the Kubernetes scheduler, and they are ephemeral (they may be replaced or rescheduled on different nodes).
+
+
+=============================================================================================
+
+SOFTWARES:  eksctl , kubectl , aws cli , visual studo code (ide) 
+
+MINIKUBE , KIND 
+
+
+aws  - EKS 
+azure - AKS
+gcp - GKE
+
+1. chacolety 
+--------------------------------------
+2. eksctl -- CLUSTER CREATION 
+ eksctl version
+0.215.0
+
+--------------------------------------
+
+3. kubectl -- CLI TO INTERACT WITH CLUSTER ( API SERVER) 
+ kubectl version --client
+Client Version: v1.34.1-eks-113cf36
+Kustomize Version: v5.7.1
+
+--------------------------------------
+4. AWS CLI 
+ aws --version
+aws-cli/2.23.9 Python/3.12.6 Windows/11 exe/AMD64
+
+ACCESS KEY 
+SECRET ACCESS KEY 
