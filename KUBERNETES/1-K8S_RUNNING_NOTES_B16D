@@ -439,6 +439,347 @@ history:
 
 
 DISCUSSED : 
+
 IMAGE PULL BACKOFF 
 CRASHLOOP BACK OFF ERROR 
 
+================================================================
+
+DATE: 13 OCT 25 
+
+kubectl cluster-info
+kubectl cluster-info --dump
+=================================================================
+
+kubectl run test1k8s --image=tomcat
+
+kubectl get pods
+kubectl get pods -o wide 
+kubectl delete pod testk8s
+
+
+==========================================================================================
+
+yaml - one of the data structure format to represent data 
+       yaml file is used to represent data , in our case k8s object configuration data
+
+for ex : 
+
+server details :
+
+name = insta
+created = 13-10-2025 
+status = active 
+owner = Madhu
+
+name = whatsapp
+owner = kiran
+created = 13-10-2025 
+status = active 
+
+====================================
+
+servers:
+
+
+  - name: whatsapp
+    owner: kiran
+    created: 2025-10-13
+    status: active
+
+  - name: insta
+    owner: Madhu
+	status: active
+    created: 2025-10-13
+   
+	
+
+
+--- show above server data as xml , yaml and json format 
+
+-----------------------------------
+key value pair - 
+
+name: server1
+
+-------------------
+Array/ List :
+
+Fruits:
+- grape   
+- banana
+- Orange: 
+    Carbs: 5g   
+	Fat: 0.1 g
+	Calories: 50
+
+
+  
+- apple
+    Fat: 0.1 g
+    Carbs: 5g
+    Calories: 50
+    
+    
+-------------------
+
+Dictionary - Set of properties , grouped together
+
+Orange: 
+   Calories: 50
+   Fat: 0.1 g
+   Carbs: 5 g
+   
+   
+make sure we are giving spaces properly 
+ - equal no of spaces   
+----------------------------------------
+
+
+
+
+
+
+INSTALL VSCODE --> INSTALL YAML EXTENSION --> GO TO SCHEMA: SETTING.json
+
+=================
+
+
+    "yaml.schemas": {    
+
+        "kubernetes": "*.yaml" 
+        
+    },
+
+==========================================================
+
+cat instapod1.yaml
+
+
+instapod1.yaml
+---------------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fbpod
+  labels:
+    app: facebook
+    env: lab 
+spec:
+  containers:
+    - name: fbcont
+      image: tomcat
+
+=======================================
+
+kubectl get pod
+kubectl describe pod fbpod
+kubectl get po
+kubectl delete pod fbpod
+kubectl get po
+
+=======================================================================================
+REPLICA SET: 
+
+
+
+
+spec : we will create a template section under spec to provide a pod template to be used by Replication contoller/ Relica set to create replicas 
+
+
+Replication Controller vs Replica set :
+
+   Replica set requires a selector defination 
+   i,e 
+   seletor is not mandate for RC ,
+   but for Replica set it is mandate , a user input is required for this property like match labels 
+
+
+FOR REEPLICA SET manifest files ---> -
+check for  manifest files in zip folder
+
+=======================================================================================
+DATE: 14 OCT 24 
+
+--------
+kubectl run pod nginx --image nginx:latest --dry-run -o yaml 
+
+--------
+kubectl create deployment instadeploy --image=devopshubg333/batch15d:mcappimag --replicas=3 --dry-run -o yaml
+
+--------
+kubectl explain pods ---> gives explaination of pods manifest files 
+
+--------
+kubectl explain pods.metadata
+
+--------
+kubectl cluster-info
+kubectl cluster-info dump ---> total cluster info
+
+--------
+
+kubectl api-resources --->resorces we can create like podscontainers,deployments...etc
+
+kubectl api-resources | grep pod 
+--------
+kubectl cordon instance ip ---> unschedule the nodes ,no new pod will be schedule
+Marks a node as unschedulable—new pods will not be scheduled on it, but existing pods continue to run.. 
+when You want to stop placing new workloads on the node but don't want to disrupt what's already running.
+--------
+
+kubectl drain ip-172-20-103-135.ec2.internal --->  evicts all pods to another node and schedule will be disable
+--------
+kubectl uncordon ip-172-20-38-30.ec2.internal
+
+
+kubectl get all 
+==========================		
+kubectl get replicaset
+NAME     DESIRED   CURRENT   READY   AGE
+tomcat   5         5         5       116s
+-----------
+
+So Why do we need labels and Selectoers ?
+
+Labels can be used as filter to replica set , so replica set will monitor and ensure desired no of pods are running 
+
+==========================================================
+scale replicas and ways to scale :
+
+1. kubectl scale replicaset insta-rs --replicas=3
+1. Change manifest file -->- then kubectl apply -f insta-rs.yaml
+3. kubectl scale --replicas=6 -f insta-rs.yaml
+4. kubectl edit replicaset <replicasetname> --> opens a temporoay file in memory
+
+
+vim insta-rs.yaml
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: insta-rs 
+  labels:
+    app: instagram 
+    env: production 
+
+spec:
+  selector:
+    matchLabels:
+      app: instagram 
+
+  replicas: 2
+  template:
+    metadata:
+      name: insta-pod
+      labels:
+        app: instagram 
+
+    spec:
+      containers:
+        - name: insta-pod-cont
+          image: devopshubg333/batch16d:fb_httpd
+          ports:
+            - containerPort: 80
+
+====================================================
+HISTORY 
+
+ ll 13oct25-pods/
+  526  kubectl apply -f 13oct25-pods/pod1.yaml
+  527  kubectl get po
+  528  kubectl describe po insta-pod
+  529  kubectl run pod nginxpod --image nginx:1.14.2 --dry-run -o yaml
+  530  kubectl api-resources
+  531  kubectl api-resources
+  532  kubectl api-resources | grep pod
+  533  kubectl cluster-info
+  534  kubectl cluster-info dump
+  535  kubectl explain pods
+  536  kubectl explain rs
+  537  kubectl explain pods.spec
+  538  kubectl explain pods.metadata
+  539  kubectl get pods
+  540  kubectl get nodes
+  541  kubectl get nodes -o wide
+  542  kubectl get pods -o wide
+  543  kubectl get nodes
+  544  kubectl cordon ip-192-168-21-164.ec2.internal
+  545  kubectl get nodes
+  546  kubectl get po
+  547  kubectl get po -o wide
+  548  kubectl get nodes
+  549  kubectl uncordon ip-192-168-21-164.ec2.internal
+  550  kubectl get nodes
+  551  kubectl get po -o wide
+  552  kubectl drain ip-192-168-21-164.ec2.internal
+  553  kubectl drain ip-192-168-21-164.ec2.internal--ignore-daemonsets
+  554  kubectl drain ip-192-168-21-164.ec2.internal --ignore-daemonsets
+  555  kubectl drain ip-192-168-21-164.ec2.internal --ignore-daemonsets --force
+  556  kubectl get po -o wide
+  557  kubectl get po -o wide
+  558  kubectl get nodes
+  559  kubectl uncordon ip-192-168-21-164.ec2.internal
+  560  kubectl delete po pod1
+  561  kubectl explain rs
+  562  kubectl api-resources | grep replicaset
+  563  ll
+  564  cd 14oct25/
+  565  ll
+  566  cat insta-rs.yaml
+  567  kubectl get all
+  568  kubectl get po -o wide
+  569  kubectl delete po insta-rs-4rdcz
+  570  kubectl delete po
+  571  kubectl get po
+  572  kubectl get po -o wide
+  573  kubectl delete po insta-rs-w6mv9
+  574  kubectl get po -o wide
+  575  kubectl get rs
+  576  kubectl describe rs insta-rs
+  577  kubectl get all
+  578  ll
+  579  kubectl apply -f insta-rs.yaml
+  580  kubectl get all
+  581  kubectl apply -f insta-rs.yaml
+  582  kubectl get all
+  583  kubectl scale rs insta-rs --replicas 9
+  584  kubectl get all
+  585  kubectl get all
+  586  kubectl get all
+  587  kubectl describe rs insta-rs
+  588  kubectl get po
+  589  kubectl describe po insta-rs-rjscp
+  590  kubectl scale rs insta-rs --replicas 4
+  591  kubectl edit rs insta-rs
+  592  kubectl get po
+  593  kubectl get po -o wide
+  594  kubectl get po -o wide
+  595  kubectl get nodes
+  596  kubectl drain ip-192-168-28-138.ec2.internal
+  597  kubectl drain ip-192-168-28-138.ec2.internal --ignore-daemonsets
+  598  kubectl get po -o wide
+  599  kubectl get nodes
+  600  kubectl get po -o wide
+  601  kubectl uncordon ip-192-168-28-138.ec2.internal
+  602  kubectl get po -o wide
+  603  history
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=====================================================================
