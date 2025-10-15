@@ -769,17 +769,148 @@ HISTORY
 
 
 
+=====================================================================
 
 
 
-
-
-
-
-
-
-
-
-
+DATE: 15 OCT 25
 
 =====================================================================
+
+To create a deployment using imperative command, use kubectl create:
+
+kubectl create deployment nginx --image=nginx
+
+kubectl create deployment instadeploy --image=<image> --replicas=3 --dry-run -o yaml
+--------------------------------------------------------
+
+
+cat 1-deploy_AC_V1.yaml
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb-deploy 
+  labels:
+    app: facebook
+    env: lab 
+
+spec:
+  selector:
+    matchLabels:
+      app: facebook 
+  replicas: 3  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    
+  template:
+    metadata:
+      name: fb-pod 
+      labels:
+        app: facebook
+        env: lab 
+        version: v1_AC
+    spec:
+      containers:
+        - name: fb-pod-cont
+          image: devopshubg333/batch16d:fb_httpd
+      
+====================
+kubectl apply -f 02-DEPLOYMNET-PRACTICE/1-deploy_AC_V1.yaml
+
+==================================================================
+
+cat 2-deploy_VC_v2.yaml
+---
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb-deploy 
+  labels:
+    app: facebook
+    env: lab 
+
+spec:
+  selector:
+    matchLabels:
+      app: facebook 
+  replicas: 3  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  
+  template:
+    metadata:
+      name: fb-pod 
+      labels:
+        app: facebook
+        env: lab 
+        version: v2_VC
+    spec:
+      containers:
+        - name: fb-pod-cont
+          image: devopshubg333/batch16d:pythonimg
+      
+==============
+kubectl apply -f 02-DEPLOYMNET-PRACTICE/1-deploy_AC_V1.yaml
+kubectl apply -f 02-DEPLOYMNET-PRACTICE/2-deploy_VC_v2.yaml
+
+ kubectl get deployment
+
+------------
+
+  519  cd 15oct25-deploy/
+  520  ll
+  521  cat 1-fbapp_ac.yaml
+  522  kubecl apply -f 1-fbapp_ac.yaml
+  523  kubectl apply -f 1-fbapp_ac.yaml
+  524  kubectl get all
+  525  kubectl describe deploy fb-deploy
+  526  kubectl describe deploy fb-deploy
+  527  ll
+  528  kubectl apply -f 2-fbapp_vc.yaml
+  529  kubectl get all
+  530  kubectl describe deploy fb-deploy
+  531  kubectl describe deploy fb-deploy
+  532  kubectl rollout pause deploy fb-deploy
+  533  kubectl rollout resume deploy fb-deploy
+  534  kubectl get po
+  535  kubectl get po  --watch
+  536  kubectl get all
+  537  kubectl describe deploy fb-deploy
+
+
+
+
+kubectl create deployment instadeploy --image=devopshubg333/batch15d:mcappimag --replicas=3 --dry-run -o yaml
+
+=============================================================================
+kubectl get po --watch 
+kubectl rollout history deploy fbdeploy
+
+kubectl get rs 
+==========================================================
+kubectl rollout pause deploy fbdeploy
+ deployment.apps/fbdeploy paused
+
+====================
+kubectl rollout resume deploy fbdeploy
+ deployment.apps/fbdeploy resumed
+
+===================
+kubectl rollout undo deploy fbdeploy
+deployment.apps/fbdeploy rolled back
+==========================================
+
+kubectl rollout history deploy fbdeploy
+
+
+======================
