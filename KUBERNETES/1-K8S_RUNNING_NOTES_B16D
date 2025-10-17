@@ -913,4 +913,165 @@ deployment.apps/fbdeploy rolled back
 kubectl rollout history deploy fbdeploy
 
 
-======================
+=====================================================
+
+=====================================================================
+
+
+DATE: 16 OCT 25
+
+docker pull sravani2310/mcapp:latest
+
+
+SERVICES:
+
+
+ cat 1-fbapp_ac.yaml
+ 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fb-deploy 
+  labels:
+    app: facebook
+    env: lab 
+
+spec:
+  selector:
+    matchLabels:
+      app: facebook 
+  replicas: 3  
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    
+  template:
+    metadata:
+      name: fb-pod 
+      labels:
+        app: facebook
+        env: lab
+        tier: frontend 
+        version: v1_AC
+    spec:
+      containers:
+        - name: fb-pod-cont
+          image: sravani2310/mcapp:latest
+          ports:
+            - containerPort: 8080
+		
+		
+===================================================	============
+cat lb-svc.yaml 
+---
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: fb-lb-svc
+   labels:
+     app: facebook 
+
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080 
+      protocol: TCP
+
+  selector:
+        app: facebook
+        env: lab
+      
+      
+		
+===========================================================================
+		
+		
+cat cluster-ip.yaml
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: fb-cip-svc
+   labels:
+     app: facebook 
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080 
+      protocol: TCP
+
+  selector:
+    app: facebook
+
+
+===================================================================
+
+17-OCT-25
+
+
+
+cat nodeport.yaml
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fb-np-svc
+  labels:
+    app: facebook 
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8080
+      nodePort: 30333
+
+  selector:
+    app: facebook
+
+==============================================================================
+
+In Kubernetes, Service types are abstractions that define how to expose Pods. The common types are:
+
+      ClusterIP (default)
+      
+      NodePort
+      
+      LoadBalancer
+
+-------------------------------------------
+
+flow :
+
+                   Client (Internet)
+                      ↓
+                   External Load Balancer
+                      ↓
+                   NodePort (on a Kubernetes Node)
+                      ↓
+                   ClusterIP (Kubernetes internal)
+                      ↓
+                   Pod (endpoint)
+
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
