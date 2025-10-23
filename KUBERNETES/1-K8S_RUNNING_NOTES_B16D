@@ -1066,6 +1066,399 @@ flow :
 
 ----------------------------------------------
 
+DATE:
+
+
+----------------------------------------------
+
+MINI PROJECT :
+
+WITH PODS 
+
+WITH DEPLOYMENT 
+
+
+-----------------------------------------------------------------------------
+
+
+
+
+NameSpaces :
+
+Namespaces are Kubernetes objects which partition a single Kubernetes cluster into multiple virtual clusters
+
+which means that using the combination of an object name and a Namespace, each object gets an unique identity across the cluster.
+------------
+
+A namespace in Kubernetes is a way to divide your cluster into smaller, isolated spaces for better organization and management.
+------------
+
+When you have a big Kubernetes cluster that runs many applications, you don’t want everything mixed together.
+So, you create namespaces to separate and organize things.
+
+Example:
+
+Imagine you have one big Kubernetes cluster for your company.
+
+You can make:
+
+     dev namespace → for developers to test things     
+     staging namespace → for testing before release     
+     prod namespace → for real users
+     
+Each namespace can have its own:
+
+       Pods (containers)       
+       Services       
+       Configurations       
+       Resource limits (CPU, memory, etc.)
+
+And Kubernetes makes sure that things in one namespace don’t clash with another — for example, you can have a web service in both dev and prod, and they won’t conflict.
+
+--------------------------------------------------------
+
+kubectl get pod -o wide
+kubectl get pod -o wide --all-namespaces
+
+=================================
+
+kubectl get ns
+
+kubectl create ns kirannamespace
+
+kubectl apply  -f pod.yaml -n kirannamespace
+
+kubectl get pods --all-namespaces
+
+=========================================
+
+Resource requests & limits :
+
+Resource Requests
+A request is the amount of CPU and memory that Kubernetes will allocate to a container. When you specify a request, Kubernetes ensures that your container will always have at least that much resource available when it runs
+
+------------
+LIMITS : 
+The maximum amount of CPU and memory the container can use. 
+If the container exceeds these, it may be throttled (CPU) or killed (Memory).
+
+
+
+with out resource requests & limits :
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: insta-pod2 
+  labels:
+    app: instagram 
+    env: production
+spec:
+  containers:
+    - name: insta-cont 
+      image: devopshubg333/batch16d:fb_httpd 
+
+    - name: insta-side-car-cont
+      image: devopshubg333/batch16d:fb_httpd 
+	  
+-------
+     Kubernetes has no idea how much CPU/memory this needs.
+     It might schedule it anywhere.     
+     If the node gets busy, this pod could slow down or get evicted.     
+     It can also use unlimited CPU/memory, possibly hurting other apps.	  
+	  
+
+========================================================
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-resources
+spec:
+  containers:
+    - name: web
+      image: nginx:latest
+      resources:
+        requests:
+          cpu: "200m"     # needs at least 0.2 of a CPU core
+          memory: "256Mi" # needs at least 256 MB of RAM
+        limits:
+          cpu: "500m"     # can use up to 0.5 CPU core
+          memory: "512Mi" # can use up to 512 MB of RAM
+		  
+		  
+---------------------------------------------------		  
+   Kubernetes knows this pod needs a small amount of CPU/memory to start.   
+   It will schedule it on a node that has enough room.   
+   If the pod tries to use more than the limit   
+       CPU: it just gets throttled (slowed down).       
+       Memory: it gets killed (OOMKilled) to protect the node.		  
+       
+
+==========================================================================
+how to log into the pod ? 
+
+kubect exec -it <podname> -- /bin/bash
+kubect exec -it <podname> -- env
+
+----------------------
+
+ENV vs CONFIG MAP vs  SECRET 
+
+Environment Variables (ENV):
+
+        environment variables are key–value pairs injected into the container’s runtime environment.
+        App configs like port numbers, feature flags, etc.
+        Env variables are Typically non-sensitive.
+        Not encrypted.
+        Easily visible in kubectl describe pod.
+
+You can define them:
+
+       Directly in a Pod spec
+       Or indirectly using a ConfigMap or Secret
+=====================
+
+ENV:
+
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: envex-pod 
+
+spec: 
+  containers:
+    - name: insta-pod-cont
+      image: devopshubg333/batch16d:fb_httpd
+      env:
+        - name: Course
+          value: AWS DevOps 
+
+        - name: Trainer 
+          value: Madhukiran Gorekar 
+
+        - name: Institute
+          value: MindCircuit 
+    
+
+=====================
+
+ConfigMap
+
+   ConfigMaps are Kubernetes API objects that store configuration data as key–value pairs (strings).
+    They’re meant for non-sensitive settings.
+
+Ways to use a ConfigMap:
+      As environment variables
+      As command-line arguments
+      As files mounted into a container
+
+
+configmap.yaml:
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mc-config
+
+data:
+  Course: AWS DevOps 
+  Trainer: Madhukiran Gorekar
+  Institute: MindCircuit
+
+
+-------------------------------------------------
+
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-ex-pod 
+
+spec: 
+  containers:
+    - name: insta-pod-cont
+      image: devopshubg333/batch16d:fb_httpd
+
+      envFrom:
+        - configMapRef:
+            name: mc-config
+
+===========================================
+
+Secret:
+
+ Secrets are like ConfigMaps, but intended for sensitive data such as credentials or tokens.
+Kubernetes stores them base64-encoded, not encrypted by default (though you can enable encryption at rest).
+
+A Secret is used to store sensitive data, such as passwords, OAuth tokens, SSH keys, and API keys, in a way that is more secure than using a plain ConfigMap. 
+
+Secrets are encoded (base64), which helps to obscure their content but is not a fully secure solution; they are more secure than environment variables or plain text files
+
+
+encode:
+
+
+ echo -n "AWS DevOps" | base64
+QVdTIERldk9wcw==
+
+echo -n "Madhukiran Gorekar" | base64
+TWFkaHVraXJhbiBHb3Jla2Fy
+
+echo -n "MindCircuit" | base64      -----> TWluZENpcmN1aXQ=
+
+
+
+
+decode:
+echo -n "QXdzIERldk9wcw==" | base64 --decode
+echo -n "TWFkaHVraXJuYSBnb3Jla2Fy" | base64 -d
+==================================
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mc-secret
+type: Opaque
+data:
+  Course: QVdTIERldk9wcw==
+  Trainer: TWFkaHVraXJhbiBHb3Jla2Fy
+  Institute: TWluZENpcmN1aXQ=
+
+
+============================
+
+--- 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-ex-pod 
+
+spec: 
+  containers:
+    - name: insta-pod-cont
+      image: devopshubg333/batch16d:fb_httpd
+
+      envFrom:
+        - secretRef:
+            name: mc-secret
+
+=================================================================
+
+
+kubectl get secret 
+
+=============================================================================
+Real time scenarios : 
+
+configmap:
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_ENV: "production"
+  LOG_LEVEL: "info"
+
+---------------------------------------------
+( username : myuser 
+  password : mypassword  ) 
+  
+echo -n "myuser" | base64
+bXl1c2Vy
+
+echo -n "mypassword" | base64
+bXlwYXNzd29yZA==
+
+
+
+secret:
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+data:
+  DB_USER: bXl1c2Vy
+  DB_PASSWORD: bXlwYXNzd29yZA==
+
+
+--------------------------------------------------
+Deployment/pod : 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: myapp:1.0
+        env:
+          - name: SERVICE_NAME
+            value: "user-service"
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: db-secret
+
+
+==========================================================================
+
+
+
+
+------------------------------------------------
+CLUSTER UPGRADE in K8S 
+=====================================================================
+
+======================================
+
+=============================
+LABELS vs ANNOTATIONS in K8S 
+
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fbpod
+  labels:
+    app: facebook
+	env: lab
+	
+  annotations:
+    imageregistry: "https://hub.docker.com/"
+    build-url: "https://jenkins.example.com/build/142"
+	prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+	
+	
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+
+
+=============================
 
 
 
