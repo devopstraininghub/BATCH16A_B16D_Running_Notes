@@ -1461,10 +1461,27 @@ spec:
 =============================
 
 
+DATE: 24 OCT 25
+
+
+ARGOCD : 
+
+kubectl create namespace argocd
+
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml -n argocd
+
+
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 
 
 
 
+username: admin 
+
+Get the Initial Admin Password:
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+
+==============================================================
 
 
 
