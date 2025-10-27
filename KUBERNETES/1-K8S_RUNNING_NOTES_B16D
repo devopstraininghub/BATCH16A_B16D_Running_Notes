@@ -1483,5 +1483,90 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 
 ==============================================================
 
+date: 25 OCT 25
 
+END - END CICD USING ARGOCD :
+
+sudo yum update -y 
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo 
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key 
+sudo yum upgrade -y 
+sudo dnf install java-17-amazon-corretto -y 
+sudo yum install jenkins -y 
+sudo systemctl enable jenkins 
+sudo systemctl start jenkins
+
+========================
+docker run 
+docker build 
+
+sudo yum install docker -y 
+sudo systemctl start docker 
+sudo usermod -aG docker jenkins 
+sudo usermod -aG docker ec2-user 
+sudo systemctl restart docker 
+sudo chmod 666 /var/run/docker.sock
+
+===========================
+
+aws cli 
+
+AKIASB5M6XXXXXXXXXXX
+isfzCAQO+sUVaACXXXXXXXXXXXX
+
+
+# -----------------------------------------
+# Install kubectl
+# -----------------------------------------
+echo "Installing kubectl..."
+curl -LO "https://dl.k8s.io/release/$(curl -sSL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
+
+# -----------------------------------------
+# Install eksctl
+# -----------------------------------------
+echo "Installing eksctl..."
+curl -sSL "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz" -o eksctl.tar.gz
+tar -xzf eksctl.tar.gz
+sudo mv eksctl /usr/local/bin/
+eksctl version
+
+
+
+eksctl create cluster --name mcappcluster --nodegroup-name mcng --node-type t3.micro --nodes 8 --managed
+
+
+
+
+Docker run --itd  --name sonar -p 9000:9000 sonarqube
+
+sonartoken: 
+
+squ_f21d96bccXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+
+
+
+github token :
+
+ghp_zNka9WDdsM8AXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+==============================================================================================================
+
+
+INGRESS:
+
+
+DATE: 27 OCT 25
+
+INGRESS - Advanced load balancing capabilities 
+
+Ingress Hostbased and  path based routing 
+
+Purchasing domain in Godaddly 
+Hosting it on route-53 & creating records 
+
+========================================================================================================
 
