@@ -1687,5 +1687,70 @@ Dynamic provisioning allows Kubernetes to automatically create and manage EBS vo
   7. Recreate the pod:
   
 Dynamic provisioning is recommended for production environments because it reduces manual effort and prevents AZ mismatches.  
+
+==================================
+
+
+ATE: 31 OCT 25 
+
+Kubernetes Volume Provisioning on EKS using Amazon EFS
+
+Amazon EFS is a fully-managed, network-attached, shared file system that can be mounted by multiple pods across multiple nodes simultaneously. This makes it ideal for workloads requiring shared access, like web servers, content management systems, or big data pipelines.
+
+
+
+
+ - 1.  Install the Amazon EFS CSI Driver 
+ 
+kubectl apply -k github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-2.1
+
+kubectl apply -k 
+    "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-2.1" 
+
+
+ - 2.  Attach AmazonEFSCSIDriverPolicy / Permission in IAM roe 
+ 
+ - Create an Amazon EFS File System ( same VPC where your EKS cluster resides.) 
+ 
+ - Configure security groups to allow NFS traffic (TCP 2049) from your worker nodes.
+   (  Unlike EBS, EFS is network-attached and does not require AZ matching. ) 
+ 
+ 
+ -Create a PersistentVolume (PV)
+ -Create a PersistentVolumeClaim (PVC)
+ -Use PVC in a Pod
+ - LB SERVICE 
+ 
+ ============================================================
+ Dynamic Provisioning with EFS
+
+Dynamic provisioning allows Kubernetes to create subdirectories in EFS automatically when a PVC is requested.
+
+
+
+ - Create a StorageClass for EFS
+ - Create a PVC Using the StorageClass
+ - Use PVC in a Pod  , svc
+ - VERIFY 
+
+
+
+
+DRIVER INSTALL : 
+
+kubectl kustomize \
+    "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-2.X" > private-ecr-driver.yaml
+
+kubectl kustomize \
+    "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-2.1" > private-ecr-driver.yaml
+
+
+kubectl apply -k github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable/ecr/?ref=release-2.1
+
+
+
+
+==============================================
+
   
 
