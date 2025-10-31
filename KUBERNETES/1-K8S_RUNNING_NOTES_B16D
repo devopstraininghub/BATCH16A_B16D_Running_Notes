@@ -1570,3 +1570,122 @@ Hosting it on route-53 & creating records
 
 ========================================================================================================
 
+=====================================================================================
+
+DATE: 29 OCT 25
+
+
+eksctl create cluster --name b16dcluster  --nodegroup-name b16dng --managed
+
+CREATING CLUSTER USING MANIFEST FILE: 
+
+----------------------------------------
+
+clustersetup.yaml 
+
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: b16dcluster
+  region: us-east-1
+
+managedNodeGroups:
+  - name: b16d
+    spot: true   ## upto 90%  discuount 
+    instanceTypes: ["m5.large"]  # Use multiple types for better availability
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 3
+    labels:
+      lifecycle: Ec2Spot
+    tags:
+      "k8s.io/cluster-autoscaler/enabled": "true"
+      "k8s.io/cluster-autoscaler/b16dcluster": "owned"
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        ebs: true
+
+
+================================================================================
+
+KUBERNETS VOLUMES :
+
+In Kubernetes, pods are temporary (ephemeral) by design. This means that any data stored inside a pod will be lost if the pod is deleted, restarted, or recreated — for example, during scaling or node failures.
+
+To prevent data loss and keep your data available even when pods change, Kubernetes provides a feature called Volume Provisioning. This lets you attach external storage to your pods so that the data stays safe and accessible.
+
+Two main ways to provision volumes in Kubernetes:
+
+    Static Provisioning – You manually create a Persistent Volume (PV) ahead of time, and then link it to your pod using a Persistent Volume Claim (PVC).
+    
+    Dynamic Provisioning – Kubernetes automatically creates and manages storage when your pod requests it, using a predefined StorageClass.
+
+In AWS, you can use two common storage options for persistent data:
+
+   Amazon EBS (Elastic Block Store) – Great for single-pod, block-level storage with high performance.   
+   Amazon EFS (Elastic File System) – Ideal for shared file storage that multiple pods can access at the same time.
+
+
+Static Provisioning using EBS: 
+
+In Static Provisioning, the storage volume is created manually before it is used by a pod. The Kubernetes administrator creates an EBS volume in AWS, and then defines a PersistentVolume (PV) that references it. Pods can then claim and use this storage through a PersistentVolumeClaim (PVC).
+
+STEPS:
+
+1. Install the Amazon EBS CSI Driver
+     The EBS CSI driver is required in modern clusters. It handles attaching/detaching EBS volumes to pods.
+	 
+	 kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.51"
+	 
+2. Modify IAM ROLE & attach a policy for EBSCSI Driver permission	 
+	 
+2. Create EBS volume (Availability Zone (AZ) — it must match the AZ of your Kubernetes worker node ) 
+3. Create a PersistentVolume (PV)
+     Define a PV referencing the EBS volume using the CSI driver:
+4. Create a PersistentVolumeClaim (PVC)
+5. Use the PVC in a Pod
+6. Verification & Testing ( Create a test file inside the pod ) 
+7. Delete the pod:
+8. Recreate the pod (using the same PVC) and verify the file persists:
+9. This proves data persistence across pod restarts.
+
+STATIC PROVISIOING :
+
+
+kid     --> mother --> father --> wallet 
+POD/APP       PVC          PV          EBS
+
+
+
+VOLUMES , 
+Persistant Volume (PV) 
+Persistant Volume  Claim 
+
+Installing EBS CSI Driver :
+
+kubectl apply -k "github.com/kubernetes-sigs/aws-ebs-csi-driver/deploy/kubernetes/overlays/stable/?ref=release-1.51"
+
+=====================================================
+DYNAMIC PROV 
+
+
+
+Dynamic Provisioning on EKS using Amazon EBS (with CSI Driver)
+
+Dynamic provisioning allows Kubernetes to automatically create and manage EBS volumes when a pod requests storage. Unlike static provisioning, you do not manually create PVs; Kubernetes handles volume creation using a StorageClass and the EBS CSI driver.
+
+
+
+  1.Create a StorageClass
+  2. Create a PersistentVolumeClaim (PVC)
+  3. Use the PVC in a Pod
+  4. Apply the manifest
+  5. Write a file in the pod:
+  6. Delete the pod:
+  7. Recreate the pod:
+  
+Dynamic provisioning is recommended for production environments because it reduces manual effort and prevents AZ mismatches.  
+  
+
