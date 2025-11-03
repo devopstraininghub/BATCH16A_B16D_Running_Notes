@@ -1827,5 +1827,85 @@ kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/late
 kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
 
 
+==============================================================================================================================
 
+======================================
+
+3 nov 25
+Daemonset:
+
+-  A DaemonSet ensures that a copy of a specific Pod runs on every (or selected) node in your Kubernetes cluster.
+
+- So while a Deployment scales pods across nodes, a DaemonSet ensures one (or a few) specific pods exist per node — typically for background system-level workloads.
+
+- A DaemonSet runs one pod per node — automatically managing cluster-wide agents like log collectors, monitoring daemons, and security scanners
+
+
+DaemonSet_Use_Cases:
+
+  NodeMonitoring:
+
+      Deploys node-level monitoring agents to collect CPU, memory, disk, and network metrics from each node.
+      These metrics are typically scraped by Prometheus or sent to monitoring platforms like Datadog.
+	  
+    Examples:
+      - Prometheus Node Exporter
+      - Datadog Agent
+
+  LogCollection:	
+  
+      Collects and forwards logs from containers and system daemons running on each node.
+      Ensures centralized log aggregation and analytics in tools like Elasticsearch, Loki, or Splunk.
+	  
+    Examples:
+      - Fluentd
+      - Filebeat
+      - Vector
+
+  SecurityScanning:
+
+      Runs continuous or scheduled node-level security scanning agents to detect vulnerabilities, malware,
+      and suspicious runtime behavior across nodes and containers.
+	  
+    Examples:
+      - Falco
+      - Aqua Trivy Daemon
+
+
+
+  Networking:
+
+      Installs and manages Container Network Interface (CNI) plugins that provide pod networking,
+      network policies, and service routing functionality across all nodes.
+	  
+    Examples:
+      - Calico
+      - Cilium
+      - Weave Net
+
+  Storage:
+
+      Deploys storage interface drivers (CSI drivers) to enable dynamic or static provisioning of persistent
+      volumes for pods, ensuring consistent storage management across nodes.
+	  
+    Examples:
+      - Amazon EBS CSI Driver
+      - Amazon EFS CSI Driver
+      - NFS Driver
+
+  SystemMetrics:
+
+      Collects detailed node health and system metrics, such as kernel issues, node conditions,
+      hardware utilization, and GPU metrics for high-performance workloads.
+    Examples:
+      - Node Problem Detector
+      - nvidia-device-plugin
+
+
+
+  
+Concept	Memory Hook
+Deployment  --  I just want X replicas of my app, doesn’t matter which node or order.
+StatefulSet	--  want pods with sticky identity and persistent storage, in order.
+DaemonSet	 -- I want one pod on every node, always.
 
