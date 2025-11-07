@@ -2523,5 +2523,348 @@ Example:
 Meaning:
 Run only on production nodes (env=prod), tolerate the "web" taint, and ensure no two web Pods are on the same node.
 
+====================================================================================================
+===================================================================================================
 
+==============================================
+
+7 NOV 25:
+
+========================================
+KUBERNETES HEALTH CHECKS (PROBES)
+========================================
+
+1. WHAT ARE HEALTH CHECKS (PROBES)?
+-----------------------------------
+Kubernetes uses probes to check if your container is healthy and ready to serve traffic.
+Without probes, Kubernetes assumes your app is always fine — even when it’s stuck or crashed.
+Probes help detect and automatically fix unhealthy containers.
+
+
+
+
+Types of probes:
+- Liveness Probe: Checks if the app is alive.
+- Readiness Probe: Checks if the app is ready to serve traffic.
+- Startup Probe (optional): Used for slow-starting apps to avoid false failures.
+
+WHY PROBES :
+
+By default, Kubernetes only checks the container’s main process to decide if it’s healthy.
+If the main process crashes, Kubernetes restarts the container.
+
+However, this can be misleading:
+- A process might still be running, but the application inside is broken (e.g., timeouts, bugs, DB connection loss).
+- Kubernetes would still mark it as “Running,” even though it’s not actually healthy.
+
+Probes solve this by letting you define custom health checks,  that tell Kubernetes when to restart or stop routing traffic to a container.
+
+----------------------------------------
+
+Kubernetes provides three types of probes:
+
+1. Liveness Probe   – Checks if the container is alive.
+2. Readiness Probe  – Checks if the container is ready to serve traffic.
+3. Startup Probe    – Ensures the container has fully started before other probes run.
+			         
+
+------------------------------------------------------------
+LIVENESS PROBE
+------------------------------------------------------------
+
+The Liveness probe determines whether a container is healthy and running properly.
+
+Action:
+- If the probe fails (exit code ≠ 0), Kubernetes restarts the container.
+- Ensures that only healthy containers remain active.
+
+Supported Mechanisms:
+---------------------
+1. Exec Command:
+   - Runs a command inside the container.
+   - Success → exit code 0.
+   - Failure → exit code 1.
+
+2. HTTP Request:
+   - Kubernetes calls a URL within the container.
+   - Success → HTTP status 200–399.
+   - Failure → Any other response.
+
+3. TCP Socket:
+   - Checks if a specific port is accepting traffic.
+   - Success → Port is open.
+   - Failure → Port is closed.
+
+----------------------------------------
+4. LIVENESS PROBE EXAMPLE
+----------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+   
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      failureThreshold: 3
+
+
+
+      ## kubectl exec -it liveness-pod -- curl localhost:8080
+
+Explanation:
+- Kubernetes waits 5 seconds before first check.
+- Checks every 10 seconds.
+- If 3 checks fail, container restarts.
+
+Action:
+- If the probe fails (exit code ≠ 0), Kubernetes restarts the container.
+- Ensures that only healthy containers remain active.
+
+--------------------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liveness-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+
+    readinessProbe:
+      exec:
+        command:
+        - cat
+        - /usr/share/nginx/html/iindex.html
+      initialDelaySeconds: 5    
+      periodSeconds: 10         
+      failureThreshold: 3       
+
+
+
+------------------------------------------------------------
+ READINESS PROBE
+------------------------------------------------------------
+
+The Readiness probe checks whether a container is ready to receive traffic.
+
+Action:
+- If the probe fails → Pod is removed from the service’s endpoint list (no traffic routed).
+- If it succeeds → Pod is added back to the service.
+
+Difference from Liveness Probe:
+- Liveness failure → Pod restarts.
+- Readiness failure → Pod stays running but stops receiving traffic.
+
+Example:
+----------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+   
+#    livenessProbe:
+ #     httpGet:
+ #       path: /
+ #       port: 80
+ #     initialDelaySeconds: 5
+ #     periodSeconds: 10
+ #     failureThreshold: 3
+
+
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+ #   readinessProbe:
+ #     httpGet:
+  #      path: /ready
+ #       port: 8080
+  #    initialDelaySeconds: 5
+  #    periodSeconds: 5
+
+
+
+Explanation:
+- Pod is marked ready only if /ready endpoint responds successfully.
+- If probe fails, Pod is removed from Service load balancer temporarily.
+
+
+----------------------------------------
+ TCP PROBE EXAMPLE
+----------------------------------------
+livenessProbe:
+  tcpSocket:
+    port: 3306
+  initialDelaySeconds: 10
+  periodSeconds: 20
+
+Explanation:
+- Checks if TCP port 3306 (e.g., MySQL) is reachable.
+- If not, container restarts.
+
+
+------------------------------------------------------------
+STARTUP PROBE
+------------------------------------------------------------
+
+The Startup probe ensures that slow-starting containers aren’t prematurely restarted by Liveness probes.
+
+How It Works:
+-------------
+- Kubernetes runs the Startup probe first.
+- Liveness and Readiness probes run only after the Startup probe succeeds.
+- If the Startup probe fails, the container is killed and restarted based on the pod’s restart policy.
+
+When to Use:
+------------
+Use a Startup probe when your application takes significant time to initialize, to prevent early restarts during startup.
+
+
+
+    # --- STARTUP PROBE ---
+    startupProbe:
+      exec:
+        command:
+        - sh
+        - -c
+        - "mysqladmin ping -h 127.1.2.1 -u root -prootpassword"
+		
+      initialDelaySeconds: 10        # Wait 10s before the first check
+      periodSeconds: 10              # Check every 10s
+      failureThreshold: 30           # wait up to 30 failures, Allow up to 5 minutes (30 * 10s) for startup
+
+
+
+Explanation:
+- Kubernetes gives app up to 5 minutes (30 x 10s) to start.
+- During this time, no liveness or readiness checks run.
+- After success, other probes start.
+
+----------------------------------------
+9. HOW TO CHECK PROBE STATUS
+----------------------------------------
+kubectl describe pod <pod-name>
+
+Look in the "Events" section:
+Example:
+Liveness probe failed: HTTP probe failed with statuscode: 500
+Killing container nginx.
+
+----------------------------------------
+COMMON PROBE PARAMETERS
+----------------------------------------
+
+
+initialDelaySeconds  --   Wait time before first check                
+periodSeconds        --   Time between probe checks                   
+timeoutSeconds       --   How long to wait for a response             
+failureThreshold     --  Number of failures before marking unhealthy 
+successThreshold     --   Successes needed to mark healthy again      
+					  
+
+----------------------------------------
+ REAL-WORLD COMBINED EXAMPLE
+----------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: myapp:v1
+        ports:
+        - containerPort: 8080
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          failureThreshold: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+
+Explanation:
+- startupProbe gives app time to initialize.
+- livenessProbe restarts container if it becomes unresponsive.
+- readinessProbe ensures Pod only gets traffic when ready.
+
+
+----------------------------------------
+TROUBLESHOOTING TIPS
+----------------------------------------
+- Use "kubectl describe pod" to see probe failures.
+- Check probe paths and ports match your container.
+- Increase "initialDelaySeconds" for slow apps.
+- For debugging, try "kubectl exec -it <pod> -- curl localhost:<port>/<path>".
+
+
+------------------------------------------------------------
+PROBE EXECUTION FLOW
+------------------------------------------------------------
+
+1. Container starts.
+2. Kubernetes waits for initialDelaySeconds.
+3. Startup Probe runs.
+   - Fails → Pod restarts (based on restartPolicy).
+   - Succeeds → Move to next step.
+4. Liveness and Readiness probes start.
+5. Liveness failure → Pod restarts.
+6. Readiness failure → Pod removed from service endpoints.
+7. Probes continue running periodically.
+
+------------------------------------------------------------
+BEST PRACTICES FOR DEFINING PROBES
+------------------------------------------------------------
+
+- Keep probes lightweight. Avoid heavy operations (e.g., full DB queries).
+- Tune frequency:
+   - Too frequent → Resource overhead.
+   - Too infrequent → Slow issue detection.
+- Use Startup probes for slow apps.
+- Skip probes for simple containers that exit cleanly on failure.
+- Review probe logic regularly after updates.
+- Be mindful of restart policies (Never → failed containers won’t recover).
 
