@@ -2208,6 +2208,320 @@ helm history fbapp
 
 cat /c/Users/Dell/AppData/Roaming/helm/repositories.yaml
 
+===============================================================================================
+
+
+===============
+6 NOV 25: 
+
+ADV SCHEDULING : 
+
+========================================
+KUBERNETES SCHEDULING 
+========================================
+
+1. WHAT IS SCHEDULING?
+----------------------
+In Kubernetes, the scheduler decides - *which node* a Pod will run on.
+By default, Kubernetes automatically picks the best node based on CPU, memory, and node load.
+
+But you can control where your Pods run using:
+- nodeName
+- nodeSelector
+- nodeAffinity / podAffinity / podAntiAffinity
+- taints and tolerations
+
+These features give you fine control over Pod placement.
+
+
+2. nodeName — FORCE A POD TO RUN ON A SPECIFIC NODE
+---------------------------------------------------
+The simplest and most direct method.
+
+Example:
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-on-node3
+  spec:
+    nodeName: worker-node3
+    containers:
+    - name: nginx
+      image: nginx
+
+Meaning:
+This Pod will run ONLY on the node named worker-node1.
+
+Note:
+If the node doesn’t exist or is not ready, the Pod stays in "Pending" state.
+
+
+3. nodeSelector — SELECT NODE BASED ON LABELS
+---------------------------------------------
+More flexible than nodeName.
+
+Step 1: Label your node
+  kubectl label nodes worker-node1 env=prod
+
+Step 2: Use nodeSelector in Pod spec
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-prod
+  spec:
+    nodeSelector:
+      env: prod
+    containers:
+    - name: nginx
+      image: nginx
+
+Meaning:
+This Pod will only run on nodes that have the label env=prod.
+
+
+4. nodeAffinity — ADVANCED NODE SELECTION
+-----------------------------------------
+nodeAffinity provides more powerful selection logic with expressions and operators.
+
+Example 1: REQUIRED NODE AFFINITY
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-with-node-affinity
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: env
+              operator: In
+              values:
+              - prod
+    containers:
+    - name: nginx
+      image: nginx
+
+Meaning:
+This Pod will only run on nodes that have the label env=prod.
+
+
+
+--------------------------------------
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: pod-with-node-affinity
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:  
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: env
+              operator: In
+              values:
+              - prod
+            - key: region
+              operator: NotIn
+              values:
+              - us-west-1
+    
+    containers:
+    - name: nginx
+      image: nginx
+
+This Pod will only run on nodes that have the label env=prod and not in region us-west-1.
+
+-------------------------------------------------------------
+Example 2: PREFERRED NODE AFFINITY (soft rule)
+
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-preferred-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      # Preference 1: Prefer nodes in region us-east-1
+      - weight: 10
+        preference:
+          matchExpressions:
+          - key: topology.kubernetes.io/region
+            operator: In
+            values:
+            - us-east-1
+
+      # Preference 2: Prefer nodes in availability zone us-east-1b
+      - weight: 5
+        preference:
+          matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - us-east-1b
+
+  containers:
+  - name: nginx
+    image: nginx
+
+
+
+Meaning:
+Prefer nodes in region us-east-1, but schedule elsewhere if unavailable.
+
+
+---------------------
+  spec:
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 10
+            preference:
+              matchExpressions:
+              - key: region
+                operator: In
+                values:
+                - us-east-1
+          - weight: 5
+            preference:
+              matchExpressions:
+              - key: env
+                operator: In
+                values:
+                - prod
+
+
+
+
+
+5. podAffinity — RUN PODS CLOSE TO EACH OTHER
+---------------------------------------------
+Used when you want certain Pods to run on the same node or nearby.
+
+Example:
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: frontend
+  spec:
+    affinity:
+      podAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - backend
+          topologyKey: "kubernetes.io/hostname"
+    containers:
+    - name: nginx
+      image: nginx
+
+Meaning:
+This Pod will run on the same node as another Pod with the label app=backend.
+
+
+6. podAntiAffinity — KEEP PODS APART
+------------------------------------
+Used to spread Pods across nodes for high availability.
+
+Example:
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: web
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: web
+    template:
+      metadata:
+        labels:
+          app: web
+      spec:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - web
+              topologyKey: "kubernetes.io/hostname"
+        containers:
+        - name: nginx
+          image: nginx
+
+Meaning:
+Kubernetes will NOT schedule two web Pods on the same node.
+
+
+7. TAINTS AND TOLERATIONS — PROTECT NODES
+-----------------------------------------
+Taints repel Pods. Tolerations allow specific Pods to bypass that taint.
+
+Step 1: Taint a node
+  kubectl taint nodes worker-node1 dedicated=database:NoSchedule
+
+Meaning:
+No Pods can run on this node unless they have a matching toleration.
+
+Step 2: Add a toleration to your Pod
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: db-pod
+  spec:
+    tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "database"
+      effect: "NoSchedule"
+    containers:
+    - name: mysql
+      image: mysql
+
+Meaning:
+This Pod is allowed to run on a node tainted with dedicated=database:NoSchedule.
+
+
+8.   WHEN TO USE WHAT
+
+   check  image 
+
+
+
+
+COMBINING MULTIPLE RULES
+----------------------------
+You can mix multiple scheduling features in one Pod spec.
+
+Example:
+  spec:
+    nodeSelector:
+      env: prod
+    tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "web"
+      effect: "NoSchedule"
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: web
+          topologyKey: "kubernetes.io/hostname"
+
+Meaning:
+Run only on production nodes (env=prod), tolerate the "web" taint, and ensure no two web Pods are on the same node.
 
 
 
