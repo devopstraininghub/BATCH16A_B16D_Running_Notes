@@ -2868,3 +2868,395 @@ BEST PRACTICES FOR DEFINING PROBES
 - Review probe logic regularly after updates.
 - Be mindful of restart policies (Never → failed containers won’t recover).
 
+
+==========================================================================================================================================
+
+DATE: 10 NOV 25 :
+
+K8S SECURITY 
+
+========================================
+KUBERNETES RBAC
+========================================
+
+WHAT IS RBAC?
+-------------
+RBAC stands for Role-Based Access Control.
+It defines who can do what on which Kubernetes resources.
+
+In short:
+- Authentication: Who are you?
+- Authorization: What are you allowed to do?
+
+Example: A developer might read Pods but not delete them.
+
+
+WHY RBAC IS IMPORTANT
+---------------------
+Without RBAC, anyone with cluster access could modify or delete everything.
+RBAC provides fine-grained control, ensuring safety, accountability, and compliance.
+
+
+MAIN RBAC COMPONENTS: 
+--------------------
+Role — Defines permissions (verbs) for resources in one namespace.
+ClusterRole — Defines permissions cluster-wide.
+RoleBinding — Grants Role permissions to users or service accounts in a namespace.
+ClusterRoleBinding — Grants ClusterRole permissions cluster-wide.
+
+
+BASIC FLOW
+-----------
+Role defines WHAT actions are allowed.
+ServiceAccount or User defines WHO is trying to access.
+RoleBinding connects them together.
+
+
+USER CREATION
+----------------
+- Kubernetes does not manage users directly (unlike Linux systems ).
+- You cannot create users using commands like “useradd”.
+- Kubernetes delegates authentication to external Identity Providers (IDPs).
+
+IDENTITY PROVIDERS (IDPs)
+----------------------------
+- Common examples:
+  - AWS IAM (for EKS)
+  - Azure AD (for AKS)
+  - LDAP
+  - OCTA
+  - SSO (Single Sign-On)
+  - Keycloak (open-source identity broker)
+  
+- Kubernetes API server can work as an OAuth server to authenticate users.
+- Users authenticate via existing systems (e.g., Google login, GitHub login).
+- In enterprise setups:
+  - IAM or SSO defines users and groups.
+  - Kubernetes imports these identities and enforces access via RBAC.
+
+
+SIMPLE EXAMPLE (READ PODS ONLY)
+-------------------------------
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: dev
+  name: pod-reader
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dev-user
+  namespace: dev
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-binding
+  namespace: dev
+subjects:
+- kind: ServiceAccount
+  name: dev-user
+  namespace: dev
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+
+kubectl auth can-i get pods --as system:serviceaccount:dev:dev-user -n dev
+kubectl auth can-i delete pods --as system:serviceaccount:dev:dev-user -n dev
+
+kubectl auth can-i create pods --as madhu -n dev
+
+
+==========================================================================================================================================
+DATE: 
+
+11 NOV 2025:
+
+KUBERNETES EKS IAM USER ACCESS – 
+
+Create an EKS cluster
+
+Create IAM users
+
+
+kiran 
+
+arn:aws:iam::14155xxxxxxxxx2:user/kiran
+AKIASB5xxxxxxxxxxxxxxxxxxx
+67cSP+czMzNG7ADwB0bxxxxxxxxxxxxxxxxxxxx
+
+madhu 
+
+arn:aws:iam::14155xxxxx2:user/madhu
+AKIASB5M6Cxxxxxxxxxxxxxxxx
+n/sws6jKFHziAXjfggcxxxxxxxxxxxxxxxxxxxxxxxx
+
+
+========================
+b16-eks-describe-policy
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "eks:DescribeCluster"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+===========================
+
+Map those IAM users to Kubernetes using the aws-auth ConfigMap (kube-system) 
+
+Assign permissions (edit, view) to each user
+
+Verify access using kubectl
+
+===========================
+
+STEPS:
+
+CREATING THE EKS CLUSTER WITH EKSCTL
+
+     eksctl create cluster --name b16dcluster  --nodegroup-name b16ng --node-type t3.micro --nodes 4 --managed
+
+
+What this does:
+
+           Creates VPC, subnets, security groups
+           
+           Creates control plane
+           
+           Creates worker node group
+           
+           Automatically generates a kubeconfig entry
+           
+           Creates the node IAM role and maps it in aws-auth for nodes
+           
+           After cluster creation, kubectl can talk to the cluster using:
+           
+           kubectl get nodes
+		   
+
+CREATING IAM USERS IN AWS (MADHU AND RAMANI)
+
+Two IAM users were created in the AWS IAM console:
+
+User: madhu
+
+User: kiran
+
+For each user:
+
+An Access Key ID was created
+
+A Secret Access Key was created
+
+These keys are used to configure AWS CLI on the machine where kubectl will run.
+
+
+
+
+COLLECTING IAM USER ARNs
+
+Each IAM user has a unique ARN. Example:
+
+arn:aws:iam::<ACCOUNT-ID>:user/madhu
+arn:aws:iam::<ACCOUNT-ID>:user/kiran
+
+
+These ARNs are required to map the users into Kubernetes using the aws-auth ConfigMap.
+
+
+-----------------------------
+
+
+UPDATING aws-auth CONFIGMAP TO MAP IAM USERS TO KUBERNETES
+
+The aws-auth ConfigMap is located in the kube-system namespace.
+
+To edit:
+
+kubectl edit configmap aws-auth -n kube-system
+
+The following lines were added to map the users:
+
+kubectl get configmap aws-auth -n kube-system -o yaml
+---------------------------------
+  mapUsers: |
+    - userarn: arn:aws:iam::141559732042:user/madhu
+      username: madhu
+      groups:
+        - system:authenticated
+
+    - userarn: arn:aws:iam::141559732042:user/kiran
+      username: kiran
+      groups:
+        - system:authenticated
+-----------------------------------
+
+Meaning:
+
+Each IAM user is now recognized by Kubernetes
+
+They can authenticate but cannot perform actions yet
+
+Permissions will be assigned using RBAC
+
+
+
+kubectl get configmap aws-auth -n kube-system -o yaml
+--------------------------------------
+apiVersion: v1
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::141559732042:role/eksctl-b16dcluster-nodegroup-b16ng-NodeInstanceRole-df0QmXnnuYNj
+      groups:
+      - system:bootstrappers
+      - system:nodes
+      username: system:node:{{EC2PrivateDNSName}}
+  mapUsers: |
+    - userarn: arn:aws:iam::141559732042:user/madhu
+      username: madhu
+      groups:
+        - system:authenticated
+
+    - userarn: arn:aws:iam::141559732042:user/kiran
+      username: kiran
+      groups:
+        - system:authenticated
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2025-11-11T14:13:29Z"
+  name: aws-auth
+  namespace: kube-system
+  resourceVersion: "4469"
+  uid: 8d6a9821-8b7b-4e75-b5ab-c80f5af8deca
+
+---------------------------------------------------
+
+ASSIGNING PERMISSIONS USING RBAC
+    Check manifest files in folder  
+
+VERIFYING USER ACCESS
+
+Switch AWS CLI credentials to test each user:
+
+aws configure
+(enter Madhu's or kiran's keys)
+
+Then test permissions:
+
+kubectl auth can-i create pods
+kubectl auth can-i delete deployments
+kubectl auth can-i get pods -n prod
+kubectl auth can-i list services
+kubectl auth can-i create pods --as madhu -n dev
+kubectl auth can-i create pods --as madhu -n prod
+kubectl auth can-i create pods --as kiran -n dev
+
+Expected results:
+
+kubectl auth can-i create pods --as madhu -n dev
+
+Madhu (edit role) should be able to create, update, delete resources.
+
+Ramani (view role) should only be able to read resources.
+
+kubectl auth can-i create pods --as madhu -n dev
+
+Example tests:
+As Madhu:
+kubectl create deployment test --image=nginx
+
+As kiran:
+kubectl create deployment test --image=nginx
+(This should be denied.)
+
+
+==========================================================================================================================
+
+IRSA ( IAM Roles for Service Accounts) 
+------------
+IRSA stands for IAM Roles for Service Accounts.
+It is a mechanism in Amazon EKS that allows you to give AWS IAM permissions to Pods, not to human users.
+
+IRSA is used when an application running inside Kubernetes needs to access AWS services securely.
+
+Examples:
+- A Pod needs to read/write an S3 bucket.
+- A Pod needs DynamoDB read/write access.
+- A Pod needs to publish messages to an SNS topic.
+- A Pod needs CloudWatch logging permissions.
+
+Instead of giving wide privileges to the entire EKS worker node, IRSA gives permissions only to the specific Pod that needs it.
+
+
+WHY IRSA IS USED
+----------------
+Generally, EC2 worker nodes carried broad IAM roles.
+All Pods running on the node automatically inherited those wide permissions.
+This was insecure and violated least-privilege principles.
+
+IRSA solves this by:
+- Attaching IAM roles directly to ServiceAccounts.
+- Ensuring Pods using that ServiceAccount have only the permissions defined in that IAM role.
+- Eliminating the need to store AWS access keys inside Pods.
+
+
+HOW IRSA WORKS (CONCEPT)
+------------------------
+1. You create an IAM Role with a trust policy for the EKS OIDC provider.
+2. You annotate a Kubernetes ServiceAccount with that IAM Role ARN.
+3. Any Pod that uses that ServiceAccount automatically receives AWS credentials mapped to that IAM Role.
+4. The Pod can now call AWS APIs securely with the least-privilege permissions you provided.
+
+
+IRSA VS IAM USERS (HUMAN ACCESS)
+--------------------------------
+IRSA is only for Pods.
+IAM Users or IAM Roles are for humans and administrators.
+
+Clear comparison:
+
+Feature                     IAM User Access                 IRSA (Pod Access)
+---------------------------------------------------------------------------
+Purpose                     Human access to EKS cluster     Pod access to AWS services
+Level                       Kubernetes authentication       Pod-to-AWS authorization
+Tools Used                  aws-auth ConfigMap + RBAC       OIDC provider + IAM role + SA
+Example                     User can get pods, deploy apps  Pod can read/write S3 bucket
+
+
+IMPORTANT DISTINCTION
+---------------------
+IAM User access = Controls what humans can do with kubectl.
+IRSA = Controls what Pods can do when calling AWS services.
+
+They are complementary:
+- DevOps engineers, developers, admins use kubectl via IAM + RBAC.
+- Applications inside Pods use IRSA to call AWS resources.
+
+
+EXAMPLE SCENARIO
+----------------
+A Pod needs to access an S3 bucket.
+
+Without IRSA:
+- You must give the node IAM Role S3 access, which means every Pod on that node also gets S3 access. Not secure.
+
+With IRSA:
+- Create an IAM Role that ONLY has "s3:GetObject" permissions.
+- Attach it to the Pod using a ServiceAccount annotation.
+- Only that Pod gets S3 permissions. No other Pod gets those permissions.
+
