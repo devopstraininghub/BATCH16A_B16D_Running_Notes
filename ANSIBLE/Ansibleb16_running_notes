@@ -1,1 +1,279 @@
 
+ANSIBLE:
+
+1. INSTALL ANSIBLE ON CONTROL/ MASTER SERVER
+2. SETUP SSH PASSWORD LESS AUTHENTICATION TO ALL WORKER NODES / CLIENT SERVERS
+
+( WATCH CLASS RECORDING FOR DETAILED EXPLANATION- how to generate sshkeys.. etc  ) 
+
+=============================================================================================
+SETUP ANSIBLE PRATICE FOLDER AND CREATE A Inventory / host file  
+ 
+ 
+cd /opt/
+sudo vim inventory 
+ 
+[appservers]
+172.31.37.67
+#2.3.4.5
+
+[dbservers]
+172.31.35.163
+172.31.19.64
+
+[util]
+#1.2.3.4
+
++===================================================
+AD-HOC COMMANDS: 
+
+WITH LINUX : 
+
+  ansible -i /opt/inventory all -m ping
+  ansible -i /opt/inventory all -b -a "touch /opt/madhu"
+  ansible -i /opt/inventory all -b -a "mkdir /opt/kiran"
+  ansible -i /opt/inventory appservers -b -a "mkdir /opt/mc"
+  ansible -i /opt/inventory dbservers -b -a "mkdir /opt/mysqldb"
+  ansible -i /opt/inventory all -b -a "ls -lrth /opt"
+  ansible -i /opt/inventory 172.31.20.99 -b -a "touch /opt/node2"
+  ansible -i /opt/inventory all -b -a "ls -lrth /opt"
+  ansible -i /opt/inventory all -b -a "useradd madhu"
+  ansible -i /opt/inventory all -b -a "tail -3 /etc/passwd"
+  ansible -i /opt/inventory appservers -b -a "useradd mcuser"
+  ansible -i /opt/inventory dbservers -b -a "useradd dbuser"
+  ansible -i /opt/inventory all -b -a "tail -3 /etc/passwd"
+  ansible -i /opt/inventory all -b -a "userdel -r dbuser"
+  ansible -i /opt/inventory all -b -a "rm -rf /opt/madhu"
+  ansible -i /opt/inventory all -b -a "rm  /opt/madhu"
+  ansible -i /opt/inventory all -b -a "touch /opt/madhu"
+  ansible -i /opt/inventory all -b -a "mkdir /opt/madhu"
+  ansible -i /opt/inventory all -b -a "mkdir /opt/bach16"
+  ansible -i /opt/inventory all -b -a "useradd b16user"
+
+==============================================
+AD-HOC COMMANDS: 
+USING MODULES:
+
+Ansible modules are small programs that do specific tasks on remote machines — safely, automatically, and repeatedly without causing errors.
+
+1. Modules are Idempotent — Linux commands are NOT
+2. Modules understand system state — Linux commands don’t - Modules check before doing anything- Linux commands always   execute blindly.
+3. Modules return structured JSON data — Linux commands just print text
+4. Modules are safer — Linux commands may break the system
+
+
+
+ansible all -b -a "useradd mounika1"
+ansible all -m user -b -a "state=present name=mounika2 "
+
+ansible all -m copy -b -a "src=path/of/file dest=/path"
+
+ansible all -m yum -b -a "name=git"
+ansible all -m yum -b -a "name=git state=preasent"
+
+ansible all -a "yum install git -y" -b
+ansible all -b -a "yum install git -y"
+
+ansible all -m yum -b -a "name=git state=present"
+
+ansible all -m yum -b -a "name=git state=absent"
+
+ansible all -b -a "yum remove git -y"
+
+ansible all -m yum -b -a "name=httpd state=present"
+
+ansible all -m service -b -a "name=httpd state=started"
+
+ansible all -b -a "service httpd start"
+
+ansible devops -b -a "service httpd start"
+ansible all -m service -b -a "name=httpd state=started"
+Ex: reloaded, restarted, started, stopped
+
+
+ansible all -m yum -b -a "name=java state=latest"
+
+ansible all -b -a "useradd user1"
+
+ansible all -m user -b -a "name=alekhya state=present"
+
+ansible devops -b -a "userdel user1"
+
+ansible all -m user -b -a "name=alekhya state=absent"
+
+ansible all -b -a "mkdir /opt/ooooo1"
+
+ansible all -b -a "touch /opt/abc"
+
+/
+ansible all -m file -b -a "path=/opt/k8s state=touch"
+
+ansible all -m file -b -a "path=/opt/456dir state=directory"
+
+
+
+   ansible -i /opt/inventory all -b -m user -a "name=user16 state=present"
+   ansible -i /opt/inventory  -m ping all
+   ansible -i /opt/inventory all -b -m file -a "name=/opt/jenkinsfile state=touch"
+   ansible -i /opt/inventory all -b -m file -a "name=/opt/jenkinsfile state=dir"
+   ansible -i /opt/inventory all -b -m file -a "name=/opt/jenkinsdir state=diretory"
+   ansible -i /opt/inventory all -b -m file -a "name=/opt/jenkinsdir state=directory"
+   ansible -i /opt/inventory all -b -m file -a "name=/opt/jenkinsdir state=absent"
+   ansible -i /opt/inventory appservers -b -m yum -a "name=git state=present"
+   ansible -i /opt/inventory all -b -m yum -a "name=git state=present"
+   ansible -i /opt/inventory all -b -m yum -a "name=httpd state=prent"
+   ansible -i /opt/inventory all -b -m yum -a "name=httpd state=present"
+   ansible -i /opt/inventory all -b -m service -a "name=httpd state=start"
+   ansible -i /opt/inventory all -b -m service -a "name=httpd state=started"
+   ansible -i /opt/inventory all -b -m copy -a "src= /opt/index.html  dest=/var/www/html/index.html"
+   ansible -i /opt/inventory all -b -m copy -a "src=/opt/index.html  dest=/var/www/html/index.html"
+  sudo vim index.html
+  ansible -i /opt/inventory all -b -m copy -a "src=/opt/index.html  dest=/var/www/html/index.html"
+==============================================
+ansible -i /opt/inventory all -b -m yum -a "name=httpd state=absent"
+ansible -i /opt/inventory all -b -m service -a "name=httpd state=started"
+ansible -i /opt/inventory all -b -m copy -a "src= /opt/index.html  dest=/var/www/html/index.html"
+======================
+
+
+PLAYBOOK: 
+An Ansible Playbook is a set of instructions written in YAML that tells Ansible what tasks to run on which servers.
+
+A playbook consists of playa, and a play consists of tasks.
+
+It uses configuration files called Playbooks written in YAML. 
+
+Ansible modules are standalone scripts that can be used inside an Ansible playbook. . 
+
+yaml - one of the data structure format to represent data .
+       yaml file is used to represent data , in our case ansible configuration data
+
+for ex : 
+
+server details :
+
+name = mcserver1
+owner = Madhu
+created = 14 Nov 25
+status = active 
+
+----
+name = mcserver2
+owner = Kiran 
+created = 14 Nov 25
+status = active 
+=========
+
+servers:
+
+  - name: mcserver1    
+    created: "14 Nov 25"
+    status: active
+	owner: Madhu
+	
+  - name: mcserver2
+    owner: Kiran
+	status: active
+    created: "14 Nov 25"
+=========================
+
+iff b/w  XML  VS JSON VS YAML FORMATS :
+
+-----------------------------------
+ways to Representation of Data in YAML :
+
+-------------
+key-value pair 
+
+name = mcserver1
+owner = madhu
+
+name: mcserver1
+owner: madhu
+-------------------
+Array/ List - 
+
+- java 
+- c 
+- go 
+
+Fruits:
+
+- apple
+- grape 
+- banana
+- Orange:   
+   Calories: 50
+   Fat: 0.1 g
+   Carbs: 5g
+
+-------------------
+
+Dictionary - Set of properties , grouped together
+
+Orange:   
+   Calories: 50
+   Carbs: 5g
+   Fat: 0.1 g
+   
+   
+make sure we are giving spaces properly 
+ - equal no of spaces 
+===========
+What is gathering facts?
+
+Automatic collection of system information before running tasks.
+Facts" are pieces of information Ansible collects about the managed host, such as:
+
+OS version
+IP addresses
+Hostname
+CPU, RAM
+Network interfaces
+Python path
+Distribution family (RedHat, Debian, etc.)
+Kernel version
+
+==============================
+ cat /opt/playbooks/playbook1.yaml
+
+
+---
+- name: Setup git,httpd,start service and deploy code
+  become: yes
+  hosts: all
+
+  tasks:
+    - name: Install Git #ansible -i /opt/inventory all -b -m yum -a "name=git state=present"
+      yum:
+        name: git
+        state: present
+
+    - name: install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: httpd service start
+      service:
+        name: httpd
+        state: started
+      tags: service_httpd
+
+    - name: httpd service status
+      shell: systemctl status httpd
+      register: output_status
+      tags: service_httpd
+
+    - name: Display httpd service start
+      debug:
+        var: output_status.stdout
+      tags: service_httpd
+
+
+    - name: deploying index.html code
+      copy:
+        src: /opt/index.html
+        dest: /var/www/html/index.html
+      tags: code_copy
+
