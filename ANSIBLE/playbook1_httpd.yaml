@@ -1,0 +1,38 @@
+---
+- name: Setup git,httpd,start service and deploy code
+  become: yes
+  hosts: all
+
+  tasks:
+    - name: Install Git #ansible -i /opt/inventory all -b -m yum -a "name=git state=present"
+      yum:
+        name: git
+        state: present
+
+    - name: install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: httpd service start
+      service:
+        name: httpd
+        state: started
+      tags: service_httpd
+
+    - name: httpd service status
+      shell: systemctl status httpd
+      register: output_status
+      tags: service_httpd
+
+    - name: Display httpd service start
+      debug:
+        var: output_status.stdout
+      tags: service_httpd
+
+
+    - name: deploying index.html code
+      copy:
+        src: /opt/index.html
+        dest: /var/www/html/index.html
+      tags: code_copy
