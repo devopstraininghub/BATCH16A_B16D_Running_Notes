@@ -277,3 +277,248 @@ Kernel version
         dest: /var/www/html/index.html
       tags: code_copy
 
+=======================================================================================
+
+DATE: 15 NOV 25
+
+
+1.  HOW TO DO CONF AUTOMATION ON  MASTERSERVER IN ANSBLE CONTROL 
+
+
+
+2. TEMPLATE MODULE 
+   Jinja2 templating syntax 
+
+3. JENKINS SETUP 
+
+jenkins setup 
+
+
+sudo yum update –y
+sudo wget -O /etc/yum.repos.d/jenkins.repo  https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum upgrade
+sudo yum install java-21-amazon-corretto -y
+sudo yum install jenkins -y
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+
+
+
+vim jenkinsetup.yaml 
+
+---
+- name: Install Jenkins on RHEL/Amazon Linux
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Download Jenkins repo file
+      get_url:
+        url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        dest: /etc/yum.repos.d/jenkins.repo
+        mode: '0644'
+
+    - name: Import Jenkins GPG key
+      rpm_key:
+        state: present
+        key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+    - name: Upgrade packages after adding repo
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Amazon Corretto Java 21
+      yum:
+        name: java-21-amazon-corretto
+        state: present
+
+    - name: Install Jenkins
+      yum:
+        name: jenkins
+        state: present
+
+    - name: Enable Jenkins service
+      systemd:
+        name: jenkins
+        enabled: yes
+
+    - name: Start Jenkins service
+      systemd:
+        name: jenkins
+        state: started
+
+============================================
+4. TOMCAT SETUP 
+
+#SCRIPT FOR TOMCAT
+ 
+ 
+#!/bin/bash
+
+sudo yum install java -y
+cd /opt
+sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.109/bin/apache-tomcat-9.0.109.tar.gz
+sudo tar -xvf /opt/apache-tomcat-9.0.109.tar.gz
+
+cd /opt/apache-tomcat-9.0.109/webapps/manager/META-INF
+sudo sed -i 's/"127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1"/".*"/g' context.xml
+
+cd /opt/apache-tomcat-9.0.109/conf
+sudo mv tomcat-users.xml tomcat-users_bkup_11sep25.xml
+sudo touch tomcat-users.xml
+sudo echo '<?xml version="1.0" encoding="utf-8"?>
+        <tomcat-users>
+        <role rolename="manager-gui"/>
+        <user username="tomcat" password="tomcat" roles="manager-gui, manager-script, manager-status"/>
+        </tomcat-users>' > tomcat-users.xml
+
+cd /opt/apache-tomcat-9.0.109/conf/
+sudo sed -i 's/Connector port="8080"/Connector port="8081"/g' server.xml
+sudo /opt/apache-tomcat-9.0.109/bin/startup.sh
+
+=======================
+
+vim tomcatsetup.yaml
+
+---
+- name: Install and configure Apache Tomcat 9
+  hosts: all
+  become: yes
+
+  vars:
+    tomcat_version: "9.0.109"
+    tomcat_dir: "/opt/apache-tomcat-9.0.109"
+    tomcat_tar: "apache-tomcat-9.0.109.tar.gz"
+    tomcat_url: "https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.109/bin/apache-tomcat-9.0.109.tar.gz"
+
+  tasks:
+    - name: Install Java
+      yum:
+        name: java
+        state: present
+
+    - name: Download Apache Tomcat tarball
+      get_url:
+        url: "{{ tomcat_url }}"
+        dest: "/opt/{{ tomcat_tar }}"
+        mode: '0644'
+
+    - name: Extract Tomcat archive
+      unarchive:
+        src: "/opt/{{ tomcat_tar }}"
+        dest: "/opt"
+        remote_src: yes
+
+    - name: Update context.xml to allow all IPs
+      replace:
+        path: "{{ tomcat_dir }}/webapps/manager/META-INF/context.xml"
+        regexp: '"127\\.\d+\\.\d+\\.\d+|::1|0:0:0:0:0:0:0:1"' 
+        replace: '".*"'
+
+    - name: Backup original tomcat-users.xml
+      command: mv tomcat-users.xml tomcat-users_bkup_11sep25.xml
+      args:
+        chdir: "{{ tomcat_dir }}/conf"
+      ignore_errors: yes
+
+    - name: Create new tomcat-users.xml
+      copy:
+        dest: "{{ tomcat_dir }}/conf/tomcat-users.xml"
+        content: |
+          <?xml version="1.0" encoding="utf-8"?>
+          <tomcat-users>
+            <role rolename="manager-gui"/>
+            <user username="tomcat" password="tomcat" roles="manager-gui, manager-script, manager-status"/>
+          </tomcat-users>
+        mode: '0644'
+
+    - name: Change Tomcat port from 8080 to 8081
+      replace:
+        path: "{{ tomcat_dir }}/conf/server.xml"
+        regexp: 'Connector port="8080"'
+        replace: 'Connector port="8081"'
+
+    - name: Start Tomcat
+      shell: "{{ tomcat_dir }}/bin/startup.sh"
+
+=========================================================================
+
+sudo vim play.yml
+-------------------------------
+
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Installing no.of package
+    yum: 
+	  name: git
+	  state: present
+	
+
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Installing no.of package
+    yum: name=git,httpd,wget,java state=present
+
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: removinfg  no.of package
+    yum: name=git,httpd,wget,java  state=absent  
+
+or
+
+sudo vim play.yml
+-------------------------------
+---
+- hosts: all
+  become: yes
+  tasks:
+  - name: Installing no.of packages
+    yum: state=present name={{item}}
+    with_items:
+    - git
+    - httpd
+    - wget
+	- java
+	- xyx 
+	- abc 
+
+---------------------
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install necessary packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - httpd
+        - wget
+        - java
+        - xyz
+        - abc
+      tags:
+        - install_packages
+
+###    
+{{ item }} is a special kind of variable used in loops in Ansible.
+
+
+======================
+
+ANSIBLE VARIABLES 
