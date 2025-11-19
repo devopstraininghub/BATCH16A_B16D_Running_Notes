@@ -883,5 +883,97 @@ cat rolespractice/mainplaybook.yaml
 	
 
 ============================================
+DATE: 19 NOV 25
+============================================
+What Is Dynamic Inventory?
 
-DATE: 18 NOV 25 
+A Dynamic Inventory is one where Ansible gets host information from a script, program, or plugin at runtime, instead of a fixed static inventory file.
+
+       Dynamic inventory fetches hosts directly from AWS
+       No need to manually update inventory files
+       Grouping is automatic based on EC2 tags
+       Works perfectly for cloud automation and scaling 
+
+Examples of sources:
+
+   Python scripts you write   
+   JSON/YAML files generated automatically   
+   Cloud provider APIs   
+   Inventory plugins (e.g., ini, yaml, script, constructed, aws_ec2, openstack, etc.)
+   
+  
+
+
+  
+steps:  
+
+
+1 INSTALL ansible &  AWS COLLECTION
+
+
+yum install ansible -y 
+ansible-galaxy collection install amazon.aws
+
+      This installs the official AWS modules and inventory plugins, including:      
+      aws_ec2 dynamic inventory plugin      
+      ec2_instance module      
+      ec2_security_group module     
+      many other AWS automation tools
+
+
+1. sudo yum install python3-boto3 python3-botocore -y
+
+    Boto3 is required because Ansible uses it to talk to AWS APIs.
+	
+2. Configure AWS credentials - This allows Ansible to access AWS.
+   
+   [ec2-user@master opt]$ aws configure
+AWS Access Key ID [None]: AKIXXXXX
+AWS Secret Access Key [None]: zJvEN2EzXXXXXXXXXXXXXXX
+Default region name [None]: us-east-1
+Default output format [None]:
+[ec2-user@master opt]$
+
+   
+3. mkdir -p /opt/aws_inventory
+   cd /opt/aws_inventory
+
+   vim aws_ec2.yml
+
+            plugin: aws_ec2
+            regions:
+              - us-east-1
+            filters:
+              instance-state-name: running
+            hostnames:
+              - private-ip-address
+            compose:
+              ansible_host: private_ip_address
+            keyed_groups:
+              - key: tags.Name
+                prefix: ""
+                separator: ""
+            
+
+
+4. TEST DYNAMIC INVENTORY:
+
+ansible-inventory -i /opt/aws_inventory/aws_ec2.yml --graph
+
+ansible-inventory -i /opt/aws_inventory/aws_ec2.yml --list
+
+
+5. 
+ansible all -i /opt/aws_inventory/aws_ec2.yml -u ec2-user --private-key ~/.ssh/mykey.pem -m ping
+
+
+ansible -i /opt/aws_inventory/aws_ec2.yml all -m ping all 
+
+ansible all -i /opt/aws_inventory/aws_ec2.yml -u ec2-user --private-key ~/.ssh/b16ansible.pem -m ping
+
+
+=============================================================================
+
+QUIZ : 
+
+
