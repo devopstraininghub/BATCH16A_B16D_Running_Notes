@@ -519,6 +519,369 @@ sudo vim play.yml
 {{ item }} is a special kind of variable used in loops in Ansible.
 
 
-======================
 
-ANSIBLE VARIABLES 
+========================================================================================
+DATE: 18 NOV 25 
+
+ANSIBLE VARIABLES :
+
+
+JENKINS WITH basic variables: 
+
+ cat 1-jenkins_vars.yaml
+---
+- name: Install Jenkins on RHEL/Amazon Linux
+  hosts: all
+  become: yes
+
+  vars:
+    jenkins_repo: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+    jenkins_gpgkey: "https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
+
+
+  tasks:
+
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Download Jenkins repo file
+      get_url:
+        url: "{{ jenkins_repo }}"
+        dest: /etc/yum.repos.d/jenkins.repo
+        mode: '0644'
+
+    - name: Import Jenkins GPG key
+      rpm_key:
+        state: present
+        key: "{{ jenkins_gpgkey }}"
+
+    - name: Upgrade packages after adding repo
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Amazon Corretto Java 21
+      yum:
+        name: java-21-amazon-corretto
+        state: present
+
+    - name: Install Jenkins
+      yum:
+        name: jenkins
+        state: present
+
+    - name: Enable Jenkins service
+      systemd:
+        name: jenkins
+        enabled: yes
+
+
+=======================================
+ANSIBLE HANDLERS 
+
+Handlers are tasks that only run when notified.
+
+Handlers are meant to run only when a change impacts the running service.
+
+Only notify a handler when your change requires that service to restart.
+
+
+cat 2-httpd_handlers.yaml
+---
+- name: Setup git,httpd,start service and deploy code
+  become: yes
+  hosts: all
+
+  tasks:
+
+    - name: install httpd
+      yum:
+        name: httpd
+        state: present
+
+    - name: httpd service start
+      service:
+        name: httpd
+        state: started
+      tags: service_httpd
+
+    - name: deploying index.html code
+      copy:
+        src: /opt/index.html
+        dest: /var/www/html/index.html
+      tags: code_copy
+      notify:
+         - httpd service restart
+
+
+  handlers:
+
+    - name: httpd service restart
+      service:
+        name: httpd
+        state: restarted
+      tags: service_httpd
+
+
+=================================================================
+
+
+JENKINS SETUP - PROD GRADE WITH VARS , HANDLERS with WHEN CONDITION 
+
+ cat 3-jenkins_prod.yaml
+---
+- name: Install and configure Jenkins (RHEL / Amazon Linux)
+  hosts: all
+  become: true
+
+  vars:
+    # Jenkins repo & keys
+    jenkins_repo_url: "https://pkg.jenkins.io/redhat-stable/jenkins.repo"
+    jenkins_gpg_key_url: "https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
+
+    # Packages & service
+    java_package: "java-21-amazon-corretto"
+    jenkins_package: "jenkins"
+    jenkins_service: "jenkins"
+    jenkins_port: 8080
+
+    # Backup & restore
+    jenkins_home: "/var/lib/jenkins"
+    jenkins_backup_dir: "/opt/jenkins_backup"
+    enable_backup: true
+    enable_restore: false
+    backup_filename: "jenkins_backup_{{ ansible_date_time.date }}.tar.gz"
+
+    # Template (optional)
+    jenkins_sysconfig_src: "jenkins.j2"
+    jenkins_sysconfig_dest: "/etc/sysconfig/jenkins"
+
+  tasks:
+
+    # ------------------------------
+    # Setup Repos & Packages
+    # ------------------------------
+
+    - name: Download Jenkins repo file
+      get_url:
+        url: "{{ jenkins_repo_url }}"
+        dest: /etc/yum.repos.d/jenkins.repo
+        mode: '0644'
+      notify: Reload repo cache
+
+    - name: Import Jenkins GPG key
+      rpm_key:
+        state: present
+        key: "{{ jenkins_gpg_key_url }}"
+
+    - name: Install Java
+      yum:
+        name: "{{ java_package }}"
+        state: present
+
+    - name: Install / upgrade Jenkins
+      yum:
+        name: "{{ jenkins_package }}"
+        state: latest
+      register: jenkins_install
+      notify: Restart Jenkins
+
+    # - name: Deploy Jenkins sysconfig template
+      # template:
+      #   src: "{{ jenkins_sysconfig_src }}"
+      #   dest: "{{ jenkins_sysconfig_dest }}"
+      # register: sysconfig_template
+      # notify: Restart Jenkins
+
+    - name: Enable and start Jenkins service
+      systemd:
+        name: "{{ jenkins_service }}"
+        enabled: yes
+        state: started
+
+    # ------------------------------
+    # Backup & Optional Restore
+    # ------------------------------
+
+    - name: Ensure backup directory exists
+      when: enable_backup
+      file:
+        path: "{{ jenkins_backup_dir }}"    #"/opt/jenkins_backup"
+        state: directory
+
+    - name: Backup Jenkins home directory
+      when: enable_backup
+      archive:
+        path: "{{ jenkins_home }}"
+        dest: "{{ jenkins_backup_dir }}/{{ backup_filename }}"
+        format: gz
+
+    - name: Restore Jenkins home directory (manual trigger only)
+      when: enable_restore
+      unarchive:
+        src: "{{ jenkins_backup_dir }}/{{ backup_filename }}"
+        dest: "{{ jenkins_home }}"
+        remote_src: yes
+      notify: Restart Jenkins
+
+    # ------------------------------
+    # FIREWALL DETECTION (COMMENTED OUT)
+    # ------------------------------
+
+    # - name: Detect if firewalld is installed
+    #   stat:
+    #     path: /usr/sbin/firewalld
+    #   register: firewalld_binary
+
+    # - name: Detect if firewalld is running
+    #   command: systemctl is-active firewalld
+    #   register: firewalld_status
+    #   failed_when: false
+    #   changed_when: false
+    #   when: firewalld_binary.stat.exists
+
+    # - name: Open Jenkins port {{ jenkins_port }} in firewalld (only if installed & running)
+    #   firewalld:
+    #     port: "{{ jenkins_port }}/tcp"
+    #     permanent: yes
+    #     state: enabled
+    #     immediate: yes
+    #   when:
+    #     - firewalld_binary.stat.exists
+    #     - firewalld_status.stdout == "active"
+
+    # NOTE:
+    # Above firewall logic safely checks:
+    # ✔ firewalld exists
+    # ✔ firewalld is running
+    # ✔ Then opens port 8080 (only when needed)
+    # All commented out for now.
+
+    # ------------------------------
+    # Health Checks
+    # ------------------------------
+
+    - name: Wait for Jenkins port to be open
+      wait_for:
+        host: 127.0.0.1
+        port: "{{ jenkins_port }}"
+        timeout: 60
+        state: started
+
+    - name: Verify Jenkins API endpoint is responding
+      uri:
+        url: "http://127.0.0.1:{{ jenkins_port }}/api/json"
+        status_code: [200 ,403]
+        return_content: yes
+      register: jenkins_api
+      retries: 5
+      delay: 5
+      until: jenkins_api.status in [ 200, 403 ]
+
+    - name: Display Jenkins health check response
+      debug:
+        msg: "Jenkins API responded successfully."
+
+    # ------------------------------
+    # Show initial admin password
+    # ------------------------------
+
+    - name: Read initial admin password
+      slurp:
+        src: /var/lib/jenkins/secrets/initialAdminPassword
+      register: admin_pw
+      ignore_errors: yes
+
+    - name: Show decoded initial admin password
+      when: admin_pw.content is defined
+      debug:
+        msg: "Initial Admin Password: {{ admin_pw.content | b64decode }}"
+
+  # ------------------------------
+  # HANDLERS
+  # ------------------------------
+
+  handlers:
+    - name: Reload repo cache
+      yum:
+        update_cache: yes
+
+    - name: Restart Jenkins
+      systemd:
+        name: "{{ jenkins_service }}"
+        state: restarted
+
+
+======================================================
+
+ANSIBLE ROLES :
+
+your_role_name/
+├── defaults/
+│   └── main.yml          # Default variables (lowest priority)
+├── vars/
+│   └── main.yml          # Variables with higher priority
+├── files/
+│   └── ...               # Static files to copy (e.g., config files, packages)
+├── templates/
+│   └── ...               # Jinja2 templates (e.g., .j2 files)
+├── tasks/
+│   └── main.yml          # Main list of tasks to run
+├── handlers/
+│   └── main.yml          # Handlers triggered by tasks (e.g., service restart)
+├── meta/
+│   └── main.yml          # Role metadata (dependencies, author info)
+├── README.md             # Documentation (optional but recommended)
+└── tests/
+    └── test.yml          # Test playbook to verify role
+
+
+=============
+
+WHY ANSIBLE ROLES ??
+
+Modularization	
+        Breaks down playbooks into smaller, reusable, and independent units of configuration.
+		
+Reusability	
+          Roles can be reused across different playbooks or projects, reducing duplication.
+		  
+Maintainability	
+         Makes it easier to maintain and update configurations by organizing them into distinct sections.
+		 
+Scalability	
+            Helps manage complex systems and scale automation as infrastructure grows.
+Collaboration	
+          Provides a clear structure that improves team collaboration by dividing tasks into specific roles.
+
+
+
+==============================================
+
+ROLES:
+
+sudo ansible-galaxy init <rolename>
+
+sudo ansible-galaxy init httpdrole
+sudo ansible-galaxy init jenkinsrole
+sudo ansible-galaxy init xyzrole
+sudo ansible-galaxy init abcrole
+
+cat rolespractice/mainplaybook.yaml
+
+---
+- hosts: all
+  become: yes
+  roles:
+    - httpdrole
+    - jenkinsrole
+    - xyzrole
+    - abcrole
+
+	
+
+============================================
+
+DATE: 18 NOV 25 
