@@ -1,0 +1,239 @@
+
+MONITORING  & OBSERVABILITY:
+
+Monitoring:
+Monitoring is the process of collecting data about a system (like CPU, memory, errors, logs) to check if it is working correctly. It helps you know when something goes wrong.
+
+Observability:
+Observability tells you why something went wrong by giving deeper insights using logs, metrics, and traces. It helps you understand the internal state of a system from the outside.- RCA 
+
+so 
+Monitoring = Detect problems.
+Observability = Understand and fix problems.
+
+==========================================================
+PROMETHEUS & GRAFANA :
+
+
+Prometheus:
+Prometheus is a monitoring tool that collects and stores metrics (like CPU, memory, requests). 
+It pulls data from servers and applications, saves it, and alerts you when something goes wrong.
+
+Grafana:
+Grafana is a dashboard tool used to visualize the data collected by Prometheus. 
+It shows graphs, charts, and panels so you can easily understand system performance.
+
+sO
+Prometheus = Collects and stores metrics + alerts.
+Grafana = Displays metrics using beautiful dashboards.
+
+
+=================================================
+
+
+Prometheus Architecture:
+
+1. Prometheus Server:
+   - The main component.
+   - It pulls (scrapes) metrics from applications and stores them in its time-series database.
+
+2. Exporters:
+   - Small tools that expose metrics in a format Prometheus understands.
+   - Example: Node Exporter for system metrics (CPU, RAM, Disk).
+
+3. Targets:
+   - The endpoints (apps, servers, services) from which Prometheus collects metrics.
+
+4. Time-Series Database (TSDB):
+   - Prometheus stores all collected metrics here.
+   - Data is stored with timestamps for analysis.
+
+5. Alertmanager:
+   - Sends alerts (email, Slack, etc.) when Prometheus detects problems.
+
+6. Grafana (Optional but commonly used):
+   - Used to visualize Prometheus metrics using dashboards.
+
+=========================================================================
+Generally we can monitor using Prometheus & grafana :
+
+- LATENCY
+- TRAFFIC - NO OF REQUESTS ON LB
+- ERRORS - PAGE TIME OUT , ERROR CODES 
+- SATURATION LIMITS - CPU 80 
+- INFACT EVERY TRACEBLE PARAMETER U CAN MONITOR
+
+
+================
+
+NOW USING MONITORING , WE CAN DETECT PROBLEM , BUT WHAT IS ROOT CAUSE . NOW OBSERVABILITY COMES INTO PICTURE .
+
+CHECK -- LOGS 
+      -- METRICS
+	  -- TRACE 
+	  
+=============================================	  =============================================
+
+       eksctl create cluster tt
+   15  kubectl get nodes
+   16  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+   17  chmod 700 get_helm.sh
+   18  ll
+   19  ./get_helm.sh
+   20  helm repo add stable https://charts.helm.sh/stable
+   21  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   22  helm repo update
+   23  kubectl create namespace prometheus
+   24  ll
+   25  kubectl get all -n prometheus
+   26  kubectl get svc -n prometheus
+   27  kubectl edit svc stable-grafana -n prometheus
+   28  kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus
+   29  kubectl get svc -n prometheus
+   30  kubectl --namespace prometheus get secrets stable-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+   31  LL
+   32  cd /opt/
+   33  ll
+   34  git clone https://github.com/devopstraininghub/mindcircuit16d.git
+   35  yum install git -y
+
+
+
+
+============================================================
+
+aws configure 
+AKIA2NK3Yxxxxxxxxxxxxxxxxxxxxxxxx
+/KK3WHDeeY1xxxxxxxxxxxxxxxxxxxxxx
+
+
+
+
+--------
+
+
+
+--------------------------------
+
+1. eks cluster --
+
+  eksctl create cluster testcluster
+  
+  (prerequisites -- awscli , eksctl , kubectl ...) 
+  
+ ==================================================================================
+  
+  
+kubectl Installation on Linux :
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version
+
+--------------------------------
+
+eksctl installation on aws linux machine 
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+==============================================
+
+create cluster :
+eksctl create cluster testcluster
+
+==================================================
+
+  
+3. heml Installation :
+
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
+
+=========================================================
+ADD & UPDATE THE PROMETHEUS-COMMUNITY HELM REPOSITORY :
+
+
+helm repo add stable https://charts.helm.sh/stable
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+
+
+-- Adds the stable repo (old charts)
+-- Adds the Prometheus community charts repo
+-- Updates the repo index
+========================================================
+4. Create a namespace for Prometheus
+
+   kubectl create namespace monitoring
+
+===============================================
+
+5 . To install Prometheus + Grafana with the recommended chart, you should run:
+
+helm install stable prometheus-community/kube-prometheus-stack -n monitoring
+
+-------------------------------------------------------
+helm install stable prometheus-community/kube-prometheus-stack -n monitoring
+level=WARN msg="unable to find exact version; falling back to closest available version" chart=kube-prometheus-stack requested="" selected=79.7.1
+NAME: stable
+LAST DEPLOYED: Mon Nov 24 14:05:13 2025
+NAMESPACE: monitoring
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+kube-prometheus-stack has been installed. Check its status by running:
+  kubectl --namespace monitoring get pods -l "release=stable"
+
+Get Grafana 'admin' user password by running:
+
+  kubectl --namespace monitoring get secrets stable-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+
+Access Grafana local instance:
+
+  export POD_NAME=$(kubectl --namespace monitoring get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=stable" -oname)
+  kubectl --namespace monitoring port-forward $POD_NAME 3000
+
+Get your grafana admin user password by running:
+
+  kubectl get secret --namespace monitoring -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
+
+
+Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+
+----------------------
+Check installation :
+
+helm list -n monitoring
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
+
+----------------------------------------
+
+Expose Prometheus Service & Grafana service to Load balancer and access from browser. 
+
+kubectl edit svc kube-prom-stack-grafana -n monitoring
+
+   kubectl edit svc stable-grafana -n monitoring
+   kubectl edit svc stable-kube-prometheus-sta-prometheus -n monitoring
+   kubectl get svc -n monitoring
+
+
+-------------------------
+
+to get grafana password :
+
+
+kubectl get secret --namespace monitoring -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
+
+
+Port numbe for Prometheus : 9090
+Port numbe for Grafana : 80
+
+
+you can access prometheus and grafana from browser , and you can monitor from browser .
