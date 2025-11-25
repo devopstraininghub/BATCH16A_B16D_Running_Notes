@@ -237,3 +237,133 @@ Port numbe for Grafana : 80
 
 
 you can access prometheus and grafana from browser , and you can monitor from browser .
+
+
+============================================================
+
+===============================
+25 NOV 25:
+
+
+
+MANUAL SETUP :
+
+Prometheus setup:
+
+
+wget https://github.com/prometheus/prometheus/releases/download/v2.53.1/prometheus-2.53.1.linux-amd64.tar.gz
+tar -xvf prometheus-2.53.1.linux-amd64.tar.gz
+cd prometheus-2.53.1.linux-amd64/
+./prometheus &
+
+
+================================================================================
+grafana setup:
+
+
+wget https://dl.grafana.com/enterprise/release/grafana-enterprise-11.1.0.linux-amd64.tar.gz
+tar -xvf grafana-enterprise-11.1.0.linux-amd64.tar.gz
+cd grafana-enterprise-11.1.0/
+cd bin/
+./grafana-server &
+
+
+
+========================================================================
+
+Node exporter :
+
+
+wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+tar -xvf node_exporter-1.7.0.linux-amd64.tar.gz
+
+
+sudo mv node_exporter-1.7.0.linux-amd64/node_exporter /usr/local/bin
+
+sudo useradd --system --no-create-home --shell /bin/false node_exporter
+sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter
+sudo chmod +x /usr/local/bin/node_exporter
+
+========================================================================================
+
+node_exporter --version
+
+node_exporter, version 1.7.0 (branch: HEAD, revision: 7333465abf9efba81876303bb57e6fadb946041b)
+  build user:       root@35918982f6d8
+  build date:       20231112-23:53:35
+  go version:       go1.21.4
+  platform:         linux/amd64
+  tags:             netgo osusergo static_build
+
+------------------
+SET UP SERVICE FOR NODE EXPORTER :
+
+sudo vim /etc/systemd/system/node_exporter.service
+
+[Unit]
+Description=Node Exporter
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=500
+StartLimitBurst=5
+
+[Service]
+User=node_exporter
+Group=node_exporter
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/node_exporter \
+  --collector.logind
+
+[Install]
+WantedBy=multi-user.target
+-------------------------------------------------------
+sudo systemctl enable node_exporter
+sudo systemctl start node_exporter
+systemctl status node_exporter.service
+
+  
+========================================================================================================================
+
+cat prometheus-2.53.1.linux-amd64/prometheus.yml
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "node_exporter"
+    static_configs:
+      - targets: ["localhost:9100"]
+
+  - job_name: "node_exporter-k8sworker-1"
+    static_configs:
+      - targets: ["3.93.81.127:9100"]
+
+  - job_name: "node_exporter-k8sworker-2"
+    static_configs:
+      - targets: ["44.222.117.122:9100"]
+
+  - job_name: "kube-state-metrics-1"
+    static_configs:
+      - targets: ["3.93.81.127:32581"]
+	  
+  - job_name: "kube-state-metrics-2"
+    static_configs:
+      - targets: ["3.93.81.127:30893"]	  
+	  
+
+  - job_name: "jenkins"
+    static_configs:
+      - targets: ["localhost:8080"]
+    metrics_path: '/prometheus'
+
+
+=================================================================
+nodeexporter - grafana dashboard - 1860	  
