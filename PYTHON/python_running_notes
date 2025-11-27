@@ -1,0 +1,345 @@
+IF SHELL IS ALREADY THERE , WHY PYTHON ??
+	
+	
+THEN WHY PYTHON ???
+	  
+SHELL SCRIPT IS NOT ACTUALY PROGRAMMING  -->  IT IS MORE OF AUTOMATION OF SHELL TASKS / LINUX COMMANDS / LINUX BASED TASKS AUTOMATION	  
+
+    -- IS a command-line interpreter and scripting language for Unix-like operating systems 
+	-- NOT FOR WINDOWS - POWERSHELL
+    -- used for running and automating command-line tasks.
+    -- Ideal for automating system-level tasks, managing files, running system commands, and writing small utility scripts ...
+	
+======================================	  
+
+
+PYTHON :
+      -- IT IS PROGRAMMING LANGUAGE, A HIGH-LEVEL, GENERAL-PURPOSE PROGRAMMING LANGUAGE.
+      -- CLEAN, READABLE SYNTAX. 
+	  -- OOP
+	  -- SUPPORTS  OBJECT-ORIENTED, IMPERATIVE, FUNCTIONAL, AND PROCEDURAL PROGRAMMING PARADIGMS.
+	  -- USED FOR WEB DEVELOPMENT, DATA ANALYSIS, MACHINE LEARNING, AUTOMATION(DEVOPS) , SCIENTIFIC COMPUTING, AND MORE.
+	  -- OUR SCOPE IS LIMITED TO PYTHON SCRIPTING FOR DEVOPS ACTIVITIES 
+	  -- OOP focuses on the concepts of classes, objects, inheritance, encapsulation, polymorphism, and abstraction.
+	  
+	 
+
+PROGRAM        --> MULTIPLE LINES OF CODE / INSTRUCTIONS--> SOFTWARE --> TO CPU -- PROCESSOR 
+               -- Collection of code 
+			   -- It manipulates data 
+			   -- To store data ---> we use variables 
+	 
+
+==================
+
+WHAT IS VARIABLE ?   
+   - a storage unit / container to store data .
+   - to store data we use variables 
+
+
+ x = "madhu"
+==================
+
+x = "madhu" , 10 , 10.5 , 3 + 4i , t 
+
+WHAT IS DATATYPE ?
+Data tyes -- diffrent types of DATA , kinds of values that can be stored and manipulated
+               
+			   
+			   Text -- str 
+			   Numeric - int, float, complex ( 1 + 3i ) 
+			   Boolean - Bool (Only T / F ) 			   
+			   
+			   Sequence of items -- list, range, tuple ,set  ( to store multiple items of diff data types ) 
+			   Mapping -- Dictionary 
+			   set - set 
+
+
+ X  = [ 10, 9.8 , "KIRAN" , true ] 
+========================================================
+
+read
+echo madhu
+	 
+READING AND PRINTIN DATA in python  
+
+
+python    --->  input , print
+
+
+# Reading input from the user
+name = input("Enter your name: ")
+
+# Printing the data
+print("Hello,", name)
+
+---------------------------------------------
+shell script   --> read , echo 
+
+#!/bin/bash
+
+# Reading input from the user
+read -p "Enter your name: " name
+
+# Printing the data
+echo "Hello, $name"
+
+
+=============================================================
+
+OPERATORS :
+ 
+ sum = 5 + 6 
+
+   sum =  a + b
+   
+
+  ARITHMETIC   --->  + , - , * , /, %
+  
+  ASSIGNMENT   --->   = , +=, -+ , *=
+  
+  a=5 
+  a+=5  --> a = a+5 
+  a*=2  ---> a = a*2 
+  
+   8 > 9 
+   
+  COMPARISION  --->    < , > , <= , >= , == , !=  ( true / false ) 
+                      -eq , -lt , -le , -gt, -ge
+  
+  LOGICAL      --->   T & T -- T 
+  
+  IDENTITY     --->    is (==) is not (!=) 
+  
+  MEMBERSHIP   --->   in , not in 
+  
+  BITWISE     --->  & | ! ^ 
+
+==================================================
+EXAMPLE : 
+python:
+
+num1 = float(input("Enter the first number: "))
+num2 = float(input("Enter the second number: "))
+
+
+sum = num1 + num2
+
+
+print(f"The sum of {num1} and {num2} is: {sum}")
+
+==========================
+#!/bin/bash
+
+echo "Enter 1st numner"
+read num1
+
+echo "Enter 2nd  numner"
+read num2
+
+sum=$((num1+num2))
+
+echo "sum of the 2 no is : $sum"
+
+
+
+
+====================================================================
+
+int , float , string , boolean 
+
+LIST VS TUPLE  VS SET VS DICTIONARY 
+
+( to store multiple items of different data types )
+
+
+x = [ 1, 3.4, "madhu" , 4+5i, true ]
+
+x = ( 1, 3.4, "madhu" , 4+5i, true )
+
+x = { 1, 3.4, "madhu" , 4+5i, true }
+
+   mc_list = [1, 2, 3, 4, 5, 6 ,7,1]   ---> []   --> Ordered ,Mutable
+   
+   mc_tuple = (1, 2, 3, 4, 5,1 )  --->  ()     -->  Ordered ,Immutable No changable entries 
+   
+   mc_set = {1, 2, 3, 4, 5}    -->   {}     --> No duplicate entries 
+   
+   
+ ------------------  
+   
+   my_dict = {  key --- value 
+               "name": "Madhu",
+               "mobile: "7396627149"
+               "mobile2": "123456    "			   
+               "age": 30, 
+			   "city": "Hyd"
+			   "address"  "madhapur"
+			   }
+   
+ ======
+ORDERED: 
+     POSTIONS OF DATA ARE FIXED  (LIST , TUPLE ) , Elements maintain their order; can be accessed via  Index.
+
+Mutable:   Elements can be changed, added, or removed.
+
+Duplicates: Allows duplicate elements.
+
+ ================
+ 
+
+1. List
+        An ordered, mutable collection of elements. Can have duplicates 
+
+ list = [1, 2, 3, 4, 1]
+
+============================
+2 Tuple
+     An ordered, immutable collection of elements.Can have duplicates 
+
+  tuple = (1, 2, 3, 4, 5,1 )
+           
+    Immutable: Once created, elements cannot be changed, added, or removed.
+	
+===========
+3. Set
+          An unordered, mutable collection of unique elements., NO DUPLICATES 
+ set = {1, 2, 3, 4}
+
+=============
+4. Dictionary
+
+        An unordered, mutable collection of key-value pairs.
+		
+   dict = {'NAME': 'MADHUKIRAN',
+          'MOBILE': '7396627149'
+		   'ADDRESS'  'MADHUKIRAN'
+		 
+		  
+		  }
+
+
+---------------------------------------
+
+I have a list of user names. I need to remove duplicates and store them efficiently
+
+
+
+  usernames = ["madhu", "kiran", "gorekar", "madhu", "xyz"]
+  
+  
+  
+          unique_usernames = list(set(usernames))
+     
+====================================================================
+  
+I'm building a contact book. I need to store names, phone numbers, and email addresses
+
+
+contact = {
+    "name": "Madhu",
+    "phone": "7396627149",
+    "email": "devopstraininghub@gmail.com"
+   }
+  
+
+contact_book = [
+    {"name": "Madhu", "phone": "7396627149", "email": "devopstraininghub@gmail.com"},
+     {"name": "xyz", "phone": "7396627149",  "email": "xyz@gmail.com"},
+]
+
+
+==================================================
+
+Real-Time DevOps Examples 
+
+List:
+
+Server IPs: 
+       A list of IP addresses of servers in a Cluster, which may change as servers are added or removed.
+
+   - Server IPs: ['192.168.1.1', '192.168.1.2', '10.81.0.3'] 
+
+   
+==============================
+
+
+Tuple:
+
+Server Configuration: 
+          A tuple containing fixed information about a server (IP, OS, version). Once set, these details should not change.
+		  
+          Immutable System Settings: Information about the region, availability zone, and instance type, which remains constant for the duration of a deployment.
+		  
+   - Server Configuration: ('192.168.1.1', 'Ubuntu', '18.04') 
+   - Immutable System Settings: ('US-East', 'us-east-1a', 'm5.large')		  
+		  
+====================
+	  
+Set:
+
+    Active Services --- A set of active services running on a server, where uniqueness (no duplicates) is crucial.
+	
+    Unique Error Codes ---A set of unique error codes encountered during operations, useful for monitoring and alerting.
+
+	- Active Services: {'nginx', 'redis', 'mysql', 'jenkins'} 
+	- Unique Error Codes: {404, 500, 502}
+	
+=====================
+
+Dictionaries :	
+	
+    Environment Variables: Key-value pairs representing environment variables for an application, where keys are unique and values can vary.
+	
+    Configurations: Dictionary of configurations, such as timeout settings and retry limits, where keys represent the setting and values are the parameters
+
+    - Environment Variables: {'DB_HOST': 'db.example.com', 
+	                           'DB_USER': 'admin'
+							   
+							   } 
+	
+    - Configurations: {
+	                   'timeout': 30, 
+					   'retries': 3
+					   }
+	
+
+
+========================================================
+
+
+	FUNCTIONS 
+          -- BLOCK OF CODE FOR REPEATED USE 
+		  -- ALLOWS TO GROUP A SET OF COMMANDS INTO A SINGLE, REUSABLE UNIT. 
+		  -- BREAK DOWN TOTAL FUNCTIONALITY OF SCRIPT INTO LOGICAL SUB-SECTIONS 
+          -- ENCAPSULATE AND REUSE CODE
+		  -- WE CAN CALL FUNCTIONS WHEN EVER NEEDED
+		  -- MAKE YOUR SCRIPTS MORE ORGANIZED, MODULAR, AND EASIER TO MAINTAIN.
+		  
+	
+
+============================================================
+
+FUNCTIONS IN PYTHON: 
+
+# Python example
+
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Madhu")	
+
+====================================================================
+
+
+FUNCTIONS IN SHELL : 
+# Bash example
+
+greet() {
+  echo "Hello, $1!"
+}
+
+greet "Madhu"
+
+	
+===============================================
