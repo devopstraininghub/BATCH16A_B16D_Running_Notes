@@ -124,7 +124,7 @@ aws configure
 
 ===========================
 
-eksctl create cluster --name b16cluster --nodegroup-name b16ng --node-type t3.micro --nodes 4 --managed 
+eksctl create cluster --name b16cluster --nodegroup-name b16ng --node-type m7i-flex.large --nodes 4 --managed 
 
 
 ============================
