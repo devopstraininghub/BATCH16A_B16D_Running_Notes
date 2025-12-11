@@ -343,3 +343,718 @@ greet "Madhu"
 
 	
 ===============================================
+
+
+
+=============================
+
+FEW IMP/METHODS ON DATA TYPES :
+
+
+
+==========================================================================================
+LIST DATATYPE: 
+
+my_list = [1,2,3,4,5]
+
+my_list.append(4)
+print("After append:", my_list)
+
+
+my_list.extend([8, 9, 7])
+print("After extend:", my_list)
+
+
+my_list.insert(0, 10)
+print("After insert:", my_list)
+
+# Removing the first occurrence of an element
+my_list.remove(1)
+print("After remove:", my_list)
+
+# Popping an element (removing and returning it)
+popped_element = my_list.pop()
+print("Popped element:", popped_element)
+print("After pop:", my_list)
+
+# Getting the index of an element
+index_of_9 = my_list.index(9)
+print("Index of 9:", index_of_9)
+
+# Counting the occurrences of an element
+count_of_1 = my_list.count(1)
+print("Count of 1:", count_of_1)
+
+# Sorting the list
+my_list.sort()
+print("After sort:", my_list)
+
+# Reversing the list
+my_list.reverse()
+print("After reverse:", my_list)
+
+# Copying the list
+copied_list = my_list.copy()
+print("Copied list:", copied_list)
+
+# Clearing the list
+my_list.clear()
+print("After clear:", my_list)
+
+# List properties and functions
+print("Length of  list:", len(my_list))
+print("Length of copied list:", len(copied_list))
+print("Maximum element:", max(copied_list))
+print("Minimum element:", min(copied_list))
+print("Sum of elements:", sum(copied_list))
+
+  
+============================================================================================
+  
+TUPLE :
+
+Immutability: Tuples cannot be modified once created. 
+
+Methods like append(), remove(), pop(), etc., are not available.
+
+
+my_tuple = (3, 1, 4, 1, 5, 9, 2, 6, 5)
+
+# Counting the occurrences of an element
+count_of_1 = my_tuple.count(1)
+print("Count of 1:", count_of_1)
+
+# Getting the index of an element
+index_of_9 = my_tuple.index(9)
+print("Index of 9:", index_of_9)
+
+# Getting the length of the tuple
+length_of_tuple = len(my_tuple)
+print("Length of tuple:", length_of_tuple)
+
+# Finding the maximum element
+max_element = max(my_tuple)
+print("Maximum element:", max_element)
+
+# Finding the minimum element
+min_element = min(my_tuple)
+print("Minimum element:", min_element)
+
+# Calculating the sum of elements
+sum_of_elements = sum(my_tuple)
+print("Sum of elements:", sum_of_elements)
+
+# Getting a sorted list from the tuple
+sorted_list = sorted(my_tuple)
+print("Sorted tuple as list:", sorted_list)
+
+sorted_list.append(4)
+print("After append:", sorted_list)
+
+=================================================
+
+SETS :
+
+
+    No Duplicate Elements:   Sets automatically remove duplicate elements.
+    Unordered: Sets do not maintain the order of elements.
+    Mutable: You can add or remove elements from a set.
+	
+    Use Cases: Sets are useful for removing duplicates from a collection, checking for membership, and performing set operations like union, intersection, and difference.
+    
+	
+	
+my_set = {1, 2, 3, 4, 5}
+
+# Adding an element
+my_set.add(6)
+print("After adding element 6 :", my_set)
+
+# Removing an element (will raise KeyError if element is not present)
+my_set.remove(4)
+print("After removing element 4 :", my_set)
+
+
+# Popping an arbitrary element
+popped_element = my_set.pop()
+print("Popped element:", popped_element)
+print("After pop:", my_set)
+
+# Clearing the set
+my_set.clear()
+print("After clear:", my_set)
+
+# Set operations
+set_a = {1, 2, 3}
+set_b = {3, 4, 5}
+
+# Union
+union_set = set_a.union(set_b)
+print("Union:", union_set)
+
+# Intersection
+intersection_set = set_a.intersection(set_b)
+print("Intersection:", intersection_set)
+
+# Difference
+difference_set = set_a.difference(set_b)
+print("Difference:", difference_set)
+
+
+	
+=============================================================================================================================
+
+DICTIONARIES :
+
+my_dict = {
+    "name": "Madhu",
+    "phone": "7396627149", 
+    "city": "Hyderabad"
+   }
+
+# Accessing a value by key
+name = my_dict['name']
+print("Name:", name)
+
+# Using get() to access a value
+phone = my_dict.get('phone')
+print("phone:", phone)
+
+# Using get() with a default value
+salary = my_dict.get('salary', 'Not Available')
+print("Salary:", salary)
+
+# Adding a new key-value pair
+my_dict['occupation'] = 'DevOps Engineer'
+print("After adding occupation:", my_dict)
+
+
+# Removing a key-value pair using pop()
+popped_value = my_dict.pop('phone')
+print("Popped value:", popped_value)
+print("After pop:", my_dict)
+
+
+# Accessing all keys
+keys = my_dict.keys()
+print("Keys:", list(keys))
+
+# Accessing all values
+values = my_dict.values()
+print("Values:", list(values))
+
+# Accessing all key-value pairs
+items = my_dict.items()
+print("Items:", list(items))
+
+# Clearing the dictionary
+my_dict.clear()
+print("After clear:", my_dict)
+
+# Copying the dictionary
+new_dict = {'a': 1, 'b': 2}
+copied_dict = new_dict.copy()
+print("Copied dictionary:", copied_dict)
+	
+		
+========================================================================================================
+int x = 10
+
+
+
+STATICALLY TYPED  VS DYNAMIC TYPED 
+Dynamic typing means that the type of a variable is determined at runtime, not in advance. You do not need to declare the type of a variable when you create it. 
+
+
+Static typing means that the type of a variable is known at compile time. You must declare the type of a variable before you use it, and this type cannot change throughout the program. Languages like C, C++, go  and Java are statically typed.
+
+
+===================================================================================
+
+
+LIST , TUPLE , DICT 
+============================================================================
+STRING MANIPULATION WITH in built METHONS /FUNCTIONS in python :
+
+
+
+my_string = "Hello, Welcome to Aws Devops World"
+
+# 1. Length of the string
+print(f"Length of the string: {len(my_string)}")
+
+# 2. Convert to uppercase and lowercase
+print(f"Uppercase: {my_string.upper()}")
+print(f"Lowercase: {my_string.lower()}")
+
+# 3. Count occurrences of a substring
+substring = "Welcome"
+print(f"Occurrences of '{substring}': {my_string.count(substring)}")
+
+# 4. Check if the string starts or ends with a particular substring
+print(f"Starts with 'Hello': {my_string.startswith('Hello')}")
+print(f"Ends with 'World.': {my_string.endswith('World')}")
+
+# 5. Find the index of a substring (first occurrence)
+print(f"Index of 'World': {my_string.find('World')}")
+
+# 6. Replace a substring with another substring
+new_string = my_string.replace('Aws', 'Cloud')
+print(f"Original string: {my_string}")
+print(f"Modified string: {new_string}")
+
+# 7. Split the string into a list based on a delimiter
+words = my_string.split()
+print(f"Split into words: {words}")
+
+# 8. Check if all characters are alphanumeric
+alphanumeric_string = "Python123"
+print(f"Is Python123 alphanumeric? {alphanumeric_string.isalnum()}")
+
+# 9. Convert string to title case
+title_case_string = "python programming"
+print(f"Title case: {title_case_string.title()}")
+
+
+============================================
+
+
+
+# Integer examples
+x = 10
+y = -5
+z = 0
+
+# Floating-point examples
+a = 3.14
+b = -0.001
+
+
+# Print examples
+print(f"Integers: x = {x}, y = {y}, z = {z}")
+print(f"Floating-point numbers: a = {a}, b = {b}, c = {c}")
+
+
+# Arithmetic operations
+print(f"\nArithmetic Operations:")
+print(f"x + y = {x + y}")   # Addition
+print(f"x - y = {x - y}")   # Subtraction
+print(f"x * y = {x * y}")   # Multiplication
+print(f"x / y = {x / y}")   # Division
+print(f"x % y = {x % y}")   # Modulus
+
+
+# Type conversions
+print(f"\nType Conversions:")
+f = float(x)
+print(f"Convert int {x} to float: f = {f}")
+
+g = int(a)
+print(f"Convert float {a} to int: g = {g}")
+
+
+
+====================================
+
+DATE : 10 DEC 25
+
+CONDITIONAL EXPRESSION : 
+
+
+=================================================================
+
+if condition1:
+    # Block of code to execute if condition1 is True
+   
+elif condition2:
+    # Block of code to execute if condition1 is False and condition2 is True
+   
+elif condition3:
+    # Block of code to execute if previous conditions are False and condition3 is True
+	
+elif condition4:
+    # Block of code to execute if previous conditions are False and condition4 is True	
+   
+else:
+    # Block of code to execute if all previous conditions are False
+   
+=============
+
+$ cat if.py
+
+num1 = float(input("enter the number: "))
+
+if num1 > 0:
+    print ("THE NUMBER IS POSITIVE")
+
+elif num1 < 0:
+    print ("THE NUMBER IS NEGATIVE")
+
+else:
+    print ("THE NUMBER IS zero")
+
+
+
+>
+===================================================================
+
+PYTHON LOOPS :
+      
+WHILE 
+FOR 
+
+	 
+	  
+WHILE  LOOP:
+
+  it enables you to execute set of commands as long as conndition is true . 
+  
+  once condition fails , it comes out of loop .
+ 
+--------------- 
+ #!/bin/bash
+i=0
+while [ "$i" -le 100 ];
+
+do
+        echo "$i"
+         i=$((i+1))
+done 
+-----------
+
+cat while.py
+
+i = 0
+
+while i < 100:
+>  print(f"Number is: {i}")
+   i = i + 1
+	
+--------------------------
+
+i = 100
+
+while i >= 0:
+   print(i)
+    i -= 1
+	
+
+
+=======================================
+
+FOR LOOP : 
+
+For loop operates on list of items , it repeats commands on every item in the list 
+
+----------------
+for variable in iterable:
+    # Block of code to execute
+    statement1
+    statement2
+    # More statements
+	
+	
+
+-----------------------------------
+mc_list = [1,2,3,4]
+
+for i in mc_list:
+    print(i)
+
+-------------
+
+------------------
+
+PYTHON EXAMPLES : 
+
+list = [ 1, 2, 3, 4] 
+for i in list: 
+    print(i) 
+
+------------------   ### range(n) ---> 0 - n-1
+for i in range(5):    
+    print(i)
+
+----------------
+
+for number in range(1, 11):  ### range(k, n) ---> k ... n-1
+    print(number)
+
+----------------
+
+fruits = ["apple", "banana", "cherry"]
+
+for fruit in fruits:
+    print(fruit)
+
+
+=======================================================
+
+In Python, break and continue are control flow statements used inside loops (for and while). They help control the flow of loop execution based on certain conditions
+
+
+**a. break Statement:
+
+Used to exit the loop prematurely.
+
+
+
+**b. continue Statement:
+
+Skips the rest of the current iteration and proceeds to the next iteration of the loop.
+
+==========================================================
+cat break_continue.py
+
+counter = 0
+while counter < 10:
+>    counter += 1
+    if counter == 5:
+        break  # Exit the loop when counter is 5
+       # continue
+    print(f"Counter is {counter}")
+print("Loop ended.")
+
+
+
+
+======================================================
+
+def add(a,b):
+    return a + b 
+----
+
+result = add(3, 5)
+print(result)  
+
+-----------------------------
+LAMBDA : 
+
+lambda arguments: expression
+
+   - a lambda function is a small, anonymous function defined using the lambda keyword. 
+   
+   
+    lambda: Keyword to define an anonymous function.
+    arguments: The input parameters to the function.
+    expression: A single expression that the function returns.
+	
+	
+cat lambda.py
+
+#def add(a,b):
+#    return a + b
+
+#result  = add(5,9)
+-------------
+
+
+result = lambda a, b: a + b
+print(f"sum of 5, 9 is {result(5, 9)}")
+
+================================
+>===================================================================
+
+Keywords In Python:
+
+Keywords in Python are reserved words that have special meanings and purposes within the language. These keywords cannot be used as identifiers (variable names, function names, etc.) because they are part of the language syntax.
+
+List of keywords in Python: 
+ 
+False      await      else       import     pass   None       break      except     in         raise
+True       class      finally    is         return   and        continues   for        lambda     try
+as         def        from       nonlocal   while assert     del        global     not        with
+async      elif       if         or         yield
+
+Description of Keywords:
+
+
+1.	Boolean Values: True, False, and None are used to represent truth values (True and False) and a null value (None).
+
+2.	Control Flow: Keywords like if, else, elif, while, for, break, continue, pass, and return are used for controlling the flow of execution in programs.
+
+3.	Defining Entities: def is used to define functions, class is used to define classes, and lambda is used to create anonymous functions.
+
+4.	Exception Handling: try, except, finally, and raise are used for handling exceptions and errors in Python programs.
+
+5.	Importing Modules: import and from are used to import modules and contents from modules.
+
+6.	Context Managers: with is used to manage resources and contexts that need cleanup actions.
+
+7.	Operators: and, or, and not are logical operators used for boolean operations.
+
+8.	Asyncio: async, await, and nonlocal are used in asynchronous programming (async and await) and for accessing variables in outer scopes (nonlocal).
+
+9.	Assertions: assert is used to assert or enforce certain conditions in the code.
+
+
+
+===================================================================================================
+NAMING CONVENTION OF VARIABLES - BEST PRACTICES : Variable Naming Rules:
+
+
+
+1.	Variables names must start with a letter (a-z, A-Z) or an underscore (_).
+2.	The remaining characters can be letters, numbers, or underscores.
+3.	Variable names are case-sensitive (age, Age, and AGE are three different variables).
+4.	Python keywords (like if, else, for, etc.) cannot be used as variable names.
+
+5.  Variables can be classified into GLOBAL scope variables and LOCAL scope variables 
+                based on their scope, which determines where in your code they can be accessed and modified.
+
+--------------------------				
+Assigning Values to Variables:
+You assign a value to a variable using the assignment operator =.
+Examples:
+# Assigning integers
+age = 25
+
+# Assigning floating-point numbers
+height = 5.11
+
+# Assigning strings
+name = "Madhu"
+
+# Assigning a boolean value
+is_student = True
+
+# Assigning a list
+numbers = [1, 2, 3, 4, 5]
+
+-------------------------------------
+
+LOCAL VS GLOBAL VARIABLES 
+
+
+---------------------------------
+Global Scope Variables
+Global variables are defined outside of any function and can be accessed (read and modified) by any part of the code, including inside functions.
+
+--------
+Local Scope Variables
+
+Local variables are defined within a function and are only accessible within the scope of that function. They cannot be accessed outside the function.
+
+-----------
+Global Variables and Local Variables Together:
+
+Variables with the same name can exist both globally and locally, but they are treated as separate variables with different scopes.
+Example:
+
+
+------------------------------------------------- 
+cat local_global.py
+
+x=10
+y=20
+
+def add():
+    x=5
+    y=4
+    print(f" sum of local variables x=5 & y=4 {x+y} ")
+	
+def sub():
+    x=35
+    y=20
+    print(f" subtraction of local variables x=35 & y=20 is:  {x-y} ")
+add()
+sub()
+
+print(f"printing global vairable -x {x}")
+print(f"printing global vairable -y {y}")
+
+------------------------------------------------------
+cat 2_modified_global.py
+
+x=10
+y=20
+z=5
+def add():
+    x=5
+    y=4
+    print(f" sum of local variables x=5 , y=4 & global z=5 is:  {x+y+z} ")
+
+def sub():
+    global x
+    x = 35
+    y = 20
+    print(f" subtraction of local variables x=35 & y=20 is:  {x-y} ")
+add()
+sub()
+
+print(f"printing modified global vairable -x {x}")
+print(f"printing global vairable -y {y}")
+
+
+
+===============================================================================================
+
+
+MODULES & PACKAGES
+   
+   modules and packages are fundamental concepts used TO ORGANIZE AND STRUCTURE CODE
+  
+   A module is A SINGLE FILE (WITH A .PY EXTENSION) that contains Python code. It can include functions, classes, and variables. You can also include runnable code. Modules are used to organize related code into a single file and to promote code reusability.
+   
+   
+    # my_module.py
+    
+    def greet(name):
+        return f"Hello, {name}!"
+    
+    def add(a, b):
+        return a + b
+
+
+----------------------------------------
+
+
+# main.py
+
+import my_module
+
+print(my_module.greet("Madhu"))  # Output: Hello, Madhu!
+print(my_module.add(5, 3))       # Output: 8
+
+
+=======================================================================
+
+PYTHON PACKAGE: 
+
+A package is a way of organizing multiple related modules into a directory hierarchy. 
+A PACKAGE IS A DIRECTORY THAT CONTAINS A SPECIAL FILE NAMED __INIT__.PY (WHICH CAN BE EMPTY) AND OTHER MODULES. 
+The presence of __init__.py indicates that the directory should be treated as a package.
+
+
+my_package/
+    __init__.py
+    module1.py
+    module2.py
+
+--------------
+# module1.py
+
+def function1():
+    return "This is function 1 from module 1"
+
+-----------
+
+# module2.py
+
+def function2():
+    return "This is function 2 from module 2"
+
+-----------
+
+# main.py
+
+from my_package import module1, module2
+
+print(module1.function1())  # Output: This is function 1 from module 1
+print(module2.function2())  # Output: This is function 2 from module 2
+
+
+
+
+
+
