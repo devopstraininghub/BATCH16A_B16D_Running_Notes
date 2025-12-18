@@ -1577,3 +1577,157 @@ def create_ec2_instance(instance_type, ami_id):
 create_ec2_instance('t2.micro', 'ami-0fa3fe0fa7920f68e')
 
 ===========================================
+DATE : 17 DEC 25
+TOPIC : PYTHON PRACTICE PROGRAMS
+
+==================================================
+1) PROGRAM TO CHECK EVEN OR ODD
+==================================================
+
+# Program to check if a number is even or odd
+
+num = int(input("Enter a number: "))
+
+if num % 2 == 0:
+    print("The number is Even")
+else:
+    print("The number is Odd")
+
+
+==================================================
+2) PROGRAM TO CHECK DISK SPACE USAGE (LINUX)
+==================================================
+
+import shutil
+
+THRESHOLD = 80   # Alert threshold in percentage
+path = "/"       # Root filesystem
+
+total, used, free = shutil.disk_usage(path)
+
+usage_percent = (used / total) * 100
+
+print(f"Disk Usage: {usage_percent:.2f}%")
+
+if usage_percent >= THRESHOLD:
+    print("ALERT: Disk usage has crossed 80%!")
+else:
+    print("Disk usage is under control.")
+
+
+==================================================
+3) PROGRAM TO UPDATE FILE WITH NEW CONTENT
+==================================================
+
+file_name = "sample.txt"
+new_content = "This is new content added to the file.\n"
+
+with open(file_name, "a") as file:
+    file.write(new_content)
+
+print("File updated successfully (content appended).")
+
+
+==================================================
+4) PROGRAM TO GET NUMBER OF OBJECTS IN S3 BUCKET
+==================================================
+
+import boto3
+
+# S3 bucket name
+bucket_name = "your-bucket-name"
+
+# Create S3 client
+s3 = boto3.client("s3")
+
+# Use paginator to handle large buckets
+paginator = s3.get_paginator("list_objects_v2")
+pages = paginator.paginate(Bucket=bucket_name)
+
+file_count = 0
+
+for page in pages:
+    if "Contents" in page:
+        file_count = file_count + len(page["Contents"])
+
+print("Total number of files in the bucket:", file_count)
+
+
+==================================================
+5) PROGRAM TO FIND FACTORIAL OF A NUMBER
+==================================================
+
+def factorial(n):
+    if n < 0:
+        return "Invalid input"
+    result = 1
+    for i in range(1, n + 1):
+        result *= i
+    return result
+
+num = int(input("Enter a number: "))
+print(f"Factorial of {num} is {factorial(num)}")
+
+
+==================================================
+6) PROGRAM TO FIND SQUARE OF A NUMBER
+==================================================
+
+# Method 1
+
+num = int(input("Enter a number: "))
+square = num * num
+print(f"Square of {num} is {square}")
+
+-----------------------------
+
+# Method 2 (Using Function)
+
+def square(n):
+    return n ** 2
+
+num = int(input("Enter a number: "))
+print(f"Square of {num} is {square(num)}")
+
+
+==================================================
+7) PROGRAM TO REVERSE A STRING
+==================================================
+
+def reverse_string(s):
+    return s[::-1]   # string[start : end : step]
+
+text = input("Enter a string: ")
+print("Reversed string:", reverse_string(text))
+
+
+==================================================
+8) PROGRAM TO FIND MAX & MIN (LOGIC METHOD)
+==================================================
+
+numbers = list(map(int, input("Enter numbers separated by space: ").split()))
+
+max_num = numbers[0]
+min_num = numbers[0]
+
+for num in numbers:
+    if num > max_num:
+        max_num = num
+    if num < min_num:
+        min_num = num
+
+print("Maximum number:", max_num)
+print("Minimum number:", min_num)
+
+
+==================================================
+9) PROGRAM TO FIND MAX & MIN (BUILT-IN METHOD)
+==================================================
+
+numbers = list(map(int, input("Enter numbers separated by space: ").split()))
+
+maximum = max(numbers)
+minimum = min(numbers)
+
+print("Maximum number:", maximum)
+print("Minimum number:", minimum)
