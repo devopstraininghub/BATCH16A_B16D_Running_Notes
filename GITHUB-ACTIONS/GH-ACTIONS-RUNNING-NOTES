@@ -1,0 +1,301 @@
+GITHUB ACTIONS
+
+    - GitHub Actions is an automation feature built inside GitHub.
+    - It allows developers to automate workflows such as building,
+      testing, and deploying code.
+
+    - It automatically runs when certain events happen in the repository,
+      such as:
+        • Code push
+        • Pull request creation or merge
+        • Scheduled workflows
+        • Issue or comment events
+
+    - GitHub Actions is commonly used to:
+        • Build code automatically
+        • Run tests for validation
+        • Deploy applications to servers (AWS, Azure, GCP, etc.)
+        • Create complete CI/CD pipelines
+		
+--------------------------------------------------	
+JENKINS
+
+    - Jenkins is an open-source automation server.
+    - It needs to be installed, managed, and configured manually
+      on a server, VM, or container.
+    - Once installed, you can create CI/CD pipelines using:
+        • Jenkins UI (freestyle or pipeline projects)
+        • Jenkinsfile (declarative or scripted pipelines)
+
+    - Jenkins acts like a standalone automation factory:
+        • Very powerful
+        • Highly customizable
+        • Supports plugins for almost any DevOps tool
+
+    - However, Jenkins requires:
+        • Manual setup
+        • Regular maintenance
+        • Server management
+--------------------------------------------------	
+
+GITHUB ACTIONS VS JENKINS 
+
+------------------------------------------------------------------------------------------
+FEATURE                    | GITHUB ACTIONS                            | JENKINS
+------------------------------------------------------------------------------------------
+Setup                      | No setup (built into GitHub)              | Requires installation & server setup
+Hosting                    | Cloud (GitHub-hosted runners)             | Self-hosted (you manage nodes/agents)
+Configuration              | YAML workflow files in repo               | Jenkinsfile + Jenkins Web UI
+Integrations               | Best with GitHub ecosystem                | Integrates with almost everything via plugins
+Maintenance                | Zero maintenance                          | You patch, upgrade, and maintain server
+Cost                       | Free - pub repos;pvt repolimited mins     | Free (open-source) but server cost applies
+Use Case                   | Ideal for GitHub users, small teams       | Ideal for large, complex enterprise setups
+------------------------------------------------------------------------------------------
+ 
+ 
+ 
+ 
+ 
+WHEN TO USE WHICH
+
+    - Use GitHub Actions:
+        • For small projects hosted on GitHub
+        • When you want zero setup and automatic triggers
+          for GitHub events like push, PR, merge
+        • When you prefer cloud-hosted runners and no server maintenance
+
+    - Use Jenkins:
+        • For enterprise pipelines with multiple repositories
+        • When you need on-premise setups or custom build agents
+        • When you require advanced control, plugins,  and complex CI/CD environments
+
+
+
+--------------------------------------------------	
+
+WHY USE GITHUB ACTIONS
+
+    - You can automate everything related to your GitHub repository, such as:
+
+        • Running tests automatically on every push or pull request
+        • Building Docker images for applications
+        • Deploying apps to AWS, Azure, GCP, or Kubernetes
+        • Sending notifications (Slack, email, Teams, etc.)
+        • Running scheduled cleanup jobs (CRON-based workflows)
+        • Automating CI/CD pipelines end-to-end
+        • Triggering workflows based on GitHub events
+
+    - It reduces manual work and improves development speed.
+    - Everything is stored inside the repo, making CI/CD version-controlled.
+
+----------------------------------------------------
+
+--------------------------------------------------------
+few BASICS
+------------------------------------------------------------
+
+    - GitHub Actions is a CI/CD and automation system built into GitHub.
+    - Workflows run automatically based on triggers like push, PR, or schedule.
+    - Workflows are written in YAML inside:
+          .github/workflows/cicd.yaml
+
+------------------------------------------------------------
+KEY COMPONENTS
+------------------------------------------------------------
+
+    Workflow:
+        - The entire automation process.
+        - Stored as a YAML file (e.g., ci.yml).
+
+    Event (Trigger):
+        - What starts a workflow.
+        - Examples: push, pull_request, schedule, workflow_dispatch
+
+    Job:
+        - A set of steps that run on a runner.
+        - Jobs run in parallel by default unless dependencies are set.
+
+    Step:
+        - A single task (command or action).
+        - Example: checkout code, run tests.
+
+    Runner:
+        - Machine where workflow runs.
+        - Examples: ubuntu-latest, windows-latest, macos-latest, self-hosted
+
+    Action:
+        - Reusable task packaged by GitHub or community.
+        - Example: actions/checkout@v4
+
+------------------------------------------------------------
+COMMON ACTIONS
+------------------------------------------------------------
+
+    - Checkout repository:
+        actions/checkout@v4
+
+    - Setup Node.js:
+        actions/setup-node@v4
+
+    - Setup Python:
+        actions/setup-python@v5
+
+    - Setup Java:
+        actions/setup-java@v4
+
+    - Upload/Download artifacts:
+        actions/upload-artifact@v4
+        actions/download-artifact@v4
+
+------------------------------------------------------------
+BASIC WORKFLOW STRUCTURE (YAML EXAMPLE)
+------------------------------------------------------------
+
+    name: testing_gha
+    
+    on:
+     push
+    
+    jobs:
+     say_hello:
+      runs-on: ubuntu-latest
+    
+      steps:
+       - name: message
+         run: echo "Hello AWS-Devops"
+    	 
+	 
+------------------------------------------------------------
+    name: Test self runner 
+    on: [push]
+    
+    jobs:
+     build:
+      runs-on: self-hosted
+    
+      steps: 
+        - run: echo "Running this on self host- test22222222"
+      
+---------------------------------------------------------------------  
+
+	 
+
+
+
+
+    name: CI Pipeline
+
+    on:
+      push:
+      pull_request:
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Install dependencies
+            run: npm install
+
+          - name: Run tests
+            run: npm test
+
+------------------------------------------------------------
+COMMON ACTIONS
+------------------------------------------------------------
+
+    - Checkout repository:
+        actions/checkout@v4
+
+    - Setup Node.js:
+        actions/setup-node@v4
+
+    - Setup Python:
+        actions/setup-python@v5
+
+    - Setup Java:
+        actions/setup-java@v4
+
+    - Upload/Download artifacts:
+        actions/upload-artifact@v4
+        actions/download-artifact@v4
+
+------------------------------------------------------------
+BASIC WORKFLOW STRUCTURE (YAML EXAMPLE)
+------------------------------------------------------------
+
+    name: CI Pipeline
+
+    on:
+      push:
+      pull_request:
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Install dependencies
+            run: npm install
+
+          - name: Run tests
+            run: npm test
+
+------------------------------------------------------------
+SCHEDULING WORKFLOWS (CRON JOB)
+------------------------------------------------------------
+
+    on:
+      schedule:
+        - cron: "0 2 * * *"   # Runs every day at 2 AM UTC
+
+------------------------------------------------------------
+MANUAL TRIGGER
+------------------------------------------------------------
+
+    on:
+      workflow_dispatch:
+
+------------------------------------------------------------
+RUNNING MULTIPLE JOBS
+------------------------------------------------------------
+
+    jobs:
+      build:
+        runs-on: ubuntu-latest
+        steps:
+          - run: echo "Building..."
+
+      test:
+        runs-on: ubuntu-latest
+        needs: build
+        steps:
+          - run: echo "Testing..."
+
+------------------------------------------------------------
+ENVIRONMENT VARIABLES
+------------------------------------------------------------
+
+    env:
+      APP_ENV: production
+
+    steps:
+      - run: echo "Environment = $APP_ENV"
+
+------------------------------------------------------------
+SECRETS (SECURE VALUES)
+------------------------------------------------------------
+
+    - Store secrets in:
+        Settings → Secrets → Actions
+
+    - Use in workflow:
+        run: echo "API Key is ${{ secrets.API_KEY }}"
+
+------------------------------------------------------------
