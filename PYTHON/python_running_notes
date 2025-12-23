@@ -1312,6 +1312,7 @@ except Exception as e:
 
 ===================================================================================
 
+
 FEW USEFUL MODULES & LIBRARIES
 ================================
 
@@ -1326,9 +1327,9 @@ sys → Standard library module
       👉 sys.argv, sys.exit(), sys.path
 
 shutil → Standard library module
-         Used for high-level file operations.
+         Used for high-level file , directory operations.
          Examples: copy, move, delete directories/files
-         👉 shutil.copy(), shutil.copytree() 
+         👉 shutil.copy(), shutil.copytree() , shutil.disk_usage(path)
 
 boto3 → External library (AWS SDK for Python)
         Used to manage AWS services programmatically.
@@ -1339,7 +1340,7 @@ psutil → External library
          Used for system monitoring.
          Examples: CPU, memory, disk, process info
         👉 psutil.cpu_percent(), psutil.virtual_memory()
-
+		
 
 ========================================================================================
 REAL TIME USE - CASES :
@@ -1577,12 +1578,12 @@ def create_ec2_instance(instance_type, ami_id):
 create_ec2_instance('t2.micro', 'ami-0fa3fe0fa7920f68e')
 
 ===========================================
-DATE : 17 DEC 25
-TOPIC : PYTHON PRACTICE PROGRAMS
 
-==================================================
-1) PROGRAM TO CHECK EVEN OR ODD
-==================================================
+DATE : 20 DEC 25 :
+
+
+Write a python program to find given number even or odd ?
+
 
 # Program to check if a number is even or odd
 
@@ -1594,14 +1595,15 @@ else:
     print("The number is Odd")
 
 
-==================================================
-2) PROGRAM TO CHECK DISK SPACE USAGE (LINUX)
-==================================================
+===========================================
+
+
+write a python program to find disk space usage on linux server ? 
 
 import shutil
 
-THRESHOLD = 80   # Alert threshold in percentage
-path = "/"       # Root filesystem
+THRESHOLD = 80  # Alert threshold in percentage
+path = "/"      # Root filesystem
 
 total, used, free = shutil.disk_usage(path)
 
@@ -1610,14 +1612,15 @@ usage_percent = (used / total) * 100
 print(f"Disk Usage: {usage_percent:.2f}%")
 
 if usage_percent >= THRESHOLD:
-    print("ALERT: Disk usage has crossed 80%!")
+    print("⚠️ ALERT: Disk usage has crossed 80%!")
 else:
-    print("Disk usage is under control.")
+    print("✅ Disk usage is under control.")
 
 
-==================================================
-3) PROGRAM TO UPDATE FILE WITH NEW CONTENT
-==================================================
+
+===========================================
+
+write a python program to update file with new content ?
 
 file_name = "sample.txt"
 new_content = "This is new content added to the file.\n"
@@ -1628,38 +1631,59 @@ with open(file_name, "a") as file:
 print("File updated successfully (content appended).")
 
 
-==================================================
-4) PROGRAM TO GET NUMBER OF OBJECTS IN S3 BUCKET
-==================================================
+================================================
 
+
+write a program to get number of objects in s3 bucket ?
+
+# Step 1: Import AWS library for Python
 import boto3
 
-# S3 bucket name
+# Step 2: Write your S3 bucket name here
 bucket_name = "your-bucket-name"
 
-# Create S3 client
+# Step 3: Create a connection to AWS S3
 s3 = boto3.client("s3")
 
-# Use paginator to handle large buckets
+# Step 4: Ask AWS for a paginator
+# (This helps us get files 1000 at a time)
 paginator = s3.get_paginator("list_objects_v2")
+
+# Step 5: Start getting pages of files from the bucket
 pages = paginator.paginate(Bucket=bucket_name)
 
+# Step 6: Start file count from zero
 file_count = 0
 
+# Step 7: Go through each page (batch of files)
 for page in pages:
-    if "Contents" in page:
-        file_count = file_count + len(page["Contents"])
 
+    # Step 8: Check if this page has files
+    if "Contents" in page:
+
+        # Step 9: Count how many files are in this page
+        files_in_this_page = len(page["Contents"])
+
+        # Step 10: Add this count to total file count
+        file_count = file_count + files_in_this_page
+
+# Step 11: Print final result
 print("Total number of files in the bucket:", file_count)
 
 
-==================================================
-5) PROGRAM TO FIND FACTORIAL OF A NUMBER
-==================================================
+
+==================================================================
+
+5! --> 5 * 4 * 3 * 2 * 1 
+n!  == n * (n-1)!
+
+
+Write a pyhton code to get a factorial of a NUMBER ?
+
 
 def factorial(n):
     if n < 0:
-        return "Invalid input"
+>        return "Invalid input"
     result = 1
     for i in range(1, n + 1):
         result *= i
@@ -1669,41 +1693,58 @@ num = int(input("Enter a number: "))
 print(f"Factorial of {num} is {factorial(num)}")
 
 
-==================================================
-6) PROGRAM TO FIND SQUARE OF A NUMBER
-==================================================
 
-# Method 1
+
+==================================================================
+squares, 
 
 num = int(input("Enter a number: "))
+
 square = num * num
+
 print(f"Square of {num} is {square}")
 
------------------------------
-
-# Method 2 (Using Function)
-
+---------------------
 def square(n):
-    return n ** 2
+    return n * num
 
 num = int(input("Enter a number: "))
 print(f"Square of {num} is {square(num)}")
 
 
-==================================================
-7) PROGRAM TO REVERSE A STRING
-==================================================
+
+==================================================================
+
+reverese of a string, 
+
 
 def reverse_string(s):
-    return s[::-1]   # string[start : end : step]
+    return s[::-1]  # string[start : end : step]
+
 
 text = input("Enter a string: ")
 print("Reversed string:", reverse_string(text))
 
 
-==================================================
-8) PROGRAM TO FIND MAX & MIN (LOGIC METHOD)
-==================================================
+or 
+
+s = "Hello"
+reversed_str = ""
+
+i = len(s) - 1   # start from last index
+
+while i >= 0:
+    reversed_str = reversed_str + s[i]
+    i = i - 1    # move backward
+
+print(reversed_str)
+
+
+
+
+==========================================
+
+max & min of given numbes 
 
 numbers = list(map(int, input("Enter numbers separated by space: ").split()))
 
@@ -1714,16 +1755,13 @@ for num in numbers:
     if num > max_num:
         max_num = num
     if num < min_num:
-        min_num = num
+>        min_num = num
 
 print("Maximum number:", max_num)
 print("Minimum number:", min_num)
 
 
-==================================================
-9) PROGRAM TO FIND MAX & MIN (BUILT-IN METHOD)
-==================================================
-
+==============================
 numbers = list(map(int, input("Enter numbers separated by space: ").split()))
 
 maximum = max(numbers)
@@ -1731,3 +1769,707 @@ minimum = min(numbers)
 
 print("Maximum number:", maximum)
 print("Minimum number:", minimum)
+
+=============================================================================
+
+
+Q. Create a function to check whether a string is a palindrome or not.
+
+A:
+A palindrome is a string that reads the same forward and backward.
+
+Function:
+    def palindrome(s):
+        if s == s[::-1]:
+            print(f"{s} is a palindrome")
+            return True
+        else:
+            print(f"{s} is not a palindrome")
+            return False
+
+Example:
+    palindrome("madam")
+    palindrome("python")
+
+============================================================================
+
+QUIZ & 
+
+
+
+
+
+
+
+
+
+
+
+
+=====================================================================================
+22 DEC 25 
+
+INTERVIEW QUESTIONS:
+
+
+1. What are the different data types in Python?
+
+Python supports the following built-in data types:
+
+       1) Numbers
+          - int     → 10, 25, -3
+          - float   → 10.5, 3.14
+          - complex → 2 + 3j
+       
+       2) String
+          - Used to store text
+          - Defined using single, double, or triple quotes
+          Examples:
+          'Hello'
+          "Python"
+          """Welcome"""
+       
+       3) List
+          - Ordered, changeable, allows duplicates
+          Example:
+          ["us-east-1a", "us-east-1b", "us-east-1c"]
+       
+       4) Tuple
+          - Ordered, unchangeable, allows duplicates
+          Example:
+          ("us-east-1a", "us-east-1b", "us-east-1c")
+       
+       5) Range
+          - Represents a sequence of numbers
+          Example:
+          range(10)
+       
+       6) Set
+          - Unordered, changeable, does not allow duplicates
+          Example:
+          {"us-east-1a", "us-east-1b", "us-east-1c"}
+       
+       7) Dictionary
+          - Stores data in key-value pairs
+          Example:
+          {'person1': 'John', 'person2': 'Doe'}
+    
+-----------------------------------------------------------------------------	
+          Use type() function to find the data type of a variable.
+          Eg: type(variable_name)
+       
+          We can find dir(variable_name) to find the methods and attributes of a variable.
+
+x = "30.0"
+print(f"datatype of variable x is {type(x)}")
+
+
+
+x = "30.0"
+print(f"The methods /fucntions for  x is {dir(x)}")
+-----------------------------------------------------------------------------
+
+Q. What is the difference between List and Tuple?
+
+A:
+At a high level, both List and Tuple:
+- Are ordered
+- Are index-based
+- Are iterable
+
+    1) Mutability
+       - List is mutable (can be changed)
+         → Elements can be added, removed, or modified
+       - Tuple is immutable (cannot be changed once created)
+
+    2) Operations
+       - List supports operations like append(), extend(), remove(), pop()
+       - Tuple does not support modification operations
+
+    3) Performance and Memory
+       - Tuple is faster than List
+       - Tuple consumes less memory compared to List
+
+Summary:
+- Use List when data needs to change
+- Use Tuple when data should remain constant
+
+-----------------------------------------------------------------------------
+Q. What is the difference between List & Set?
+A: List is an ordered collection of items and can contain duplicate items. 
+   Set is an unordered collection of items and does not contain duplicate items.
+   
+   
+-----------------------------------------------------------------------------
+
+Q. How can I find memory utilization of a variable, list, or tuple?
+
+A:
+Use sys.getsizeof() from the sys module.
+
+    import sys
+
+    print(sys.getsizeof(variable_name))
+    print(sys.getsizeof(my_list))
+    print(sys.getsizeof(my_tuple))
+
+Note:
+- Memory is returned in bytes
+- It shows only the object size, not nested elements
+
+import sys
+
+x = 10
+my_list = [1, 2, 3]
+my_tuple = (1, 2, 3)
+
+print(sys.getsizeof(x))
+print(sys.getsizeof(my_list))
+print(sys.getsizeof(my_tuple))
+
+
+------------------------------------------------------------------------
+
+
+Q. What are the tools you can use for Python Practice?
+A: There are multiple tools which can help us to do the python coding, but I use the following:
+      - Visual Studio Code
+      - Jupyter Notebook when I need to do some data analysis.
+      - IPython for interactive python coding for running small code snippets.
+
+
+------------------------------------------------------------------------
+
+Q. Can I convert a List to a Set in Python?
+
+A:
+Yes, a List can be converted to a Set using the built-in set() function.
+
+Example:
+    my_list = ["apple", "banana", "apple", "cherry"]
+
+    my_set = set(my_list)
+
+    print(my_set)
+
+Note:
+- Sets automatically remove duplicate values
+- Sets are unordered collections
+------------------------------------------------------------------------
+
+Q. How can I append items to a list in Python?
+
+A:
+You can add items to a list using the append() and insert() methods.
+
+    1) append()
+       - Adds an item to the end of the list
+
+       Example:
+           my_list.append("item")
+
+    2) insert()
+       - Adds an item at a specified index
+
+       Example:
+           my_list.insert(index, "item")
+
+Example:
+    my_list = ["apple", "banana"]
+
+    my_list.append("cherry")
+    my_list.insert(1, "orange")
+
+    print(my_list)
+
+-----------------------------------------------------------------------------------
+
+Q. How can I remove an item from a list in Python?
+
+A:
+Items can be removed from a list using remove() and pop() methods.
+
+    1) remove(value)
+       - Removes the first occurrence of the specified value
+
+       Example:
+           my_list.remove("item")
+
+    2) pop()
+       - Removes and returns the last item from the list
+
+       Example:
+           my_list.pop()
+
+    3) pop(index)
+       - Removes and returns the item at the specified index
+
+       Example:
+           my_list.pop(index)
+
+Example:
+    my_list = ["apple", "banana", "cherry", "banana"]
+
+    my_list.remove("banana")
+    my_list.pop()
+    my_list.pop(0)
+
+    print(my_list)
+
+-------------------------------------------------------------------------------
+Q. How can I print keys and values of a dictionary in Python?
+
+A:
+Python provides multiple ways to access dictionary keys and values.
+
+    1) Print all keys
+       person.keys()
+
+    2) Print all values
+       person.values()
+
+    3) Print keys and values together using a loop
+       for k, v in person.items():
+           print(k, "--->", v)
+
+    4) Access a specific value using a key
+       person.get("name")
+       (or)
+       person["name"]
+
+Example:
+    person = {
+        "name": "John",
+        "age": 30,
+        "city": "New York"
+    }
+
+    print(person.keys())
+    print(person.values())
+
+    for k, v in person.items():
+        print(k, "--->", v)
+
+    print(person.get("name"))
+    print(person["name"])
+
+-----------------------------------------------------------------------------
+
+Q. What libraries / modules / packages are you familiar with in Python?
+
+A:
+I am familiar with the following Python libraries and modules:
+
+    1) boto3
+       - AWS SDK for Python
+       - Used to interact with AWS services like S3, EC2, DynamoDB
+
+    2) json
+       - Used for working with JSON data
+       - Common functions:
+           json.dumps()  → Convert Python object to JSON string
+           json.loads()  → Convert JSON string to Python object
+
+
+
+    4) requests
+       - Used for making HTTP requests (GET, POST, PUT, DELETE)
+	   
+    9) os and sys modules
+       - Used for interacting with the operating system
+       - Examples:
+           os.getenv()
+           os.listdir()
+           sys.argv
+           sys.getsizeof()
+
+    10) shutil
+        - Used for high-level file operations
+        - Examples:
+            shutil.copy()
+            shutil.move()
+            shutil.rmtree()
+
+    11) psutil
+        - Used for retrieving system and process information
+        - Examples:
+            CPU usage, memory usage, disk usage, process monitoring
+	   
+
+    5) flask / fastapi
+       - Used for building REST APIs
+       - FastAPI supports async APIs and automatic documentation
+
+    6) faker
+       - Used for generating fake test data
+
+    7) uuid
+       - Used for generating unique identifiers (UUIDs)
+
+    8) python-dotenv (dotenv)
+       - Used for loading environment variables from a .env file
+
+
+
+    12) IPython
+        - Used for interactive Python development and testing
+
+
+For Data Analysis:
+- matplotlib: For data visualization
+- pandas: For data manipulation and analysis
+- numpy: For numerical operations
+
+
+----------------------------------------------------
+
+Q. Where Did You Use Python? 
+
+I mainly use Python for automation, cloud operations, and DevOps scripting.
+
+I used Python and boto3 to identify unused AWS resources like stopped EC2 instances and unattached EBS volumes to optimize cloud costs.
+
+
+cleanup_stopped_instances.py
+
+import boto3
+
+REGION = "us-east-1"
+
+ec2 = boto3.client("ec2", region_name=REGION)
+
+def get_stopped_instances():
+    response = ec2.describe_instances(
+        Filters=[
+            {"Name": "instance-state-name", "Values": ["stopped"]}
+        ]
+    )
+
+    instances = []
+    for reservation in response["Reservations"]:
+        for instance in reservation["Instances"]:
+            instances.append(instance["InstanceId"])
+
+    return instances
+
+
+if __name__ == "__main__":
+    stopped_instances = get_stopped_instances()
+
+    if not stopped_instances:
+        print("No stopped EC2 instances found.")
+    else:
+        print("Stopped EC2 Instances:")
+        for instance_id in stopped_instances:
+            print(instance_id)
+
+        # Uncomment after confirmation
+        # ec2.terminate_instances(InstanceIds=stopped_instances)
+        # print("Stopped instances terminated successfully.")
+		
+
+---------------------------------------------------------------------------
+cleanup_old_volumes.py
+
+
+import boto3
+from datetime import datetime, timezone, timedelta
+
+REGION = "us-east-1"
+DAYS_OLD = 7
+
+ec2 = boto3.client("ec2", region_name=REGION)
+
+cutoff_date = datetime.now(timezone.utc) - timedelta(days=DAYS_OLD)
+
+def get_old_unattached_volumes():
+    response = ec2.describe_volumes(            #### resonse is a dictionary here 
+        Filters=[
+            {"Name": "status", "Values": ["available"]}
+        ]
+    )
+
+    volumes = []
+    for volume in response["Volumes"]:
+        if volume["CreateTime"] < cutoff_date:
+>            volumes.append(volume["VolumeId"])
+
+    return volumes
+
+
+if __name__ == "__main__":
+    old_volumes = get_old_unattached_volumes()
+
+    if not old_volumes:
+        print("No old unattached EBS volumes found.")
+    else:
+        print("Old Unattached EBS Volumes (>7 days):")
+        for vol_id in old_volumes:
+            print(vol_id)
+
+        # Uncomment after confirmation
+        # for vol_id in old_volumes:
+        #     ec2.delete_volume(VolumeId=vol_id)
+        # print("Old volumes deleted successfully.")
+
+
+
+------------------------------------------------------------------------------
+
+describe_instances()	Reservations → Instances
+describe_volumes()	Volumes
+describe_snapshots()	Snapshots
+
+
+
+
+
+--------------------------------------------------------------------------------
+Q HAVE YOU WORKED ON APIs USING PYTHON?
+
+Answer:
+Yes, I have worked on REST APIs using Python.
+
+I have used frameworks like:
+- Flask
+- FastAPI
+to build RESTful APIs.
+
+
+
+
+I also used the Python requests library to consume external REST APIs.
+
+For example, I integrated third-party APIs to fetch user data,
+send information using POST requests, update data using PUT,
+and remove records using DELETE calls. I also handled JSON responses
+and validated HTTP status codes.
+
+---------------------------------------------------------------------------------------------------
+
+Q) What is the difference between List and Dictionary?
+
+Answer:
+
+    - A List is an ordered collection of items.
+    - A List allows duplicate items.
+    - List items are accessed using index numbers (0, 1, 2, ...).
+    - A List is mutable (can be changed).
+
+    - A Dictionary is an unordered collection of key-value pairs.
+    - Dictionary items are accessed using keys, not indexes.
+    - Dictionary does NOT allow duplicate keys.
+    - Dictionary values can be duplicated.
+    - A Dictionary is also mutable.
+
+Simple Example:
+
+    List Example:
+        my_list = [10, 20, 20, 30]
+
+    Dictionary Example:
+        my_dict = {"name": "John", "age": 30, "city": "NY"}
+
+
+
+
+---------------------------------------------------------------------------------------------------
+Q. How to reverse a list  in multiple ways?
+A: list.reverse() => It will reverse the list in place.
+   list[::-1] => It will return the reversed list but does not modify the original list.
+   reversed(list) => It will return the reversed list but does not modify the original list.
+
+
+---------------------------------------------------------------------------------------------------
+Q) How can I create a multiline string in Python?
+
+Answer:
+
+    - You can create a multiline string using triple quotes:
+        - '''  (triple single quotes)
+        - """  (triple double quotes)
+
+    Example:
+
+        s = '''This is a
+        multiline string'''
+
+        print(s)
+
+    - Python will preserve the line breaks exactly as written.
+
+
+---------------------------------------------------------------------------------------------------
+
+
+Q. How can I take INPUT from the user in Python?
+A: You can use input() function to take input from the user.
+   Eg: name = input('Enter your name: ')
+
+
+---------------------------------------------------------------------------------------------------
+Q) How can I convert a string to a list?
+
+Answer:
+
+    - You can convert a string to a list using the split() method.
+    - split() divides the string based on a separator (space, comma, etc.)
+
+    Example:
+
+        X = 'WELCOME TO DEVOPS/SRE TRAINING'
+
+        # Split the string based on space
+        result = X.split(' ')
+
+        print(result)
+
+    Output:
+        ['WELCOME', 'TO', 'DEVOPS/SRE', 'TRAINING']
+---------------------------------------------------------------------------------------------------
+
+Q) Convert a list to a string?
+A: X = ['WELCOME', 'TO', 'DEVOPS/SRE', 'TRAINING']
+   ' '.join(X) => 'WELCOME TO DEVOPS/SRE TRAINING'
+
+
+---------------------------------------------------------------------------------------------------
+
+
+Q). How to extract info usin requests module?
+A: import requests
+   response = requests.get('https://jsonplaceholder.typicode.com/posts')
+   print(response.status_code)
+   print(response.json())
+ ---------------------------------------------------------------------------------------------------
+
+ 
+Q) How to handle exceptions in Python?
+
+Answer:
+
+    - In Python, exceptions are handled using:
+        try
+        except
+        finally
+
+    - The 'try' block contains code that may raise an exception.
+    - The 'except' block catches the exception and handles it.
+    - The 'finally' block always runs (optional), used for cleanup.
+
+    Example:
+
+        try:
+            # Code that may raise an exception
+            x = 10 / 0
+        except Exception as e:
+            print("Error:", e)
+        finally:
+            print("This block always runs.")
+
+    Output:
+        Error: division by zero
+        This block always runs.
+
+ ---------------------------------------------------------------------------------------------------
+
+Q) How to install a package in Python?
+A: pip install package_name (or) pip3 install package_name  # Search in pypi.org
+
+ ---------------------------------------------------------------------------------------------------
+
+Q)Q) How to generate fake user data using Faker?
+
+Answer:
+
+    - You can use the Faker library to generate fake data such as:
+        - Names
+        - Emails
+        - Addresses
+        - Profiles
+        - Phone numbers
+        - And much more
+
+    Example:
+
+        from faker import Faker
+
+        fake = Faker()
+
+        print(fake.name())
+        print(fake.email())
+        print(fake.address())
+        print(fake.profile())
+
+    ----------------------------------------------
+
+    # To generate 100 fake email addresses
+
+        from faker import Faker
+
+        fake = Faker()
+
+        for i in range(100):
+            print(fake.profile()['mail'])
+
+
+  
+ ---------------------------------------------------------------------------------------------------
+
+Q. What are the day-to-day operations using Python for a DevOps engineer?
+
+A:
+A DevOps engineer uses Python mainly for automation, scripting,
+cloud operations, and system monitoring.
+
+Common day-to-day tasks include:
+
+    1) Automation & Scripting
+       - Automating repetitive tasks
+       - Writing scripts for backups, cleanup, and deployments
+       - Automating server provisioning and configuration
+
+    2) Cloud Operations (AWS / Azure / GCP)
+       - Managing cloud resources using SDKs like boto3 or Azure SDK
+       - Creating, updating, and deleting resources (EC2, S3, VMs, storage)
+       - Automating scaling and cost optimization tasks
+
+    3) CI/CD Pipeline Support
+       - Writing Python scripts used in Jenkins, GitHub Actions, GitLab CI
+       - Automating build, test, and deployment steps
+       - Validating artifacts before deployment
+
+    4) Monitoring and Logging
+       - Collecting system metrics (CPU, memory, disk) using psutil
+       - Parsing and analyzing log files
+       - Sending alerts and notifications
+
+    5) Infrastructure Automation
+       - Integrating Python with tools like Terraform and Ansible
+       - Writing custom Ansible modules or helpers
+       - Validating infrastructure state
+
+    6) API Integration
+       - Calling REST APIs using requests
+       - Integrating with tools like Jira, Slack, ServiceNow
+       - Automating ticket creation and status updates
+
+    7) Configuration and Secrets Management
+       - Managing environment variables using python-dotenv
+       - Reading configuration files (JSON, YAML)
+       - Securing secrets and credentials
+
+    8) File and System Operations
+       - Working with files and directories using os and shutil
+       - Archiving, copying, and cleaning files
+       - Managing permissions
+
+    9) Troubleshooting and Debugging
+       - Writing quick scripts to debug production issues
+       - Checking service health and process status
+       - Analyzing failures and root cause
+
+    10) Reporting and Notifications
+        - Generating reports from logs or metrics
+        - Sending email or Slack notifications
+        - Creating dashboards or summaries
