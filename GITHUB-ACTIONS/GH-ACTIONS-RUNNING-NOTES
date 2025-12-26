@@ -59,7 +59,7 @@ Use Case                   | Ideal for GitHub users, small teams       | Ideal f
 WHEN TO USE WHICH
 
     - Use GitHub Actions:
-        • For small projects hosted on GitHub
+        • For students or small projects hosted on GitHub
         • When you want zero setup and automatic triggers
           for GitHub events like push, PR, merge
         • When you prefer cloud-hosted runners and no server maintenance
@@ -88,8 +88,6 @@ WHY USE GITHUB ACTIONS
     - It reduces manual work and improves development speed.
     - Everything is stored inside the repo, making CI/CD version-controlled.
 
-----------------------------------------------------
-
 --------------------------------------------------------
 few BASICS
 ------------------------------------------------------------
@@ -97,7 +95,7 @@ few BASICS
     - GitHub Actions is a CI/CD and automation system built into GitHub.
     - Workflows run automatically based on triggers like push, PR, or schedule.
     - Workflows are written in YAML inside:
-          .github/workflows/cicd.yaml
+          .github/workflows/
 
 ------------------------------------------------------------
 KEY COMPONENTS
@@ -150,152 +148,258 @@ COMMON ACTIONS
 ------------------------------------------------------------
 BASIC WORKFLOW STRUCTURE (YAML EXAMPLE)
 ------------------------------------------------------------
+https://github.com/devopstraininghub/B16-GH-ACTIONS-1.git  
 
-    name: testing_gha
+name: First-GHA-test
+on: 
+  push
+  
+jobs:
+ b16_first_job:
+   runs-on: ubuntu-latest    
     
-    on:
-     push
+   steps:    
+      - name: message
+        run: echo "Welcome to GitHubactions by batch16 champs"
+
+
+==============================================================================
+
+TASK2:
+https://github.com/devopstraininghub/B16-GH-ACTIONS-SELF-HOSTED-2.git
+
+
+name: gha-test2-on-selfhostedrunner
+
+on: 
+  push
+  
+jobs:
+  b16_first_job:
+    runs-on: self-hosted
     
-    jobs:
-     say_hello:
-      runs-on: ubuntu-latest
     
-      steps:
-       - name: message
-         run: echo "Hello AWS-Devops"
-    	 
-	 
-------------------------------------------------------------
-    name: Test self runner 
-    on: [push]
-    
-    jobs:
-     build:
-      runs-on: self-hosted
-    
-      steps: 
-        - run: echo "Running this on self host- test22222222"
-      
----------------------------------------------------------------------  
-
-	 
-
-
-
-
-    name: CI Pipeline
-
-    on:
-      push:
-      pull_request:
-
-    jobs:
-      build:
-        runs-on: ubuntu-latest
-
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
-
-          - name: Install dependencies
-            run: npm install
-
-          - name: Run tests
-            run: npm test
-
-------------------------------------------------------------
-COMMON ACTIONS
-------------------------------------------------------------
-
-    - Checkout repository:
-        actions/checkout@v4
-
-    - Setup Node.js:
-        actions/setup-node@v4
-
-    - Setup Python:
-        actions/setup-python@v5
-
-    - Setup Java:
-        actions/setup-java@v4
-
-    - Upload/Download artifacts:
-        actions/upload-artifact@v4
-        actions/download-artifact@v4
-
-------------------------------------------------------------
-BASIC WORKFLOW STRUCTURE (YAML EXAMPLE)
-------------------------------------------------------------
-
-    name: CI Pipeline
-
-    on:
-      push:
-      pull_request:
-
-    jobs:
-      build:
-        runs-on: ubuntu-latest
-
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
-
-          - name: Install dependencies
-            run: npm install
-
-          - name: Run tests
-            run: npm test
-
-------------------------------------------------------------
-SCHEDULING WORKFLOWS (CRON JOB)
-------------------------------------------------------------
-
-    on:
-      schedule:
-        - cron: "0 2 * * *"   # Runs every day at 2 AM UTC
-
-------------------------------------------------------------
-MANUAL TRIGGER
-------------------------------------------------------------
-
-    on:
-      workflow_dispatch:
-
-------------------------------------------------------------
-RUNNING MULTIPLE JOBS
-------------------------------------------------------------
-
-    jobs:
-      build:
-        runs-on: ubuntu-latest
-        steps:
-          - run: echo "Building..."
-
-      test:
-        runs-on: ubuntu-latest
-        needs: build
-        steps:
-          - run: echo "Testing..."
-
-------------------------------------------------------------
-ENVIRONMENT VARIABLES
-------------------------------------------------------------
-
-    env:
-      APP_ENV: production
-
     steps:
-      - run: echo "Environment = $APP_ENV"
+    
+      - name: message
+        run: echo "Welcome to GitHubactions by batch16 champs"
+		
+============================================================================
+======================================================
+SELF-HOSTED GITHUB ACTIONS RUNNER (EC2)
 
-------------------------------------------------------------
-SECRETS (SECURE VALUES)
-------------------------------------------------------------
+--------------------------------------------------
+Launch EC2 Instance
 
-    - Store secrets in:
-        Settings → Secrets → Actions
 
-    - Use in workflow:
-        run: echo "API Key is ${{ secrets.API_KEY }}"
+    AMI           : Amazon Linux 2
+    Instance Type : t2.micro (for testing)
+                    Use a bigger instance for heavy jobs
 
-------------------------------------------------------------
+
+--------------------------------------------------
+Install Dependencies
+
+
+    sudo yum update -y
+    sudo yum install -y curl tar git jq
+
+    # Required library for GitHub Actions runner (.NET dependency)
+    sudo yum install -y libicu
+
+
+--------------------------------------------------
+Create Runner User (Recommended)
+
+
+    sudo adduser github
+    sudo passwd github        # optional (for SSH or su login)
+    sudo usermod -aG wheel github
+
+    su - github
+
+
+--------------------------------------------------
+Download and Extract GitHub Runner
+
+
+    # Check latest version:
+    # https://github.com/actions/runner/releases
+
+    mkdir ~/actions-runner
+    cd ~/actions-runner
+
+    curl -o actions-runner.tar.gz -L \
+    https://github.com/actions/runner/releases/download/v2.320.0/actions-runner-linux-x64-2.320.0.tar.gz
+
+    tar xvf actions-runner.tar.gz
+
+
+--------------------------------------------------
+Configure Runner
+
+    Path in GitHub:
+        Repository → Settings → Actions → Runners → New self-hosted runner → Linux
+
+    Registration command example:
+
+        ./config.sh \
+        --url https://github.com/jadalaramani/self_runner_gha \
+        --token <YOUR_RUNNER_TOKEN>
+
+    Prompts:
+        Runner name  : ec2-runner-1 (or press Enter)
+        Labels       : press Enter (default)
+        Work folder  : press Enter (_work)
+
+
+--------------------------------------------------
+Start the Runner
+
+
+    ./run.sh
+
+    Expected output:
+        Connected to GitHub
+        Runner successfully added
+        Listening for Jobs
+
+
+--------------------------------------------------
+Keep Runner Alive
+--------------------------------------------------
+
+    Problem:
+        Runner stops if SSH session closes
+
+    Solution (screen):
+
+        screen -S github-runner
+        cd ~/actions-runner
+        ./run.sh
+
+    Detach:
+        Ctrl + A + D
+
+    Reattach:
+        screen -r github-runner
+
+
+--------------------------------------------------
+Notes
+--------------------------------------------------
+
+    - Full control over environment
+    - You manage OS, security, and updates
+    - Best for custom tools and enterprise workloads
+
+
+		
+=============================================================================
+
+
+TASK 3:   BUILDING & DEPLOYING ON TO TOMCAT
+
+https://github.com/devopstraininghub/mindcircuit16d.git
+
+name: Deploy to Tomcat via Manager API
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+
+      # - name: Set up JDK
+      #   uses: actions/setup-java@v3
+      #   with:
+      #     distribution: 'temurin' 
+      #     java-version: '11'
+
+      - name: Build WAR using Maven
+        run: mvn clean package
+       # run: mvn clean package -DskipTests
+
+      - name: Deploy WAR to Tomcat
+        run: |
+              WAR_FILE=$(ls target/*.war | head -n 1)
+              APP_NAME=myapp
+              curl -u "${{ secrets.TOMCAT_USERNAME }}:${{ secrets.TOMCAT_PASSWORD }}" \
+                --upload-file "$WAR_FILE" \
+                "http://${{ secrets.TOMCAT_HOST }}:8081/manager/text/deploy?path=/$APP_NAME&update=true"
+
+
+
+============================================================================================
+
+TASK 4: (GAME OF LIFE) 
+
+
+https://github.com/devopstraininghub/game_of_life_gha.git
+
+
+
+name: Deploy Game of life 
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch: 
+  
+jobs:
+  build_deploy_golife:
+    #runs-on: ubuntu-latest
+    runs-on: self-hosted
+    
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Java 1.8
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'   # AdoptOpenJDK successor
+          java-version: '8'
+
+      - name: Install Maven
+        run: |
+          sudo yum install maven -y
+
+
+      # Step 3: Cache Maven dependencies 
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Step 4: Build and test
+      - name: Build with Maven
+        run: mvn clean install
+
+
+      - name: Deploy WAR to Tomcat
+        run: |
+              WAR_FILE=$(ls gameoflife-web/target/*.war | head -n 1)
+              APP_NAME=gameoflife
+              curl -u "${{ secrets.TOMCAT_USERNAME }}:${{ secrets.TOMCAT_PASSWORD }}" \
+                --upload-file "$WAR_FILE" \
+                "http://${{ secrets.TOMCAT_HOST }}:8081/manager/text/deploy?path=/$APP_NAME&update=true"
+
+
+=================================================================================================
