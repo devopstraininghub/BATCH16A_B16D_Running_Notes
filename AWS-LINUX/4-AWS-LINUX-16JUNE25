@@ -121,6 +121,15 @@ sed 's/userstanga/madhustanga/' jenkins
 sed 's/userstanga/madhustanga/' jenkins  > jenkins2file
 
 
+
 sed 's/yum/apt/g' jenkins 
 
+====== Command======          ========Meaning========
+sed 's/old/new/' file	      Replace first occurrence
+sed 's/old/new/g' file	      Replace all occurrences
+sed -i 's/old/new/g' file	   Replace and save
+sed '/text/d' file	         Delete matching lines
+sed -n '5p' file	            Print line 5
+sed -n '5,10p' file	         Print lines 5–10
+sed -n '/ERROR/p' file	      Print lines containing ERROR
 ========================================================
